@@ -46,3 +46,15 @@ dependencies {
 tasks.named('test') {
     useJUnitPlatform()
 }
+
+processResources.dependsOn('copySecret')
+
+tasks.register('copySecret', Copy) {
+    from './MealBuddy_Backend_Private'
+    include "*.yml"
+    into 'src/main/resources'
+}
+
+jar {
+    enabled = false
+}

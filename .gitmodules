@@ -1,0 +1,3 @@
+[submodule "MealBuddy_Backend_Private"]
+	path = MealBuddy_Backend_Private
+	url = git@github.com:Woowa-Birdies/MealBuddy_Backend_Private.git
