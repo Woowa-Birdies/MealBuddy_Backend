@@ -54,7 +54,7 @@ jobs:
           script: |
             SOURCE_DIR=~/app/build/libs
             FILE_NAME=`find $SOURCE_DIR/*.jar -printf "%f\n"`
-            PID=$(ps -ef | grep "java -jar" | grep "$FILE_NAME" | awk '{print $2}')
+            PID=`$(ps -ef | grep "java -jar" | grep "$FILE_NAME" | awk '{print $2}')`
 
             if [ -z "$PID" ]; then
                     echo "#### THERE IS NO PROCESS ####"
