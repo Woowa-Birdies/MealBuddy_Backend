@@ -2,13 +2,13 @@
 name: DEV-CD
 
 on:
-  push:
-    branches: [ dev ]
-
+  pull_request:
+    types: [ closed ]
+    branches: [ "dev" ]
 
 jobs:
-  build:
-    name: Dev-CD
+  deploy:
+    if: github.event.pull_request.merged == true
     runs-on: ubuntu-latest
 
     steps:
@@ -16,7 +16,7 @@ jobs:
         with:
           submodules: true
           token: ${{ secrets.ACTION_SECRETS }}
-      - name: Set up JDK 21
+      - name: Set up JDK 17
         uses: actions/setup-java@v4
         with:
           java-version: '17'
@@ -53,7 +53,7 @@ jobs:
           script: |
             SOURCE_DIR=~/app/build/libs
             FILE_NAME=`find $SOURCE_DIR/*.jar -printf "%f\n"`
-            PID=`ps -ef | grep occupying | grep sudo | grep -v "bash -c" | awk '{print $2}'`
+            PID=$(ps -ef | grep "java -jar" | grep "$FILE_NAME" | awk '{print $2}')
 
             if [ -z "$PID" ]; then
                     echo "#### THERE IS NO PROCESS ####"
