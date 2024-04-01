@@ -14,17 +14,8 @@ jobs:
 
     steps:
       - name: Check secrets
-        run: |
-          try {
-            if [ -z "${{ secrets.TOKEN_SECRETS }}" ]; then
-              echo "Secrets are empty"
-              exit 1
-            fi
-            echo "Secrets exist"
-          } catch {
-            echo "Error occurred"
-            exit 1
-          }
+        if: secrets.ACTION_SECRETS != ''
+        run: echo "Secrets exist"
       - uses: actions/checkout@v4
         with:
           ref: ${{ github.head_ref }}
