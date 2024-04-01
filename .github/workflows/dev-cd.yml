@@ -13,19 +13,9 @@ jobs:
     runs-on: ubuntu-latest
 
     steps:
-      - name: Check for Secret availability
-        id: secret-check
-        # perform secret check & put boolean result as an output
-        shell: bash
-        run: |
-          if [ "${{ secrets.TOKEN_SECRETS }}" != '' ]; then
-            echo "available=true" >> $GITHUB_OUTPUT;
-          else
-            echo "available=false" >> $GITHUB_OUTPUT;
-          fi
       - uses: actions/checkout@v4
+        run: git submodule update --init --recursive
         with:
-          ref: ${{ github.head_ref }}
           submodules: recursive
           token: ${{ secrets.TOKEN_SECRETS }}
       - name: Set up JDK 17
