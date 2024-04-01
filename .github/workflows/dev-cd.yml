@@ -13,9 +13,16 @@ jobs:
     runs-on: ubuntu-latest
 
     steps:
-      - name: Check secrets
-        if: secrets.ACTION_SECRETS != ''
-        run: echo "Secrets exist"
+      - name: Check for Secret availability
+        id: secret-check
+        # perform secret check & put boolean result as an output
+        shell: bash
+        run: |
+          if [ "${{ secrets.TOKEN_SECRETS }}" != '' ]; then
+            echo "available=true" >> $GITHUB_OUTPUT;
+          else
+            echo "available=false" >> $GITHUB_OUTPUT;
+          fi
       - uses: actions/checkout@v4
         with:
           ref: ${{ github.head_ref }}
