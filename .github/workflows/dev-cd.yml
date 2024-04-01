@@ -13,6 +13,19 @@ jobs:
     runs-on: ubuntu-latest
 
     steps:
+      - steps:
+      - name: Check secrets
+        run: |
+          try {
+            if [ -z "${{ secrets.TOKEN_SECRETS }}" ]; then
+              echo "Secrets are empty"
+              exit 1
+            fi
+            echo "Secrets exist"
+          } catch {
+            echo "Error occurred"
+            exit 1
+          }
       - uses: actions/checkout@v4
         with:
           submodules: true
