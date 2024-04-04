@@ -25,27 +25,38 @@ public class Post extends BaseEntity {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
+
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "user_id")
     private User user;
+
     @OneToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "location_id")
     private Location location;
+
     private int participantTotal;
     private int participantCount;
+
     @Column(columnDefinition = "text")
     private String contents;
+
     @Enumerated(EnumType.STRING)
     private PostStatus postStatus;
+
     @Enumerated(EnumType.STRING)
     private FoodType foodTypeTag;
+
     @Enumerated(EnumType.STRING)
     private Age ageTag;
+
     @Enumerated(EnumType.STRING)
     private Gender genderTag;
+
     private int viewCount;
+
     @OneToMany(mappedBy = "post")
     private List<Ask> asks = new ArrayList<>();
+
     private LocalDateTime meetAt;
     private LocalDateTime closeAt;
 }
