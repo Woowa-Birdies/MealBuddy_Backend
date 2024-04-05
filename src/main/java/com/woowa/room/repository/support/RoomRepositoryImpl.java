@@ -1,10 +1,9 @@
-package com.woowa.room.repository;
+package com.woowa.room.repository.support;
 
 import com.querydsl.core.types.Projections;
 import com.querydsl.jpa.impl.JPAQueryFactory;
 import com.woowa.room.domain.dto.RoomResponseDto;
 import jakarta.persistence.EntityManager;
-import org.springframework.beans.factory.annotation.Autowired;
 
 import java.util.List;
 
