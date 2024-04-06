@@ -21,12 +21,15 @@ public class Ask extends BaseEntity {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
+
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "post_id")
     private Post post;
+
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "user_id")
     private User user;
+
     @Enumerated(value = EnumType.STRING)
     @ColumnDefault("'WAITING'")
     private AskStatus askStatus;
