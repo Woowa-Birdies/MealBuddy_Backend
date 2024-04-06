@@ -68,7 +68,7 @@ public class SecurityConfig {
 	private static void configureMapping(HttpSecurity http) throws Exception {
 		http
 			.authorizeHttpRequests(auth -> auth
-				.requestMatchers("/actuator/health", "/login/**", "/oauth2/**").permitAll()
+				.requestMatchers("/actuator/health", "/login/**", "/oauth2/**", "/gather/**").permitAll()
 				.anyRequest().authenticated());
 	}
 
