@@ -17,13 +17,17 @@ public class Ask {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
+
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "post_id")
     private Post post;
+
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "user_id")
     User user;
+
     private String requestStatus;
+
     @Enumerated(value = EnumType.STRING)
     private AskStatus askStatus;
 }
