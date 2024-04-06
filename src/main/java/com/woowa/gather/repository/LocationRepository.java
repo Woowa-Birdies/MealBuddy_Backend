@@ -1,8 +1,8 @@
 package com.woowa.gather.repository;
 
-import com.woowa.gather.domain.Post;
+import com.woowa.gather.domain.Location;
 import org.springframework.data.jpa.repository.JpaRepository;
 
-public interface PostRepository extends JpaRepository<Post, Long> {
+public interface LocationRepository extends JpaRepository<Location, Long> {
 
 }

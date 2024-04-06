@@ -1,6 +1,7 @@
 package com.woowa.gather.domain;
 
 import com.woowa.common.domain.BaseEntity;
+import com.woowa.gather.domain.dto.PostUpdateDto;
 import com.woowa.gather.domain.enums.Age;
 import com.woowa.gather.domain.enums.FoodType;
 import com.woowa.gather.domain.enums.Gender;
@@ -59,4 +60,14 @@ public class Post extends BaseEntity {
 
     private LocalDateTime meetAt;
     private LocalDateTime closeAt;
+
+    public void update(PostUpdateDto postUpdateDto) {
+        this.participantTotal = postUpdateDto.getParticipantTotal();
+        this.contents = postUpdateDto.getContents();
+        this.foodTypeTag = postUpdateDto.getFoodTypeTag();
+        this.ageTag = postUpdateDto.getAgeTag();
+        this.genderTag = postUpdateDto.getGenderTag();
+        this.meetAt = postUpdateDto.getMeetAt();
+        this.closeAt = postUpdateDto.getCloseAt();
+    }
 }

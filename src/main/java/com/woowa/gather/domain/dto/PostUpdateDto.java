@@ -1,6 +1,8 @@
 package com.woowa.gather.domain.dto;
 
-import com.woowa.gather.domain.enums.*;
+import com.woowa.gather.domain.enums.Age;
+import com.woowa.gather.domain.enums.FoodType;
+import com.woowa.gather.domain.enums.Gender;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
 import lombok.AllArgsConstructor;
@@ -14,9 +16,9 @@ import java.time.LocalDateTime;
 @Builder
 @NoArgsConstructor
 @AllArgsConstructor
-public class PostCreateDto {
-//    @NotNull
-//    private int userId;
+public class PostUpdateDto {
+    @NotNull
+    Long id;
 
     @NotBlank
     private String place;
@@ -30,15 +32,7 @@ public class PostCreateDto {
     @NotNull
     private int participantTotal;
 
-    @NotNull
-    @Builder.Default
-    private int participantCount = 0; // 게시글 생성 시 기본값 0
-
     private String contents;
-
-    @NotNull
-    @Builder.Default
-    private PostStatus postStatus = PostStatus.ONGOING; // 게시글 생성 시 ONGOING
 
     private FoodType foodTypeTag;
     private Age ageTag;
