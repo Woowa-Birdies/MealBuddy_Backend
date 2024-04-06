@@ -31,7 +31,7 @@ public class Post extends BaseEntity {
     @JoinColumn(name = "user_id")
     private User user;
 
-    @OneToOne(fetch = FetchType.LAZY)
+    @OneToOne(fetch = FetchType.LAZY, cascade = CascadeType.ALL)
     @JoinColumn(name = "location_id")
     private Location location;
 
@@ -55,6 +55,7 @@ public class Post extends BaseEntity {
 
     private int viewCount;
 
+    @Builder.Default
     @OneToMany(mappedBy = "post")
     private List<Ask> asks = new ArrayList<>();
 
