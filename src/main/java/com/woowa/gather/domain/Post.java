@@ -55,6 +55,7 @@ public class Post extends BaseEntity {
 
     private int viewCount;
 
+    @Builder.Default
     @OneToMany(mappedBy = "post")
     private List<Ask> asks = new ArrayList<>();
 
