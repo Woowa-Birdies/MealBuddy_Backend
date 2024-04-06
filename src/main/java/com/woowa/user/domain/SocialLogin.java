@@ -32,7 +32,7 @@ public class SocialLogin {
 
 	public SocialLogin(Long userId, String socialCode, String externalId) {
 		this.userId = userId;
-		this.socialCode = SocialCode.valueOf(socialCode.toUpperCase());
+		this.socialCode = SocialCode.toCode(socialCode);
 		this.externalId = externalId;
 	}
 
