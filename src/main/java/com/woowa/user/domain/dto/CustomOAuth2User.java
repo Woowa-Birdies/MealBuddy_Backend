@@ -23,13 +23,17 @@ public class CustomOAuth2User implements OAuth2User {
 	@Override
 	public Collection<? extends GrantedAuthority> getAuthorities() {
 		Collection<GrantedAuthority> collection = new ArrayList<>();
-		collection.add((GrantedAuthority)userDTO::getRole);
+		collection.add((GrantedAuthority)userDTO::role);
 
 		return collection;
 	}
 
 	@Override
 	public String getName() {
-		return userDTO.getName();
+		return userDTO.name();
+	}
+
+	public Long getUserId() {
+		return userDTO.userId();
 	}
 }

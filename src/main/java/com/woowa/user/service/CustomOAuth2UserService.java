@@ -50,12 +50,14 @@ public class CustomOAuth2UserService extends DefaultOAuth2UserService {
 		Optional<User> user = userRepository.findByNickname(oAuth2Response.getName());
 		if (user.isPresent()) {
 			user.get().update(oAuth2Response.getName());
-			userDto = new UserDTO(ROLE_USER, oAuth2Response.getName(), externalId, oAuth2Response.getProvider());
+			userDto = new UserDTO(user.get().getId(), ROLE_USER, oAuth2Response.getName(), externalId,
+				oAuth2Response.getProvider());
 		} else {
 			User savedUser = userRepository.save(new User(oAuth2Response.getName()));
 			SocialLogin savedSocialLogin = socialLoginRepository.save(
 				new SocialLogin(savedUser.getId(), oAuth2Response.getProvider(), externalId));
-			userDto = new UserDTO(ROLE_USER, oAuth2Response.getName(), savedSocialLogin.getExternalId(),
+			userDto = new UserDTO(savedUser.getId(), ROLE_USER, oAuth2Response.getName(),
+				savedSocialLogin.getExternalId(),
 				oAuth2Response.getProvider());
 		}
 
