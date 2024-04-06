@@ -10,7 +10,7 @@ public enum Age {
     AGE20S("20대"),
     AGE30S("30대"),
     AGE40S("40대"),
-    Age50s("50대"),
+    AGE50s("50대"),
     OVER60S("60대 이상"),
     ;
 
