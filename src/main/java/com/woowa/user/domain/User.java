@@ -22,7 +22,7 @@ public class User extends BaseEntity {
 	@Id
 	@Column(name = "user_no")
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
-	private int id;
+	private Long id;
 
 	@Column(length = 16)
 	private String nickname;
@@ -39,4 +39,12 @@ public class User extends BaseEntity {
 
 	@Column(length = 128)
 	private String phone;
+
+	public User(String nickname) {
+		this.nickname = nickname;
+	}
+
+	public void update(String nickname) {
+		this.nickname = nickname;
+	}
 }
