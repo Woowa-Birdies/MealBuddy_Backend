@@ -4,6 +4,7 @@ import com.woowa.gather.domain.dto.AskListResponse;
 import com.woowa.gather.domain.dto.AskRequest;
 import com.woowa.gather.domain.dto.ListApiResponse;
 import com.woowa.gather.domain.dto.UserPostListResponse;
+import com.woowa.gather.exception.NonExistTypeException;
 import com.woowa.gather.service.AskService;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
@@ -28,6 +29,10 @@ public class AskController extends BaseAskController {
 
     @GetMapping("/gather/list/{userId}")
     public ListApiResponse<UserPostListResponse> getUserPostList(@RequestParam int type, @PathVariable Long userId) {
+        if (type > 2 || type < 0) {
+            throw new NonExistTypeException("타입 범위는 [0,1,2]입니다");
+        }
+
         return makeResponse(type, askService.getUserPostList(userId, type));
     }
 
