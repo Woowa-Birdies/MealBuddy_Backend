@@ -56,13 +56,15 @@ jobs:
             
             FILE_NAME=$(find "$SOURCE_DIR"/*.jar -printf "%f\n" | head -n 1)
             
-            PID=$(ps -ef | grep "java -jar" | grep "$FILE_NAME" | awk '{print $2}' | head -n 1)
+            PIDS=$(ps -ef | grep "java -jar" | grep "$FILE_NAME" | awk '{print $2}')
             
-            if [ -z "$PID" ]; then
+            if [ -z "$PIDS" ]; then
               echo "#### THERE IS NO PROCESS ####"
             else
-              echo "#### KILL $PID ####"
-              sudo kill -9 "$PID"
+              echo "#### KILL $PIDS ####"
+              for PID in $PIDS; do
+                sudo kill -9 "$PID"
+              done
             fi
             
             echo "#### RUN $SOURCE_DIR/$FILE_NAME ####"
