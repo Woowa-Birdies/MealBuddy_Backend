@@ -1,5 +1,8 @@
 package com.woowa.common.domain.dto;
 
+import lombok.Getter;
+
+@Getter
 public class ExceptionResult {
 	private String code;
 	private String message;
