@@ -5,6 +5,7 @@ import com.woowa.gather.domain.enums.Age;
 import com.woowa.gather.domain.enums.FoodType;
 import com.woowa.gather.domain.enums.Gender;
 import com.woowa.gather.domain.enums.PostStatus;
+import com.woowa.room.domain.Room;
 import com.woowa.user.domain.User;
 import jakarta.persistence.*;
 import lombok.*;
@@ -46,6 +47,8 @@ public class Post extends BaseEntity {
     private int viewCount;
     @OneToMany(mappedBy = "post")
     private List<Ask> asks = new ArrayList<>();
+    @OneToOne
+    private Room room;
     private LocalDateTime meetAt;
     private LocalDateTime closeAt;
 }

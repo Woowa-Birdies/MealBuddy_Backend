@@ -14,12 +14,10 @@ import static com.woowa.user.domain.QUser.user;
 
 public class RoomRepositoryImpl implements RoomRepositoryCustom{
 
-    private final EntityManager entityManager;
     private final JPAQueryFactory queryFactory;
 
     public RoomRepositoryImpl(EntityManager entityManager) {
-        this.entityManager = entityManager;
-        this.queryFactory = new JPAQueryFactory(this.entityManager);
+        this.queryFactory = new JPAQueryFactory(entityManager);
     }
     @Override
     public List<RoomResponseDto> findRoomResponseDtosByUserId(final int userId) {

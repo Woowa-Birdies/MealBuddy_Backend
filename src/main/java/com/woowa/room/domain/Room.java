@@ -1,6 +1,7 @@
 package com.woowa.room.domain;
 
 import com.woowa.common.domain.BaseEntity;
+import com.woowa.gather.domain.Post;
 import com.woowa.user.domain.User;
 import jakarta.persistence.*;
 import lombok.AccessLevel;
@@ -18,6 +19,11 @@ public class Room extends BaseEntity {
     @OneToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "user_no")
     private User user;
+
+    //추후 모집자 추가
+
+    @OneToOne(fetch = FetchType.LAZY)
+    private Post post;
 
     private String roomName;
 }
