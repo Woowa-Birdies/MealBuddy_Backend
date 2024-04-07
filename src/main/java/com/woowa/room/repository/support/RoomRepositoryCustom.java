@@ -6,4 +6,6 @@ import java.util.List;
 
 public interface RoomRepositoryCustom {
     List<RoomResponseDto> findRoomResponseDtosByUserId(int userId);
+    void deleteRoomUserByUserId(int userId, long roomId);
+
 }
