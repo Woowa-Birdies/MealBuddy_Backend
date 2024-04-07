@@ -47,7 +47,7 @@ public class Post extends BaseEntity {
     private int viewCount;
     @OneToMany(mappedBy = "post")
     private List<Ask> asks = new ArrayList<>();
-    @OneToOne
+    @OneToOne(mappedBy = "post")
     private Room room;
     private LocalDateTime meetAt;
     private LocalDateTime closeAt;
