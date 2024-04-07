@@ -62,7 +62,7 @@ jobs:
               echo "#### THERE IS NO PROCESS ####"
             else
               echo "#### KILL $PID ####"
-              sudo kill "$PID"
+              sudo kill -9 "$PID"
             fi
             
             echo "#### RUN $SOURCE_DIR/$FILE_NAME ####"
