@@ -56,7 +56,7 @@ jobs:
             
             FILE_NAME=$(find "$SOURCE_DIR"/*.jar -printf "%f\n" | head -n 1)
             
-            PID=$(ps -ef | grep "java -jar" | grep "$FILE_NAME" | awk '{print $2}')
+            PID=$(ps -ef | grep "java -jar" | grep "$FILE_NAME" | awk '{print $2}' | head -n 1)
             
             if [ -z "$PID" ]; then
               echo "#### THERE IS NO PROCESS ####"
