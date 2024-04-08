@@ -35,10 +35,12 @@ public class InitDummyData {
         List<User> users = new ArrayList<>();
         List<Post> posts = new ArrayList<>();
 
+        // 유저 : 3명
         for (String name : names) {
             users.add(createUser(name));
         }
 
+        // 게시글 : 유저당 25개
         for (User user : users) {
             posts.add(createOngoingPost(user));
             posts.add(createOngoingPost(user));
@@ -67,10 +69,14 @@ public class InitDummyData {
             posts.add(createClosedPost(user));
         }
 
+        int postCount = posts.size() / users.size();
+
+        // 신청
         for (int i = 0; i < users.size(); i++) {
-            int start = (i == 0 ? 25 : i == 1 ? 50 : 0);
-            int end = (i == 0 ? 50 : i == 1 ? 75 : 25);
-            for (int j = start; j < end; j ++){
+            int start = i * postCount;
+            int end = start + postCount;
+            for (int j = 0; j < posts.size(); j ++){
+                if (j >= start && j < end) continue;
                 createAsk(users.get(i), posts.get(j));
             }
         }
