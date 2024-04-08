@@ -1,11 +1,14 @@
 package com.woowa.gather.service;
 
+import com.woowa.common.domain.ResourceNotFoundException;
 import com.woowa.gather.domain.Location;
 import com.woowa.gather.domain.Post;
 import com.woowa.gather.domain.dto.PostCreateDto;
 import com.woowa.gather.domain.dto.PostUpdateDto;
 import com.woowa.gather.repository.LocationRepository;
 import com.woowa.gather.repository.PostRepository;
+import com.woowa.user.domain.User;
+import com.woowa.user.repository.UserRepository;
 import lombok.Builder;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
@@ -16,14 +19,15 @@ import org.springframework.transaction.annotation.Transactional;
 @Transactional
 @RequiredArgsConstructor
 public class PostQueryService {
-    private final PostReadService postReadService;
+    private final UserRepository userRepository;
     private final PostRepository postRepository;
     private final LocationRepository locationRepository;
+    private final PostReadService postReadService;
 
     public Long create(PostCreateDto postCreateDto) {
-//        User user = userRepository
-//                .findById(postCreateDto.getUserId())
-//                .orElseThrow(() -> new NoSuchElementException("User not found with id: " + postCreateDto.getUserId));
+        User user = userRepository
+                .findById(postCreateDto.getUserId())
+                .orElseThrow(() -> new ResourceNotFoundException(postCreateDto.getUserId(), "User"));
 
         // Location 엔티티 생성 및 저장
         Location savedLocation = locationRepository.save(
@@ -38,7 +42,7 @@ public class PostQueryService {
         // Post 엔티티 생성 및 저장
         Post post = postRepository.save(
                 Post.builder()
-//                        .user(user)
+                        .user(user)
                         .location(savedLocation)
                         .participantTotal(postCreateDto.getParticipantTotal())
                         .participantCount(postCreateDto.getParticipantCount())

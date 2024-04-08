@@ -138,3 +138,5 @@ public class InitDummyData {
         return (int) ((Math.random() * (max - min + 1)) + min);
     } // min ~ max
 }
+
+
