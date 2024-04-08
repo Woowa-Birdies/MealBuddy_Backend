@@ -56,7 +56,7 @@ public class PostQueryService {
     }
 
     public Long update(PostUpdateDto postUpdateDto) {
-        Post post = postReadService.getById(postUpdateDto.getId());
+        Post post = postReadService.getById(postUpdateDto.getPostId());
         Location location = post.getLocation();
 
         location.update(

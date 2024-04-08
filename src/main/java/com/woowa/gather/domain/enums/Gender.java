@@ -7,9 +7,9 @@ import lombok.Getter;
 @Getter
 @AllArgsConstructor
 public enum Gender {
-    MALE("남자"),
-    FEMALE("여자"),
-    OTHER("기타")
+    MALE("남자만"),
+    FEMALE("여자만"),
+    ANYONE("남녀무관")
     ;
 
     @JsonValue

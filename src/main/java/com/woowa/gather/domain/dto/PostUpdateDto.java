@@ -18,7 +18,7 @@ import java.time.LocalDateTime;
 @AllArgsConstructor
 public class PostUpdateDto {
     @NotNull
-    Long id;
+    private Long postId;
 
     @NotBlank
     private String place;
@@ -34,8 +34,11 @@ public class PostUpdateDto {
 
     private String contents;
 
+    @NotNull
     private FoodType foodTypeTag;
+    @NotNull
     private Age ageTag;
+    @NotNull
     private Gender genderTag;
 
     @NotNull
