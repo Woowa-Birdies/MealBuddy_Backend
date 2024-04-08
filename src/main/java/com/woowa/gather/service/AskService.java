@@ -48,6 +48,8 @@ public class AskService {
         Ask ask = askRepository.findById(askId)
                 .orElseThrow(() -> new ResourceNotFoundException(askId, "신청 내용"));
 
+        // todo: 유저의 참여 상태가 수락/참여 상태인 경우 -> 참여count -1 | 대기/거절 상태인 경우 -> 그냥 삭제
+
         askRepository.deleteById(askId);
 
         return ask.getId();
