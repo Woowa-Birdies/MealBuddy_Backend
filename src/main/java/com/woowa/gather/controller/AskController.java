@@ -18,8 +18,13 @@ public class AskController extends BaseAskController {
     private final AskService askService;
 
     @PostMapping("/ask")
-    public ResponseEntity<Integer> ask(@RequestBody @Valid AskRequest askRequest) {
-        return ResponseEntity.status(HttpStatus.OK).body(askService.ask(askRequest));
+    public ResponseEntity<Long> saveAsk(@RequestBody @Valid AskRequest askRequest) {
+        return ResponseEntity.status(HttpStatus.CREATED).body(askService.saveAsk(askRequest));
+    }
+
+    @DeleteMapping("/ask/{askId}")
+    public ResponseEntity<Long> deleteAsk(@PathVariable Long askId) {
+        return ResponseEntity.status(HttpStatus.OK).body(askService.deleteAsk(askId));
     }
 
 //    @GetMapping("/test")
@@ -34,6 +39,15 @@ public class AskController extends BaseAskController {
         }
 
         return makeResponse(type, askService.getUserPostList(userId, type));
+    }
+
+    @GetMapping("/aks/list/{userId}")
+    public ListApiResponse<AskListResponse> getAskList(@RequestParam int type, @PathVariable Long userId) {
+        if (type > 2 || type < 0) {
+            throw new NonExistTypeException("타입 범위는 [0,1,2]입니다");
+        }
+
+        return makeResponse(type, askService.getAskList(userId, type));
     }
 
 }
