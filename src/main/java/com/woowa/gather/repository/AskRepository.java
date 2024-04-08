@@ -20,6 +20,6 @@ public interface AskRepository extends JpaRepository<Ask, Long> {
             "join Post p on a.post = p " +
             "join Location l on a.post.location = l " +
             "join User u on a.user = u " +
-            "where u.id = :userId")
-    Optional<List<AskListResponse>> findAskListByWriterId(@Param("userId") Long userId);
+            "where u.id = :userId and p.postStatus = :postStatus")
+    Optional<List<AskListResponse>> findAskListByWriterId(@Param("userId") Long userId, @Param("postStatus") PostStatus postStatus);
 }
