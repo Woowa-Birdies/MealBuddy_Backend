@@ -1,11 +1,13 @@
 package com.woowa;
 
+import com.woowa.gather.domain.Ask;
 import com.woowa.gather.domain.Location;
 import com.woowa.gather.domain.Post;
 import com.woowa.gather.domain.enums.Age;
 import com.woowa.gather.domain.enums.FoodType;
 import com.woowa.gather.domain.enums.Gender;
 import com.woowa.gather.domain.enums.PostStatus;
+import com.woowa.gather.repository.AskRepository;
 import com.woowa.gather.repository.PostRepository;
 import com.woowa.user.domain.User;
 import com.woowa.user.repository.UserRepository;
@@ -16,34 +18,81 @@ import org.springframework.context.event.EventListener;
 import org.springframework.stereotype.Component;
 
 import java.time.LocalDateTime;
+import java.util.ArrayList;
+import java.util.List;
 
 @Component
 @RequiredArgsConstructor
 public class InitDummyData {
     private final UserRepository userRepository;
     private final PostRepository postRepository;
+    private final AskRepository askRepository;
 
     @EventListener(ApplicationReadyEvent.class)
     @Transactional
     public void init() {
-        User user1 = createUser("user1");
-        User user2 = createUser("user2");
-        User user3 = createUser("user3");
+        String[] names = {"user1", "user2", "user3"};
+        List<User> users = new ArrayList<>();
+        List<Post> posts = new ArrayList<>();
 
-        createPost(user1);
-        createPost(user1);
-        createPost(user2);
-        createPost(user2);
-        createPost(user3);
-        createPost(user3);
-        createPost(user3);
+        for (int i = 0; i < names.length; i++) {
+            users.add(createUser(names[i]));
+        }
+
+        for (User user : users) {
+            posts.add(createOngoingPost(user));
+            posts.add(createOngoingPost(user));
+            posts.add(createOngoingPost(user));
+            posts.add(createOngoingPost(user));
+            posts.add(createOngoingPost(user));
+            posts.add(createOngoingPost(user));
+            posts.add(createOngoingPost(user));
+            posts.add(createOngoingPost(user));
+            posts.add(createCompletionPost(user));
+            posts.add(createCompletionPost(user));
+            posts.add(createCompletionPost(user));
+            posts.add(createCompletionPost(user));
+            posts.add(createCompletionPost(user));
+            posts.add(createCompletionPost(user));
+            posts.add(createCompletionPost(user));
+            posts.add(createCompletionPost(user));
+            posts.add(createCompletionPost(user));
+            posts.add(createCompletionPost(user));
+            posts.add(createClosedPost(user));
+            posts.add(createClosedPost(user));
+            posts.add(createClosedPost(user));
+            posts.add(createClosedPost(user));
+            posts.add(createClosedPost(user));
+            posts.add(createClosedPost(user));
+            posts.add(createClosedPost(user));
+        }
+
+        for (int i = 0; i < 15; i++) {
+            users.add(createUser("dummy" + i));
+        }
+
+        for (int i = 3; i < users.size(); i++) {
+            createAsk(users.get(i), posts.get(getRandNum1(25)));
+        }
     }
 
     private User createUser(String nickname) {
         return userRepository.save(new User(nickname));
     }
 
-    private void createPost(User writer) {
+    private Post createOngoingPost(User writer) {
+        return createPost(writer, PostStatus.ONGOING, 1, 5, 4);
+    }
+
+    private Post createCompletionPost(User writer) {
+        return createPost(writer, PostStatus.COMPLETION, 4, 4, 4);
+    }
+
+    private Post createClosedPost(User writer) {
+        return createPost(writer, PostStatus.CLOSED, 4, 4, 1);
+    }
+
+    private Post createPost(User writer, PostStatus postStatus, int pCount, int pTotal, int month) {
         Location location = Location.builder()
                 .address("서울 광진구 자양로43길 42 1층")
                 .place("신토불이떡볶이 본점")
@@ -51,18 +100,27 @@ public class InitDummyData {
                 .longitude(127.090460)
                 .build();
 
-        postRepository.save(Post.builder()
+        int day = getRandNum2(3, 30);
+
+        return postRepository.save(Post.builder()
                 .user(writer)
                 .location(location)
                 .contents("같이 밥먹을 파티원 구합니다.")
                 .ageTag(Age.values()[getRandNum1(Age.values().length)])
                 .foodTypeTag(FoodType.values()[getRandNum1(FoodType.values().length)])
                 .genderTag(Gender.values()[getRandNum1(Gender.values().length)])
-                .participantCount(getRandNum2(0, 1))
-                .participantTotal(getRandNum2(1, 5))
-                .postStatus(PostStatus.ONGOING)
-                .meetAt(LocalDateTime.of(2024, 4, getRandNum2(16, 30), 12, 30))
-                .closeAt(LocalDateTime.of(2024, 4, getRandNum2(1, 15), 11, 0))
+                .participantCount(pCount)
+                .participantTotal(pTotal)
+                .postStatus(postStatus)
+                .meetAt(LocalDateTime.of(2024, month, day, 12, 30))
+                .closeAt(LocalDateTime.of(2024, month, day - 2, 11, 0))
+                .build());
+    }
+
+    private void createAsk(User user, Post post) {
+        askRepository.save(Ask.builder()
+                .user(user)
+                .post(post)
                 .build());
     }
 
