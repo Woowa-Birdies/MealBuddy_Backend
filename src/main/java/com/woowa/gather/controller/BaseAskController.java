@@ -6,6 +6,12 @@ import java.util.List;
 
 abstract class BaseAskController {
 
+    public <T> ListApiResponse<T> makeResponse(List<T> result) {
+        return ListApiResponse.<T>builder()
+                .resultCount(result.size())
+                .result(result)
+                .build();
+    }
     public <T> ListApiResponse<T> makeResponse(int type, List<T> result) {
         return type == 0 ? makeOngoingListResponse(result)
                 : type == 1 ? makeCompletedListResponse(result)
