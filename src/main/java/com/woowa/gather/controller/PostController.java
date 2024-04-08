@@ -32,7 +32,7 @@ public class PostController {
     }
 
     @GetMapping("/post/{postId}")
-    public ResponseEntity<PostDetails> getByPostId(@PathVariable("postId") Long postId) {
+    public ResponseEntity<PostDetailsResponseDto> getByPostId(@PathVariable("postId") Long postId) {
         return ResponseEntity.ok(postReadService.findPostDetailsByPostId(postId));
     }
 }
