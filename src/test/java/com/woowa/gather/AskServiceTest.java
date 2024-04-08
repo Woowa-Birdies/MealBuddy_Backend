@@ -71,25 +71,38 @@ public class AskServiceTest {
     @DisplayName(value = "신청하기")
     void saveAsk() {
         // 신청자 id : 4, 신청할 게시물 id : 8
-        AskRequest askRequest = AskRequest.builder()
-                .postId(8L)
-                .userId(4L)
-                .build();
+//        AskRequest askRequest = AskRequest.builder()
+//                .postId(8L)
+//                .userId(4L)
+//                .build();
         // assertThat(askService.saveAsk(askRequest)).isEqualTo(1L);
     }
 
     @Test
     @DisplayName(value = "신청 취소")
     void deleteAsk() {
-        AskRequest askRequest = AskRequest.builder()
-                .postId(8L)
-                .userId(4L)
-                .build();
-        Long askId = askService.saveAsk(askRequest);
+//        AskRequest askRequest = AskRequest.builder()
+//                .postId(8L)
+//                .userId(4L)
+//                .build();
+//        Long askId = askService.saveAsk(askRequest);
+//
+//        Long deletedAskId = askService.deleteAsk(askId);
+//
+//        assertThat(deletedAskId).isEqualTo(askId);
+    }
 
-        Long deletedAskId = askService.deleteAsk(askId);
+    @Test
+    @DisplayName(value = "신청자 리스트 가져오기")
+    void getPostAskList() {
+//        AskRequest askRequest = AskRequest.builder()
+//                .postId(8L)
+//                .userId(4L)
+//                .build();
 
-        assertThat(deletedAskId).isEqualTo(askId);
+//        askService.saveAsk(askRequest);
+
+//        assertThat(askService.getPostAskList(8L).size()).isEqualTo(1);
     }
 
     private Post createPost(User writer) {

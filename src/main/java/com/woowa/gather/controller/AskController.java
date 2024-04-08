@@ -27,10 +27,10 @@ public class AskController extends BaseAskController {
         return ResponseEntity.status(HttpStatus.OK).body(askService.deleteAsk(askId));
     }
 
-//    @GetMapping("/test")
-//    public ListApiResponse<AskListResponse> test() {
-//        return makeOngoingListResponse(askService.getAskList(1, 1));
-//    }
+    @GetMapping("/gather/ask/list/{postId}")
+    public ListApiResponse<?> getApplicantList(@PathVariable Long postId) {
+        return makeResponse(askService.getPostAskList(postId));
+    }
 
     @GetMapping("/gather/list/{userId}")
     public ListApiResponse<UserPostListResponse> getUserPostList(@RequestParam int type, @PathVariable Long userId) {
