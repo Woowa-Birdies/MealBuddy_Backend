@@ -81,4 +81,5 @@ public class PostQueryService {
 
         return post.getId();
     }
+
 }
