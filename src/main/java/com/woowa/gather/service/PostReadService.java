@@ -3,10 +3,15 @@ package com.woowa.gather.service;
 import com.woowa.common.domain.ResourceNotFoundException;
 import com.woowa.gather.domain.Post;
 import com.woowa.gather.domain.dto.PostDetailsResponseDto;
+import com.woowa.gather.domain.dto.UserPostListResponse;
 import com.woowa.gather.repository.PostRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+
+import java.time.LocalDateTime;
+import java.util.List;
+import java.util.NoSuchElementException;
 
 @Service
 @Transactional(readOnly = true)
@@ -24,6 +29,11 @@ public class PostReadService {
     public PostDetailsResponseDto findPostDetailsByPostId(Long postId) {
         return postRepository.findPostDetailsByPostId(postId)
                 .orElseThrow(() -> new ResourceNotFoundException(postId, "Post"));
+    }
+
+    public List<UserPostListResponse> findDuePosts(int withinDate) {
+        return postRepository.findDuePosts(LocalDateTime.now().plusDays(withinDate))
+                .orElseThrow(() -> new NoSuchElementException(withinDate + "일 이내의 게시물이 존재하지 않습니다."));
     }
 
 }

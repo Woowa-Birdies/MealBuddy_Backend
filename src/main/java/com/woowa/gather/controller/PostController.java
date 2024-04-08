@@ -1,6 +1,7 @@
 package com.woowa.gather.controller;
 
 import com.woowa.gather.domain.dto.*;
+import com.woowa.gather.exception.NonExistTypeException;
 import com.woowa.gather.service.PostQueryService;
 import com.woowa.gather.service.PostReadService;
 import jakarta.validation.Valid;
@@ -8,6 +9,8 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+
+import java.util.List;
 
 @RestController
 @RequiredArgsConstructor
@@ -34,5 +37,15 @@ public class PostController {
     @GetMapping("/post/{postId}")
     public ResponseEntity<PostDetailsResponseDto> getByPostId(@PathVariable("postId") Long postId) {
         return ResponseEntity.ok(postReadService.findPostDetailsByPostId(postId));
+    }
+
+    @GetMapping("/post/over/{withinDate}")
+    public ResponseEntity<ListApiResponse> findDuePosts(@PathVariable("withinDate") int withinDate) {
+        List<UserPostListResponse> duePostList = postReadService.findDuePosts(withinDate);
+        ListApiResponse duePostListApiResponse = ListApiResponse.<UserPostListResponse>builder()
+                .resultCount(duePostList.size())
+                .ongoing(duePostList)
+                .build();
+        return ResponseEntity.ok(duePostListApiResponse);
     }
 }

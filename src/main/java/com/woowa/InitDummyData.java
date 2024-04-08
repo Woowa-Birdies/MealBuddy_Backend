@@ -61,8 +61,8 @@ public class InitDummyData {
                 .participantCount(getRandNum2(0, 1))
                 .participantTotal(getRandNum2(1, 5))
                 .postStatus(PostStatus.ONGOING)
-                .meetAt(LocalDateTime.of(2024, 4, getRandNum2(16, 30), 12, 30))
-                .closeAt(LocalDateTime.of(2024, 4, getRandNum2(1, 15), 11, 0))
+                .meetAt(LocalDateTime.of(2024, 4, getRandNum2(22, 30), 12, 30))
+                .closeAt(LocalDateTime.of(2024, 4, getRandNum2(10, 21), 11, 0))
                 .build());
     }
 
