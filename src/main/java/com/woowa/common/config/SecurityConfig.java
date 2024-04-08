@@ -1,8 +1,6 @@
 package com.woowa.common.config;
 
-import static com.woowa.common.domain.SecurityConstant.*;
-
-import java.util.Collections;
+import java.util.List;
 
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
@@ -86,14 +84,13 @@ public class SecurityConfig {
 
 				CorsConfiguration configuration = new CorsConfiguration();
 
-				configuration.setAllowedOriginPatterns(Collections.singletonList(corsAllowOriginPatterns));
-				configuration.setAllowedMethods(Collections.singletonList(allowedMethods));
+				configuration.setAllowedOriginPatterns(List.of(corsAllowOriginPatterns.split(",")));
+				configuration.setAllowedMethods(List.of(allowedMethods.split(",")));
 				configuration.setAllowCredentials(true);
-				configuration.setAllowedHeaders(Collections.singletonList(allowedHeaders));
-				configuration.setMaxAge(ACCESS_TOKEN_DURATION);
+				configuration.setAllowedHeaders(List.of(allowedHeaders.split(",")));
+				configuration.setMaxAge(maxAge);
 
-				configuration.setExposedHeaders(Collections.singletonList(exposedHeaders));
-				configuration.setExposedHeaders(Collections.singletonList(AUTHORIZATION));
+				configuration.setExposedHeaders(List.of(exposedHeaders.split(",")));
 
 				return configuration;
 			}));

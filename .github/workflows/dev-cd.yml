@@ -53,15 +53,19 @@ jobs:
           key: ${{ secrets.SSH_PRIVATE_KEY }}
           script: |
             SOURCE_DIR=~/app/build/libs
-            FILE_NAME=`find $SOURCE_DIR/*.jar -printf "%f\n"`
-            PID=`$(ps -ef | grep "java -jar" | grep "$FILE_NAME" | awk '{print $2}')`
-
-            if [ -z "$PID" ]; then
-                    echo "#### THERE IS NO PROCESS ####"
+            
+            FILE_NAME=$(find "$SOURCE_DIR"/*.jar -printf "%f\n" | head -n 1)
+            
+            PIDS=$(ps -ef | grep "java -jar" | grep "$FILE_NAME" | awk '{print $2}')
+            
+            if [ -z "$PIDS" ]; then
+              echo "#### THERE IS NO PROCESS ####"
             else
-                    echo "#### KILL $PID ####"
-                    sudo kill $PID
+              echo "#### KILL $PIDS ####"
+              for PID in $PIDS; do
+                sudo kill -9 "$PID"
+              done
             fi
-
+            
             echo "#### RUN $SOURCE_DIR/$FILE_NAME ####"
-            sudo nohup java -jar $SOURCE_DIR/$FILE_NAME > application.log 2>&1 &
+            sudo nohup java -jar "$SOURCE_DIR/$FILE_NAME" > application.log 2>&1 &
