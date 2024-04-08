@@ -3,7 +3,6 @@ package com.woowa.gather.domain.dto;
 import com.woowa.gather.domain.enums.Age;
 import com.woowa.gather.domain.enums.FoodType;
 import com.woowa.gather.domain.enums.Gender;
-import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -14,35 +13,26 @@ import java.time.LocalDateTime;
 
 @Getter
 @Builder
-@NoArgsConstructor
 @AllArgsConstructor
-public class PostUpdateDto {
-    @NotNull
+@NoArgsConstructor
+public class PostDetails {
     private Long postId;
 
-    @NotBlank
-    private String place;
-    @NotNull
-    private Double latitude;
-    @NotNull
-    private Double longitude;
-    @NotBlank
-    private String address;
+    private Long userId;
+    private String nickname;
 
-    @NotNull
-    private int participantTotal;
+    private LocalDateTime meetAt;
+    private LocalDateTime closeAt;
 
-    private String contents;
-
-    @NotNull
     private FoodType foodTypeTag;
-    @NotNull
     private Age ageTag;
-    @NotNull
     private Gender genderTag;
 
-    @NotNull
-    private LocalDateTime meetAt;
-    @NotNull
-    private LocalDateTime closeAt;
+    private int participantTotal;
+    private int participantCount;
+
+    private String place;
+    private String address;
+
+    private String contents;
 }
