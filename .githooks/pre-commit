@@ -1,0 +1,13 @@
+#!/bin/sh
+
+echo "Running pre-commit hook"
+
+./gradlew clean build
+
+if [ $? -ne 0 ]; then
+  echo "Build failed. Aborting commit."
+  exit 1
+fi
+
+echo "Build succeeded. Allowing commit."
+exit 0

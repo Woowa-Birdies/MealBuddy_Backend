@@ -1,5 +1,8 @@
 package com.woowa.gather.domain.dto;
 
+import com.fasterxml.jackson.annotation.JsonFormat;
+import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
+import com.fasterxml.jackson.datatype.jsr310.deser.LocalDateTimeDeserializer;
 import com.woowa.gather.domain.enums.*;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
@@ -16,7 +19,7 @@ import java.time.LocalDateTime;
 @AllArgsConstructor
 public class PostCreateDto {
 //    @NotNull
-//    private int userId;
+//    private Long userId;
 
     @NotBlank
     private String place;
@@ -40,8 +43,11 @@ public class PostCreateDto {
     @Builder.Default
     private PostStatus postStatus = PostStatus.ONGOING; // 게시글 생성 시 ONGOING
 
+    @NotNull
     private FoodType foodTypeTag;
+    @NotNull
     private Age ageTag;
+    @NotNull
     private Gender genderTag;
 
     @NotNull

@@ -1,6 +1,7 @@
 package com.woowa.gather.repository;
 
 import com.woowa.gather.domain.Post;
+import com.woowa.gather.domain.dto.PostDetails;
 import com.woowa.gather.domain.dto.UserPostListResponse;
 import com.woowa.gather.domain.enums.PostStatus;
 import org.springframework.data.jpa.repository.JpaRepository;
@@ -21,4 +22,12 @@ public interface PostRepository extends JpaRepository<Post, Long> {
             "order by p.createdAt asc")
     Optional<List<UserPostListResponse>> findPostListByWriterId(@Param("userId") Long userId, @Param("postStatus") PostStatus postStatus);
 
+    @Query("select new com.woowa.gather.domain.dto.PostDetails(" +
+            "p.id, u.id, u.nickname, p.meetAt, p.closeAt, p.foodTypeTag, p.ageTag, p.genderTag, " +
+            "p.participantTotal, p.participantCount, l.place, l.address, p.contents) " +
+            "from Post p " +
+            "join Location l on p.location = l " +
+            "left join User u on p.user = u " +
+            "where p.id = :postId")
+    Optional<PostDetails> findPostDetailsByPostId(@Param("postId") Long postId);
 }

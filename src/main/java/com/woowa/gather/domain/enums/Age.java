@@ -10,8 +10,8 @@ public enum Age {
     AGE20S("20대"),
     AGE30S("30대"),
     AGE40S("40대"),
-    AGE50s("50대"),
-    OVER60S("60대 이상"),
+    AGE50S("50대"),
+    NOLIMIT("제한없음")
     ;
 
     @JsonValue
