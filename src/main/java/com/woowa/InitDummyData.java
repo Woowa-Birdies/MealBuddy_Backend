@@ -35,8 +35,8 @@ public class InitDummyData {
         List<User> users = new ArrayList<>();
         List<Post> posts = new ArrayList<>();
 
-        for (int i = 0; i < names.length; i++) {
-            users.add(createUser(names[i]));
+        for (String name : names) {
+            users.add(createUser(name));
         }
 
         for (User user : users) {
@@ -67,12 +67,12 @@ public class InitDummyData {
             posts.add(createClosedPost(user));
         }
 
-        for (int i = 0; i < 15; i++) {
-            users.add(createUser("dummy" + i));
-        }
-
-        for (int i = 3; i < users.size(); i++) {
-            createAsk(users.get(i), posts.get(getRandNum1(25)));
+        for (int i = 0; i < users.size(); i++) {
+            int start = (i == 0 ? 25 : i == 1 ? 50 : 0);
+            int end = (i == 0 ? 50 : i == 1 ? 75 : 25);
+            for (int j = start; j < end; j ++){
+                createAsk(users.get(i), posts.get(j));
+            }
         }
     }
 
@@ -132,5 +132,3 @@ public class InitDummyData {
         return (int) ((Math.random() * (max - min + 1)) + min);
     } // min ~ max
 }
-
-
