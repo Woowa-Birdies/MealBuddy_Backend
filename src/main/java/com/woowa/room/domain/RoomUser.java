@@ -3,6 +3,8 @@ package com.woowa.room.domain;
 import com.woowa.user.domain.User;
 import jakarta.persistence.*;
 import lombok.AccessLevel;
+import lombok.Builder;
+import lombok.Getter;
 import lombok.NoArgsConstructor;
 import org.springframework.data.annotation.CreatedDate;
 import org.springframework.data.jpa.domain.support.AuditingEntityListener;
@@ -12,6 +14,7 @@ import java.time.LocalDateTime;
 @Entity
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 @EntityListeners(AuditingEntityListener.class)
+@Getter
 @Table(name = "room_user")
 public class RoomUser {
     @Id
@@ -28,5 +31,12 @@ public class RoomUser {
 
     @CreatedDate
     private LocalDateTime joinedAt;
+
+
+    @Builder
+    public RoomUser(Room room, User user) {
+        this.room = room;
+        this.user = user;
+    }
 
 }

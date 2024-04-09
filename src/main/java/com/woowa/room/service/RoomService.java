@@ -3,6 +3,7 @@ package com.woowa.room.service;
 import com.woowa.gather.domain.Post;
 import com.woowa.gather.repository.PostRepository;
 import com.woowa.room.domain.Room;
+import com.woowa.room.domain.RoomUser;
 import com.woowa.room.domain.dto.RoomResponseDto;
 import com.woowa.room.repository.RoomRepository;
 import com.woowa.room.repository.RoomUserRepository;
@@ -37,25 +38,52 @@ public class RoomService {
 
         Post post = postRepository.findById(postId).orElseThrow(() -> {
             log.error("createRoom() post not found postId: {}", postId);
-            //todo : exception handling "RoomEx002 post를 찾을 수 없습니다."
+            //todo : exception handling "RoomEx002 post를 찾을 수 없습니다.
             return new IllegalArgumentException("post not found");
         });
 
-        User user = userRepository.findById(userId).orElseThrow(() -> {
-            log.error("createRoom() user not found userId: {}", userId);
-            //todo : exception handling "RoomEx001 사용자를 찾을 수 없습니다."
-            return new IllegalArgumentException("user not found");
-        });
-
         Room createdRoom = roomRepository.save(Room.builder()
-                .user(user)
+                .user(getUser(userId))
                 .post(post)
                 .roomName(post.getLocation().getPlace()+ " " + post.getMeetAt().toLocalDate().toString())
                 .build());
+
         return RoomResponseDto.builder()
                 .roomId(createdRoom.getId())
                 .roomName(createdRoom.getRoomName())
                 .build();
+    }
+
+    public RoomResponseDto joinRoom(final long userId, final long postId){
+        log.info("joinRoom() userId: {}, postId: {}", userId, postId);
+
+        if(!roomRepository.isJoinable(userId, postId)){
+            log.warn("joinRoom() user cannot join userId: {}, postId: {}", userId, postId);
+            //todo : exception handling "RoomEx004 참여할 수 없는 방입니다.
+            throw new IllegalArgumentException("user cannot join");
+        }
+
+        RoomUser savedRoomUser = roomUserRepository.save(RoomUser.builder()
+                .user(getUser(userId))
+                .room(roomRepository.findByPostId(postId).orElseThrow(() -> {
+                    log.error("joinRoom() room not found postId: {}", postId);
+                    //todo : exception handling "RoomEx003 방을 찾을 수 없습니다.
+                    return new IllegalArgumentException("room not found");
+                }))
+                .build());
+
+        return RoomResponseDto.builder()
+                .roomId(savedRoomUser.getRoom().getId())
+                .roomName(savedRoomUser.getRoom().getRoomName())
+                .build();
+    }
+
+    private User getUser(long userId) {
+        return userRepository.findById(userId).orElseThrow(() -> {
+            log.error("getUser() user not found userId: {}", userId);
+            //todo : exception handling "RoomEx001 사용자를 찾을 수 없습니다.
+            return new IllegalArgumentException("user not found");
+        });
     }
 
 }
