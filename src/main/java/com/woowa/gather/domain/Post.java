@@ -81,4 +81,8 @@ public class Post extends BaseEntity {
     public void subParticipantCount() {
         this.participantCount--;
     }
+  
+    public void addParticipant() {
+        this.participantCount += 1;
+    }
 }

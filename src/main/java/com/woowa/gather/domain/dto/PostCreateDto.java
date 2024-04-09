@@ -18,8 +18,8 @@ import java.time.LocalDateTime;
 @NoArgsConstructor
 @AllArgsConstructor
 public class PostCreateDto {
-//    @NotNull
-//    private Long userId;
+    @NotNull
+    private Long userId;
 
     @NotBlank
     private String place;

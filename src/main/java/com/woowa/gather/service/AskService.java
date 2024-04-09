@@ -5,6 +5,7 @@ import com.woowa.gather.domain.Ask;
 import com.woowa.gather.domain.Post;
 import com.woowa.gather.domain.dto.AskListResponse;
 import com.woowa.gather.domain.dto.AskRequest;
+import com.woowa.gather.domain.dto.PostAskListResponse;
 import com.woowa.gather.domain.dto.UserPostListResponse;
 import com.woowa.gather.domain.enums.PostStatus;
 import com.woowa.gather.repository.AskRepository;
@@ -17,6 +18,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
+import java.util.Optional;
 
 @Slf4j
 @Service
@@ -46,9 +48,16 @@ public class AskService {
         Ask ask = askRepository.findById(askId)
                 .orElseThrow(() -> new ResourceNotFoundException(askId, "신청 내용"));
 
+        // todo: 유저의 참여 상태가 수락/참여 상태인 경우 -> 참여count -1 | 대기/거절 상태인 경우 -> 그냥 삭제
+
         askRepository.deleteById(askId);
 
         return ask.getId();
+    }
+
+    public List<PostAskListResponse> getPostAskList(Long postId) {
+        return askRepository.findAskedUserByPostId(postId)
+                .orElseThrow(() -> new ResourceNotFoundException(postId, "신청자 리스트"));
     }
 
     public List<UserPostListResponse> getUserPostList(Long userId, int type) {

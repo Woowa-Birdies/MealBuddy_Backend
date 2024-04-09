@@ -27,10 +27,10 @@ public class AskController extends BaseAskController {
         return ResponseEntity.status(HttpStatus.OK).body(askService.deleteAsk(askId));
     }
 
-//    @GetMapping("/test")
-//    public ListApiResponse<AskListResponse> test() {
-//        return makeOngoingListResponse(askService.getAskList(1, 1));
-//    }
+    @GetMapping("/gather/ask/list/{postId}")
+    public ListApiResponse<?> getApplicantList(@PathVariable Long postId) {
+        return makeResponse(askService.getPostAskList(postId));
+    }
 
     @GetMapping("/gather/list/{userId}")
     public ListApiResponse<UserPostListResponse> getUserPostList(@RequestParam int type, @PathVariable Long userId) {
@@ -41,7 +41,7 @@ public class AskController extends BaseAskController {
         return makeResponse(type, askService.getUserPostList(userId, type));
     }
 
-    @GetMapping("/aks/list/{userId}")
+    @GetMapping("/ask/list/{userId}")
     public ListApiResponse<AskListResponse> getAskList(@RequestParam int type, @PathVariable Long userId) {
         if (type > 2 || type < 0) {
             throw new NonExistTypeException("타입 범위는 [0,1,2]입니다");
