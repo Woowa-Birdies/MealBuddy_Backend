@@ -38,6 +38,15 @@ public class RoomUserRepositoryImpl implements RoomUserRepositoryCustom{
                         .and(roomUser.room.id.eq(roomId)))
                 .execute() > 0;
     }
+    @Override
+    public boolean kickUser(long userId, long roomId, long targetUserId) {
+        return queryFactory
+                .delete(roomUser)
+                .where(roomUser.user.id.eq(targetUserId)
+                        .and(roomUser.room.id.eq(roomId))
+                        .and(room.user.id.eq(userId)))
+                .execute() > 0;
+    }
 
     @Override
     public void deleteRoom(long roomId) {
@@ -46,6 +55,4 @@ public class RoomUserRepositoryImpl implements RoomUserRepositoryCustom{
                 .where(roomUser.room.id.eq(roomId))
                 .execute();
     }
-
-
 }

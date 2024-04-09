@@ -114,6 +114,21 @@ public class RoomService {
 
     }
 
+    /* 유저 강퇴
+        * @param userId : 사용자(방장)
+        * @param roomId : 채팅방
+        * @param targetUserId : 강퇴 대상
+     */
+    public void kickUser(final long userId, final long roomId, final long targetUserId){
+        log.info("kickUser() userId: {}, roomId: {}, targetUserId: {}", userId, roomId, targetUserId);
+
+        if(roomUserRepository.kickUser(userId, roomId, targetUserId)){
+            log.error("kickUser() roomUser not found userId: {}, roomId: {}, targetUserId: {}", userId, roomId, targetUserId);
+            //todo : exception handling "RoomEx007 해당하는 채팅방 유저를 찾을 수 없습니다.
+            throw new IllegalArgumentException("roomUser not found");
+        }
+    }
+
     /* 채팅방 삭제
         * @param userId : 사용자(방장)
         * @param roomId : 채팅방
