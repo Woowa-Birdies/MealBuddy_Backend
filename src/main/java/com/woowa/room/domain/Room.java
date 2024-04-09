@@ -5,6 +5,7 @@ import com.woowa.gather.domain.Post;
 import com.woowa.user.domain.User;
 import jakarta.persistence.*;
 import lombok.AccessLevel;
+import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 
@@ -26,4 +27,11 @@ public class Room extends BaseEntity {
     private Post post;
 
     private String roomName;
+
+    @Builder
+    public Room(User user, Post post, String roomName) {
+        this.user = user;
+        this.post = post;
+        this.roomName = roomName;
+    }
 }

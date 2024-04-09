@@ -7,12 +7,12 @@ import lombok.NoArgsConstructor;
 @Getter
 @NoArgsConstructor
 public class RoomResponseDto {
-    private Long id;
+    private Long roomId;
     private String roomName;
 
     @Builder
-    public RoomResponseDto(Long id, String roomName) {
-        this.id = id;
+    public RoomResponseDto(Long roomId, String roomName) {
+        this.roomId = roomId;
         this.roomName = roomName;
     }
 }

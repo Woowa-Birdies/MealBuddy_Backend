@@ -1,9 +1,7 @@
 package com.woowa.room.repository.support;
 
 import com.querydsl.core.types.Projections;
-import com.querydsl.core.types.dsl.BooleanExpression;
 import com.querydsl.jpa.impl.JPAQueryFactory;
-import com.woowa.gather.domain.QAsk;
 import com.woowa.gather.domain.enums.AskStatus;
 import com.woowa.room.domain.dto.RoomResponseDto;
 import jakarta.persistence.EntityManager;
@@ -24,7 +22,7 @@ public class RoomRepositoryImpl implements RoomRepositoryCustom{
         this.queryFactory = new JPAQueryFactory(entityManager);
     }
     @Override
-    public List<RoomResponseDto> findRoomResponseDtosByUserId(final int userId) {
+    public List<RoomResponseDto> findRoomResponseDtosByUserId(final long userId) {
         return queryFactory
                 .select(Projections.constructor(RoomResponseDto.class, room.id, room.roomName))
                 .from(roomUser)
@@ -34,7 +32,7 @@ public class RoomRepositoryImpl implements RoomRepositoryCustom{
     }
 
     @Override
-    public void deleteRoomUserByUserId(final int userId, final long roomId) {
+    public void deleteRoomUserByUserId(final long userId, final long roomId) {
         queryFactory
                 .delete(roomUser)
                 .where(roomUser.user.id.eq(userId).and(roomUser.room.id.eq(roomId)))
@@ -42,15 +40,15 @@ public class RoomRepositoryImpl implements RoomRepositoryCustom{
 
     }
     @Override
-    public boolean isJoinable(final long postId, final int userId) {
+    public boolean isJoinable(final long  userId, final long postId) {
         return queryFactory
                 .selectFrom(room)
                 .leftJoin(room.post, post)
                 .leftJoin(post, ask.post)
                 .where(
-                        room.id.eq(postId).and(
+                        ask.post.id.eq(postId).and(
                         ask.askStatus.eq(AskStatus.ACCEPTED)
-                        )
+                        ).and(user.id.eq(userId))
                 )
                 .fetchOne() != null;
     }
