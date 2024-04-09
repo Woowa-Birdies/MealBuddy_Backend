@@ -73,4 +73,12 @@ public class Post extends BaseEntity {
         this.meetAt = postUpdateDto.getMeetAt();
         this.closeAt = postUpdateDto.getCloseAt();
     }
+
+    public void addParticipantCount() {
+        this.participantCount++;
+    }
+
+    public void subParticipantCount() {
+        this.participantCount--;
+    }
 }

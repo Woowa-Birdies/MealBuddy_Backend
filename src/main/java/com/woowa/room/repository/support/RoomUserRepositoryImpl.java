@@ -39,5 +39,13 @@ public class RoomUserRepositoryImpl implements RoomUserRepositoryCustom{
                 .execute() > 0;
     }
 
+    @Override
+    public void deleteRoom(long roomId) {
+        queryFactory
+                .delete(roomUser)
+                .where(roomUser.room.id.eq(roomId))
+                .execute();
+    }
+
 
 }

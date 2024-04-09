@@ -25,14 +25,21 @@ public class RoomService {
     private final PostRepository postRepository;
     private final UserRepository userRepository;
 
-    // 채팅방 불러오기
+    /* 채팅방 불러오기
+        * @param userId : 사용자
+        * @return List<RoomResponseDto> : 사용자가 참여한 채팅방 정보
+     */
     public List<RoomResponseDto> getRoomInfo(final long userId) {
         log.info("getRoomInfo() userId: {}", userId);
 
         return roomUserRepository.getRoomInfo(userId);
     }
 
-    // 채팅방 생성
+    /* 채팅방 생성
+        * @param userId : 사용자
+        * @param postId : 게시글
+        * @return RoomResponseDto : 생성된 채팅방 정보
+     */
     public RoomResponseDto createRoom(final long userId, final long postId) {
         log.info("createRoom() userId: {}, postId: {}", userId, postId);
 
@@ -54,19 +61,27 @@ public class RoomService {
                 .build();
     }
 
+    /* 채팅방 참가
+        * @param userId : 사용자
+        * @param postId : 게시글
+        * @return RoomResponseDto : 참가한 채팅방 정보
+     */
     public RoomResponseDto joinRoom(final long userId, final long postId){
         log.info("joinRoom() userId: {}, postId: {}", userId, postId);
+        Post post = roomRepository.findJoinablePostByPostId(userId, postId).orElseThrow(()->{
+            log.warn("joinRoom() post not found postId: {}", postId);
+            //todo : exception handling "RoomEx004 참가할 수 없는 방입니다.
+            return new IllegalArgumentException("post not found");
+        });
 
-        if(!roomRepository.isJoinable(userId, postId)){
-            log.warn("joinRoom() user cannot join userId: {}, postId: {}", userId, postId);
-            //todo : exception handling "RoomEx004 참여할 수 없는 방입니다.
-            throw new IllegalArgumentException("user cannot join");
-        }
+        //참가자 수 증가
+        post.addParticipantCount();
+        postRepository.save(post);
 
         RoomUser savedRoomUser = roomUserRepository.save(RoomUser.builder()
                 .user(getUser(userId))
                 .room(roomRepository.findByPostId(postId).orElseThrow(() -> {
-                    log.error("joinRoom() room not found postId: {}", postId);
+                    log.warn("joinRoom() room not found postId: {}", postId);
                     //todo : exception handling "RoomEx003 방을 찾을 수 없습니다.
                     return new IllegalArgumentException("room not found");
                 }))
@@ -76,6 +91,43 @@ public class RoomService {
                 .roomId(savedRoomUser.getRoom().getId())
                 .roomName(savedRoomUser.getRoom().getRoomName())
                 .build();
+    }
+
+    /* 채팅방 나가기
+        * @param userId : 사용자
+        * @param roomId : 채팅방
+     */
+    public void leaveRoom(final long userId, final long roomId){
+        log.info("leaveRoom() userId: {}, roomId: {}", userId, roomId);
+
+        if(roomUserRepository.leaveRoom(userId, roomId)){
+            log.error("leaveRoom() roomUser not found userId: {}, roomId: {}", userId, roomId);
+            //todo : exception handling "RoomEx003 방을 찾을 수 없습니다.
+            throw new IllegalArgumentException("roomUser not found");
+        }
+
+        if(roomRepository.decreasePostCount(roomId) == 0){
+            log.error("leaveRoom() post not found roomId: {}", roomId);
+            //todo : exception handling "PostEx00? post를 찾을 수 없습니다.
+            throw new IllegalArgumentException("post not found");
+        }
+
+    }
+
+    /* 채팅방 삭제
+        * @param userId : 사용자(방장)
+        * @param roomId : 채팅방
+     */
+    public void deleteRoom(final long userId, final long roomId){
+        log.info("deleteRoom() userId: {}, roomId: {}", userId, roomId);
+        //채팅방 삭제
+        if(roomRepository.deleteRoomUserByUserId(userId, roomId)){
+            log.error("deleteRoom() roomUser not found userId: {}, roomId: {}", userId, roomId);
+            //todo : exception handling "RoomEx003 방을 찾을 수 없습니다.
+            throw new IllegalArgumentException("roomUser not found");
+        }
+        //채팅방 참가 인원 삭제
+        roomUserRepository.deleteRoom(roomId);
     }
 
     private User getUser(long userId) {
