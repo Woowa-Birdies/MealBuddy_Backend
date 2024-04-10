@@ -9,7 +9,6 @@ import com.woowa.room.repository.RoomRepository;
 import com.woowa.room.repository.RoomUserRepository;
 import com.woowa.user.domain.User;
 import com.woowa.user.repository.UserRepository;
-import jakarta.persistence.EntityManager;
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -144,6 +143,8 @@ public class RoomService {
         //채팅방 참가 인원 삭제
         roomUserRepository.deleteRoom(roomId);
     }
+
+
 
     private Room getCreatedRoom(long userId, Post post) {
        return roomRepository.save(Room.builder()
