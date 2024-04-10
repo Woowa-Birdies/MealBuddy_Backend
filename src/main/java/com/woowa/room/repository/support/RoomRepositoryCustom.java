@@ -12,6 +12,6 @@ public interface RoomRepositoryCustom {
     //room 참가 가능 여부
     Optional<Post> findJoinablePostByPostId(long userId, long postId);
     //post count 감소 todo: post로 이동
-    long decreasePostCount(long postId);
+    void decreasePostCount(long userId, long postId);
 
 }

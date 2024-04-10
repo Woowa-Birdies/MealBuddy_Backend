@@ -1,9 +1,11 @@
 package com.woowa.gather.repository;
 
 import com.woowa.gather.domain.Ask;
+import com.woowa.gather.domain.Post;
 import com.woowa.gather.domain.dto.AskListResponse;
 import com.woowa.gather.domain.dto.PostAskListResponse;
 import com.woowa.gather.domain.enums.PostStatus;
+import com.woowa.user.domain.User;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
@@ -30,4 +32,6 @@ public interface AskRepository extends JpaRepository<Ask, Long> {
             "join User u on a.user = u " +
             "where p.id = :postId")
     Optional<List<PostAskListResponse>> findAskedUserByPostId(@Param("postId") Long postId);
+
+    boolean existsAskByUserAndPost(User user, Post post);
 }
