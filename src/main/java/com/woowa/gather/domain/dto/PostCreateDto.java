@@ -37,7 +37,7 @@ public class PostCreateDto {
 
     @NotNull
     @Builder.Default
-    private PostStatus postStatus = PostStatus.ONGOING; // 게시글 생성 시 ONGOING
+    private PostStatus postStatus = PostStatus.ONGOING; // 게시글 생성 시 기본값 ONGOING
 
     @NotNull
     private FoodType foodTypeTag;
