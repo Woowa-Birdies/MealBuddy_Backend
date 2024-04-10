@@ -40,6 +40,9 @@ public class User extends BaseEntity {
 	@Column(length = 128)
 	private String phone;
 
+	@Column()
+	private String image;
+
 	public User(String nickname) {
 		this.nickname = nickname;
 	}
