@@ -33,8 +33,6 @@ public class PostQueryService {
         Location savedLocation = locationRepository.save(
                 Location.builder()
                         .place(postCreateDto.getPlace())
-                        .latitude(postCreateDto.getLatitude())
-                        .longitude(postCreateDto.getLongitude())
                         .address(postCreateDto.getAddress())
                         .build()
         );
@@ -66,8 +64,6 @@ public class PostQueryService {
         location.update(
                 Location.builder()
                         .place(postUpdateDto.getPlace())
-                        .latitude(postUpdateDto.getLatitude())
-                        .longitude(postUpdateDto.getLongitude())
                         .address(postUpdateDto.getAddress())
                         .build()
         );

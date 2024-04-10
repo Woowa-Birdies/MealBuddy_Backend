@@ -22,10 +22,6 @@ public class PostUpdateDto {
 
     @NotBlank
     private String place;
-    @NotNull
-    private Double latitude;
-    @NotNull
-    private Double longitude;
     @NotBlank
     private String address;
 

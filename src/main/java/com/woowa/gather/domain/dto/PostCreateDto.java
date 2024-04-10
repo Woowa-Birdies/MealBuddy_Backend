@@ -23,10 +23,6 @@ public class PostCreateDto {
 
     @NotBlank
     private String place;
-    @NotNull
-    private Double latitude;
-    @NotNull
-    private Double longitude;
     @NotBlank
     private String address;
 
