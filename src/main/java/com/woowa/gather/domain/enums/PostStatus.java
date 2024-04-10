@@ -8,7 +8,7 @@ import lombok.Getter;
 @AllArgsConstructor
 public enum PostStatus {
     ONGOING("모집중"),
-    COMPLETION("모집 완료"),
+    COMPLETION("모집 마감"),
     CLOSED("모임 종료"),
     ;
 
