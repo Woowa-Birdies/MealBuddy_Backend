@@ -74,6 +74,10 @@ public class Post extends BaseEntity {
         this.closeAt = postUpdateDto.getCloseAt();
     }
 
+    public void updatePostStatus(PostStatus postStatus) {
+        this.postStatus = postStatus;
+    }
+
     public void addParticipantCount() {
         this.participantCount++;
     }

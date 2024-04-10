@@ -6,6 +6,7 @@ import com.woowa.gather.domain.Location;
 import com.woowa.gather.domain.Post;
 import com.woowa.gather.domain.dto.PostCreateDto;
 import com.woowa.gather.domain.dto.PostUpdateDto;
+import com.woowa.gather.domain.enums.PostStatus;
 import com.woowa.gather.repository.AskRepository;
 import com.woowa.gather.repository.LocationRepository;
 import com.woowa.gather.repository.PostRepository;
@@ -74,6 +75,12 @@ public class PostQueryService {
         );
         post.update(postUpdateDto);
 
+        return post.getId();
+    }
+
+    public Long updatePostStatus(Long postId, PostStatus postStatus) {
+        Post post = postReadService.getById(postId);
+        post.updatePostStatus(postStatus);
         return post.getId();
     }
 
