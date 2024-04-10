@@ -5,6 +5,8 @@ import com.woowa.gather.repository.PostRepository;
 import com.woowa.room.domain.Room;
 import com.woowa.room.domain.RoomUser;
 import com.woowa.room.domain.dto.RoomResponseDto;
+import com.woowa.room.exception.CustomRoomException;
+import com.woowa.room.exception.RoomErrorCode;
 import com.woowa.room.repository.RoomRepository;
 import com.woowa.room.repository.RoomUserRepository;
 import com.woowa.user.domain.User;
@@ -46,8 +48,7 @@ public class RoomService {
 
         Post post = postRepository.findById(postId).orElseThrow(() -> {
             log.error("createRoom() post not found postId: {}", postId);
-            //todo : exception handling "RoomEx002 post를 찾을 수 없습니다.
-            return new IllegalArgumentException("post not found");
+            return new CustomRoomException(RoomErrorCode.POST_NOT_FOUND);
         });
 
         //room 생성
@@ -71,15 +72,11 @@ public class RoomService {
         log.info("joinRoom() userId: {}, postId: {}", userId, postId);
         Post post = roomRepository.findJoinablePostByPostId(userId, postId).orElseThrow(()->{
             log.warn("joinRoom() post not found postId: {}", postId);
-            //todo : exception handling "RoomEx004 참가할 수 없는 방입니다.
-            return new IllegalArgumentException("post not found");
+            return new CustomRoomException(RoomErrorCode.UNABLE_TO_JOIN);
         });
 
         //참가자 수 증가 방장인 경우는 증가하지않음
-        if(post.getUser().getId()!=userId) {
-            post.addParticipantCount();
-            postRepository.save(post);
-        }
+        increaseParticipation(userId, post);
 
         //roomUser 저장 room이 없으면 생성
         RoomUser savedRoomUser = roomUserRepository.save(RoomUser.builder()
@@ -103,8 +100,7 @@ public class RoomService {
 
         if(roomUserRepository.leaveRoom(userId, roomId)){
             log.error("leaveRoom() roomUser not found userId: {}, roomId: {}", userId, roomId);
-            //todo : exception handling "RoomEx003 방을 찾을 수 없습니다.
-            throw new IllegalArgumentException("roomUser not found");
+            throw new CustomRoomException(RoomErrorCode.ROOM_NOT_FOUND);
         }
 
         roomRepository.decreasePostCount(userId, roomId);
@@ -122,8 +118,7 @@ public class RoomService {
 
         if(roomUserRepository.kickUser(userId, roomId, targetUserId)){
             log.error("kickUser() roomUser not found userId: {}, roomId: {}, targetUserId: {}", userId, roomId, targetUserId);
-            //todo : exception handling "RoomEx007 해당하는 채팅방 유저를 찾을 수 없습니다.
-            throw new IllegalArgumentException("roomUser not found");
+            throw new CustomRoomException(RoomErrorCode.UNABLE_TO_KICK);
         }
     }
 
@@ -137,14 +132,18 @@ public class RoomService {
         //채팅방 삭제
         if(roomRepository.deleteRoomUserByUserId(userId, roomId)){
             log.error("deleteRoom() roomUser not found userId: {}, roomId: {}", userId, roomId);
-            //todo : exception handling "RoomEx003 방을 찾을 수 없습니다.
-            throw new IllegalArgumentException("roomUser not found");
+            throw new CustomRoomException(RoomErrorCode.ROOM_NOT_FOUND);
         }
         //채팅방 참가 인원 삭제
         roomUserRepository.deleteRoom(roomId);
     }
 
-
+    private void increaseParticipation(long userId, Post post) {
+        if(post.getUser().getId()!= userId) {
+            post.addParticipantCount();
+            postRepository.save(post);
+        }
+    }
 
     private Room getCreatedRoom(long userId, Post post) {
        return roomRepository.save(Room.builder()
@@ -162,8 +161,7 @@ public class RoomService {
     private User getUser(long userId) {
         return userRepository.findById(userId).orElseThrow(() -> {
             log.error("getUser() user not found userId: {}", userId);
-            //todo : exception handling "RoomEx001 사용자를 찾을 수 없습니다.
-            return new IllegalArgumentException("user not found");
+            return new CustomRoomException(RoomErrorCode.USER_NOT_FOUND);
         });
     }
 
