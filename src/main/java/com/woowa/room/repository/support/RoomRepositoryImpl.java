@@ -58,21 +58,21 @@ public class RoomRepositoryImpl implements RoomRepositoryCustom{
     }
     //todo: post domain 이동
     @Override
-    public long decreasePostCount(final long roomId) {
+    public void decreasePostCount(final long userId, final long roomId) {
         long postId = Optional.ofNullable(queryFactory
                 .select(room.post.id)
                 .from(room)
                 .where(room.id.eq(roomId))
                 .fetchOne()).orElseThrow(()->new IllegalArgumentException("post not found"));
         // 반영된 row가 없으면 에러
-        return queryFactory
-                .update(post)
-                .set(post.participantCount, post.participantCount.subtract(1))
-                .where(
-                        post.id.eq(postId)
-                        .and(post.participantCount.gt(0))
-                )
-                .execute();
-
+         queryFactory
+            .update(post)
+            .set(post.participantCount, post.participantCount.subtract(1))
+            .where(
+                    post.id.eq(postId)
+                    .and(post.participantCount.gt(0))
+                    .and(post.user.id.ne(userId))
+            )
+            .execute();
     }
 }
