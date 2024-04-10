@@ -13,9 +13,9 @@ import org.springframework.stereotype.Component;
 
 import com.woowa.user.domain.dto.CustomOAuth2User;
 import com.woowa.user.jwt.JWTUtil;
+import com.woowa.user.util.CookieUtils;
 
 import jakarta.servlet.ServletException;
-import jakarta.servlet.http.Cookie;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import lombok.RequiredArgsConstructor;
@@ -25,6 +25,8 @@ import lombok.RequiredArgsConstructor;
 public class CustomSuccessHandler extends SimpleUrlAuthenticationSuccessHandler {
 
 	private final JWTUtil jwtUtil;
+
+	private final CookieUtils cookieUtils;
 
 	@Override
 	public void onAuthenticationSuccess(HttpServletRequest request, HttpServletResponse response,
@@ -42,16 +44,9 @@ public class CustomSuccessHandler extends SimpleUrlAuthenticationSuccessHandler 
 		String refreshToken = jwtUtil.createJwt(REFRESH_TOKEN, userId, role, ACCESS_TOKEN_DURATION);
 
 		response.setHeader(AUTHORIZATION, BEARER + accessToken);
-		response.addCookie(createCookie(REFRESH_TOKEN, refreshToken, REFRESH_TOKEN_DURATION));
-		response.sendRedirect("http://localhost:3000/");
+		response.addCookie(cookieUtils.createCookie(REFRESH_TOKEN, refreshToken, REFRESH_TOKEN_DURATION));
+		// TODO: 추후 변경
+		response.sendRedirect("http://localhost:5173/");
 	}
 
-	private Cookie createCookie(String key, String value, Long age) {
-		Cookie cookie = new Cookie(key, value);
-		cookie.setMaxAge(Math.toIntExact(age));
-		cookie.setPath("/");
-		cookie.setHttpOnly(true);
-
-		return cookie;
-	}
 }

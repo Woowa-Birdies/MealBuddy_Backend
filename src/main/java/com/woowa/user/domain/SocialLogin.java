@@ -1,6 +1,10 @@
 package com.woowa.user.domain;
 
+import java.time.Instant;
+
 import org.hibernate.annotations.DynamicUpdate;
+
+import com.woowa.common.domain.SecurityConstant;
 
 import jakarta.persistence.Entity;
 import jakarta.persistence.EnumType;
@@ -28,7 +32,9 @@ public class SocialLogin {
 
 	private String externalId;
 
-	private String token;
+	private String refreshToken;
+
+	private Instant expiryDate;
 
 	public SocialLogin(Long userId, String socialCode, String externalId) {
 		this.userId = userId;
@@ -36,4 +42,8 @@ public class SocialLogin {
 		this.externalId = externalId;
 	}
 
+	public void update(String refreshToken) {
+		this.expiryDate = Instant.now().plusMillis(SecurityConstant.REFRESH_TOKEN_DURATION);
+		this.refreshToken = refreshToken;
+	}
 }
