@@ -33,4 +33,16 @@ public class Ask extends BaseEntity {
     @Enumerated(value = EnumType.STRING)
     @ColumnDefault("'WAITING'")
     private AskStatus askStatus;
+
+    public static Ask createAsk(Post post, User user) {
+        //        post.addAsk(ask);
+        return Ask.builder()
+                .post(post)
+                .user(user)
+                .build();
+    }
+
+    public void changeAskStatus(AskStatus askStatus) {
+        this.askStatus = askStatus;
+    }
 }

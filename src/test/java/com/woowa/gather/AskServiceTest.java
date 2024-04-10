@@ -1,19 +1,17 @@
 package com.woowa.gather;
 
+import com.woowa.gather.domain.Ask;
 import com.woowa.gather.domain.Location;
 import com.woowa.gather.domain.Post;
-import com.woowa.gather.domain.dto.AskListResponse;
-import com.woowa.gather.domain.dto.AskRequest;
-import com.woowa.gather.domain.dto.UserPostListResponse;
-import com.woowa.gather.domain.enums.Age;
-import com.woowa.gather.domain.enums.FoodType;
-import com.woowa.gather.domain.enums.Gender;
-import com.woowa.gather.domain.enums.PostStatus;
+import com.woowa.gather.domain.dto.*;
+import com.woowa.gather.domain.enums.*;
 import com.woowa.gather.repository.AskRepository;
 import com.woowa.gather.repository.PostRepository;
 import com.woowa.gather.service.AskService;
 import com.woowa.user.domain.User;
 import com.woowa.user.repository.UserRepository;
+import lombok.extern.slf4j.Slf4j;
+import org.assertj.core.api.Assertions;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -23,9 +21,11 @@ import org.springframework.boot.test.context.SpringBootTest;
 
 import java.time.LocalDateTime;
 import java.util.List;
+import java.util.Optional;
 
 import static org.assertj.core.api.Assertions.*;
 
+@Slf4j
 @TestInstance(TestInstance.Lifecycle.PER_CLASS)
 @SpringBootTest
 public class AskServiceTest {
@@ -93,6 +93,49 @@ public class AskServiceTest {
     }
 
     @Test
+    @DisplayName(value = "신청 상태 변경")
+    void changeAskStatus() {
+        User writer = userRepository.save(new User("writer"));
+        Location location = Location.builder()
+                .place("place")
+                .address("address")
+                .longitude(1.123)
+                .latitude(1.123)
+                .build();
+        Post post = postRepository.save(Post.builder()
+                .user(writer)
+                .location(location)
+                .contents("같이 밥먹을 파티원 구함")
+                .ageTag(Age.AGE20S)
+                .foodTypeTag(FoodType.ALCOHOL)
+                .genderTag(Gender.FEMALE)
+                .participantCount(1)
+                .participantTotal(4)
+                .postStatus(PostStatus.ONGOING)
+                .meetAt(LocalDateTime.of(2024, 4, 20, 12,30))
+                .closeAt(LocalDateTime.of(2024, 4, 20, 11,0))
+                .build());
+        User participant = userRepository.save(new User("participant"));
+        Ask ask = askRepository.save(Ask.builder()
+                        .user(participant)
+                        .post(post)
+                .build());
+
+        log.info("original status = {}", ask.getAskStatus());
+
+        AskUpdate askUpdate = AskUpdate.builder()
+                .askId(ask.getId())
+                .userId(participant.getId())
+                .postId(post.getId())
+                .askStatus(AskStatus.ACCEPTED)
+                .build();
+        AskResponse askResponse = askService.changeAskStatus(askUpdate);
+        log.info("result status = {}", askResponse.getAskStatus());
+
+        Assertions.assertThat(askUpdate.getAskStatus()).isEqualTo(askResponse.getAskStatus());
+    }
+
+    @Test
     @DisplayName(value = "신청자 리스트 가져오기")
     void getPostAskList() {
 //        AskRequest askRequest = AskRequest.builder()
@@ -103,6 +146,19 @@ public class AskServiceTest {
 //        askService.saveAsk(askRequest);
 
 //        assertThat(askService.getPostAskList(8L).size()).isEqualTo(1);
+    }
+
+    @Test
+    @DisplayName(value = "findByUser")
+    void findByUser() {
+        User foundUser = userRepository.findById(1L).get();
+        Post foundPost = postRepository.findById(51L).get();
+//        assertThat(askRepository.findByUserAndPost(foundUser, foundPost).get().getUser()).isEqualTo(foundUser.getId());
+//        Optional<Ask> result = askRepository.findByUserAndPost(foundUser, foundPost);
+//        log.info("result = {}", result.get().getCreatedAt());
+
+        boolean result = askRepository.existsAskByUserAndPost(foundUser, foundPost);
+        log.info("result = {}", result);
     }
 
     private Post createPost(User writer) {

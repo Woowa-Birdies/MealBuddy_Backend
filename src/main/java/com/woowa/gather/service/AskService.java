@@ -3,10 +3,8 @@ package com.woowa.gather.service;
 import com.woowa.common.domain.ResourceNotFoundException;
 import com.woowa.gather.domain.Ask;
 import com.woowa.gather.domain.Post;
-import com.woowa.gather.domain.dto.AskListResponse;
-import com.woowa.gather.domain.dto.AskRequest;
-import com.woowa.gather.domain.dto.PostAskListResponse;
-import com.woowa.gather.domain.dto.UserPostListResponse;
+import com.woowa.gather.domain.dto.*;
+import com.woowa.gather.domain.enums.AskStatus;
 import com.woowa.gather.domain.enums.PostStatus;
 import com.woowa.gather.repository.AskRepository;
 import com.woowa.gather.repository.PostRepository;
@@ -29,30 +27,47 @@ public class AskService {
     private final PostRepository postRepository;
     private final UserRepository userRepository;
 
-    public Long saveAsk(AskRequest askRequest) {
+    public AskResponse saveAsk(AskRequest askRequest) {
         Post foundPost = postRepository.findById(askRequest.getPostId())
                 .orElseThrow(() -> new ResourceNotFoundException(askRequest.getPostId(), "포스트"));
 
         User foundUser = userRepository.findById(askRequest.getUserId())
                 .orElseThrow(() -> new ResourceNotFoundException(askRequest.getUserId(), "유저"));
 
-        Ask ask = askRepository.save(Ask.builder()
-                .post(foundPost)
-                .user(foundUser)
-                .build());
+        Ask ask = askRepository.save(Ask.createAsk(foundPost, foundUser));
 
-        return ask.getId();
+        return AskResponse.builder()
+                .askId(ask.getId())
+                .askUserId(foundUser.getId())
+                .postId(foundPost.getId())
+                .askStatus(ask.getAskStatus())
+                .build();
     }
 
     public Long deleteAsk(Long askId) {
         Ask ask = askRepository.findById(askId)
                 .orElseThrow(() -> new ResourceNotFoundException(askId, "신청 내용"));
 
-        // todo: 유저의 참여 상태가 수락/참여 상태인 경우 -> 참여count -1 | 대기/거절 상태인 경우 -> 그냥 삭제
-
         askRepository.deleteById(askId);
 
         return ask.getId();
+    }
+
+    public AskResponse changeAskStatus(AskUpdate askUpdate) {
+        Post post = postRepository.findById(askUpdate.getPostId())
+                .orElseThrow(() -> new ResourceNotFoundException(askUpdate.getPostId(), "게시글"));
+
+        Ask ask = askRepository.findById(askUpdate.getAskId())
+                .orElseThrow(() -> new ResourceNotFoundException(askUpdate.getAskId(), "신청 내용"));
+
+        ask.changeAskStatus(askUpdate.getAskStatus());
+
+        return AskResponse.builder()
+                .askUserId(askUpdate.getUserId())
+                .askId(ask.getId())
+                .postId(post.getId())
+                .askStatus(ask.getAskStatus())
+                .build();
     }
 
     public List<PostAskListResponse> getPostAskList(Long postId) {

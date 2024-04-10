@@ -1,9 +1,6 @@
 package com.woowa.gather.controller;
 
-import com.woowa.gather.domain.dto.AskListResponse;
-import com.woowa.gather.domain.dto.AskRequest;
-import com.woowa.gather.domain.dto.ListApiResponse;
-import com.woowa.gather.domain.dto.UserPostListResponse;
+import com.woowa.gather.domain.dto.*;
 import com.woowa.gather.exception.NonExistTypeException;
 import com.woowa.gather.service.AskService;
 import jakarta.validation.Valid;
@@ -18,13 +15,18 @@ public class AskController extends BaseAskController {
     private final AskService askService;
 
     @PostMapping("/ask")
-    public ResponseEntity<Long> saveAsk(@RequestBody @Valid AskRequest askRequest) {
+    public ResponseEntity<AskResponse> saveAsk(@RequestBody @Valid AskRequest askRequest) {
         return ResponseEntity.status(HttpStatus.CREATED).body(askService.saveAsk(askRequest));
     }
 
     @DeleteMapping("/ask/{askId}")
     public ResponseEntity<Long> deleteAsk(@PathVariable Long askId) {
         return ResponseEntity.status(HttpStatus.OK).body(askService.deleteAsk(askId));
+    }
+
+    @PatchMapping("/ask")
+    public ResponseEntity<AskResponse> acceptAsk(@RequestBody @Valid AskUpdate askUpdate) {
+        return ResponseEntity.ok().body(askService.changeAskStatus(askUpdate));
     }
 
     @GetMapping("/gather/ask/list/{postId}")
