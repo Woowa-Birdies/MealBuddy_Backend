@@ -13,7 +13,7 @@ import java.time.LocalDateTime;
 @Getter
 @Builder
 @AllArgsConstructor
-public class UserPostListResponse {
+public class PostListResponse {
 
     private Long postId;
     private Long userId;

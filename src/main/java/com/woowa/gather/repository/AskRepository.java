@@ -4,7 +4,6 @@ import com.woowa.gather.domain.Ask;
 import com.woowa.gather.domain.Post;
 import com.woowa.gather.domain.dto.AskListResponse;
 import com.woowa.gather.domain.dto.PostAskListResponse;
-import com.woowa.gather.domain.dto.UserPostListResponse;
 import com.woowa.gather.domain.enums.PostStatus;
 import com.woowa.user.domain.User;
 import org.springframework.data.jpa.repository.JpaRepository;

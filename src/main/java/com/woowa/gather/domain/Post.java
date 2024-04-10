@@ -6,6 +6,7 @@ import com.woowa.gather.domain.enums.Age;
 import com.woowa.gather.domain.enums.FoodType;
 import com.woowa.gather.domain.enums.Gender;
 import com.woowa.gather.domain.enums.PostStatus;
+import com.woowa.room.domain.Room;
 import com.woowa.user.domain.User;
 import jakarta.persistence.*;
 import lombok.*;
@@ -58,7 +59,8 @@ public class Post extends BaseEntity {
     @Builder.Default
     @OneToMany(mappedBy = "post")
     private List<Ask> asks = new ArrayList<>();
-
+    @OneToOne(mappedBy = "post")
+    private Room room;
     private LocalDateTime meetAt;
     private LocalDateTime closeAt;
 
@@ -72,19 +74,11 @@ public class Post extends BaseEntity {
         this.closeAt = postUpdateDto.getCloseAt();
     }
 
-    public void addAsk(Ask ask) {
-        asks.add(ask);
+    public void addParticipantCount() {
+        this.participantCount++;
     }
 
-    public void removeAsk(Ask ask) {
-        asks.remove(ask);
-    }
-
-    public void addParticipant() {
-        this.participantCount += 1;
-    }
-
-    public void removeParticipant() {
-        this.participantCount -= 1;
+    public void subParticipantCount() {
+        this.participantCount--;
     }
 }

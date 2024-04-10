@@ -9,6 +9,8 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.List;
+
 @RestController
 @RequiredArgsConstructor
 public class PostController {
@@ -32,7 +34,17 @@ public class PostController {
     }
 
     @GetMapping("/post/{postId}")
-    public ResponseEntity<PostDetails> getByPostId(@PathVariable("postId") Long postId) {
+    public ResponseEntity<PostDetailsResponseDto> getByPostId(@PathVariable("postId") Long postId) {
         return ResponseEntity.ok(postReadService.findPostDetailsByPostId(postId));
+    }
+
+    @GetMapping("/post/over/{withinDate}")
+    public ResponseEntity<ListApiResponse> findDuePosts(@PathVariable("withinDate") int withinDate) {
+        List<PostListResponse> duePostList = postReadService.findDuePosts(withinDate);
+        ListApiResponse duePostListApiResponse = ListApiResponse.<PostListResponse>builder()
+                .resultCount(duePostList.size())
+                .ongoing(duePostList)
+                .build();
+        return ResponseEntity.ok(duePostListApiResponse);
     }
 }

@@ -8,10 +8,10 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.HttpRequestMethodNotSupportedException;
 import org.springframework.web.bind.annotation.ControllerAdvice;
 import org.springframework.web.bind.annotation.ExceptionHandler;
-import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.context.request.WebRequest;
 import org.springframework.web.servlet.mvc.method.annotation.ResponseEntityExceptionHandler;
 
+import com.woowa.common.domain.NotAuthorizedException;
 import com.woowa.common.domain.ResourceNotFoundException;
 import com.woowa.common.domain.dto.ExceptionResult;
 
@@ -32,9 +32,19 @@ public class GlobalExceptionControllerAdvice extends ResponseEntityExceptionHand
 	 * exception : Ex001
 	 * category : ResourceNotFoundException
 	 */
-	@ResponseStatus(NOT_FOUND)
 	@ExceptionHandler(ResourceNotFoundException.class)
-	public ExceptionResult resourceNotFoundException(ResourceNotFoundException exception) {
-		return new ExceptionResult("Ex001", exception.getMessage());
+	public ResponseEntity<ExceptionResult> resourceNotFoundException(ResourceNotFoundException exception) {
+		return ResponseEntity.status(NOT_FOUND)
+			.body(new ExceptionResult("Ex001", exception.getMessage()));
+	}
+
+	/**
+	 * exception : Ex002
+	 * category : NotAuthorizedException
+	 */
+	@ExceptionHandler(NotAuthorizedException.class)
+	public ResponseEntity<ExceptionResult> notAuthorizedException(NotAuthorizedException exception) {
+		return ResponseEntity.status(UNAUTHORIZED)
+			.body(new ExceptionResult("Ex002", exception.getMessage()));
 	}
 }

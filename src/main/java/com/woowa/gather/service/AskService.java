@@ -16,7 +16,6 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
-import java.util.Optional;
 
 @Slf4j
 @Service
@@ -75,7 +74,7 @@ public class AskService {
                 .orElseThrow(() -> new ResourceNotFoundException(postId, "신청자 리스트"));
     }
 
-    public List<UserPostListResponse> getUserPostList(Long userId, int type) {
+    public List<PostListResponse> getUserPostList(Long userId, int type) {
         PostStatus postStatus = getPostStatus(type);
 
         return postRepository.findPostListByWriterId(userId, postStatus)
