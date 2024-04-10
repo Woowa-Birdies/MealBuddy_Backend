@@ -6,7 +6,7 @@ import com.woowa.gather.domain.Post;
 import com.woowa.gather.domain.dto.AskListResponse;
 import com.woowa.gather.domain.dto.AskRequest;
 import com.woowa.gather.domain.dto.PostAskListResponse;
-import com.woowa.gather.domain.dto.UserPostListResponse;
+import com.woowa.gather.domain.dto.PostListResponse;
 import com.woowa.gather.domain.enums.PostStatus;
 import com.woowa.gather.repository.AskRepository;
 import com.woowa.gather.repository.PostRepository;
@@ -18,7 +18,6 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
-import java.util.Optional;
 
 @Slf4j
 @Service
@@ -60,7 +59,7 @@ public class AskService {
                 .orElseThrow(() -> new ResourceNotFoundException(postId, "신청자 리스트"));
     }
 
-    public List<UserPostListResponse> getUserPostList(Long userId, int type) {
+    public List<PostListResponse> getUserPostList(Long userId, int type) {
         PostStatus postStatus = getPostStatus(type);
 
         return postRepository.findPostListByWriterId(userId, postStatus)

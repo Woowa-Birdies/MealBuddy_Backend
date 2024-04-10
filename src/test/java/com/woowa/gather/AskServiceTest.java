@@ -2,9 +2,7 @@ package com.woowa.gather;
 
 import com.woowa.gather.domain.Location;
 import com.woowa.gather.domain.Post;
-import com.woowa.gather.domain.dto.AskListResponse;
-import com.woowa.gather.domain.dto.AskRequest;
-import com.woowa.gather.domain.dto.UserPostListResponse;
+import com.woowa.gather.domain.dto.PostListResponse;
 import com.woowa.gather.domain.enums.Age;
 import com.woowa.gather.domain.enums.FoodType;
 import com.woowa.gather.domain.enums.Gender;
@@ -23,8 +21,6 @@ import org.springframework.boot.test.context.SpringBootTest;
 
 import java.time.LocalDateTime;
 import java.util.List;
-
-import static org.assertj.core.api.Assertions.*;
 
 @TestInstance(TestInstance.Lifecycle.PER_CLASS)
 @SpringBootTest
@@ -53,7 +49,7 @@ public class AskServiceTest {
     @DisplayName(value = "사용자id로_모집_리스트를_가져올수있다")
     void getUserPostListByUserId() {
 
-        List<UserPostListResponse> postListByWriterId = postRepository.findPostListByWriterId(1L, PostStatus.ONGOING).get();
+        List<PostListResponse> postListByWriterId = postRepository.findPostListByWriterId(1L, PostStatus.ONGOING).get();
 
 //        assertThat(postListByWriterId.size()).isEqualTo(2);
     }

@@ -1,7 +1,6 @@
 package com.woowa.gather.controller;
 
 import com.woowa.gather.domain.dto.*;
-import com.woowa.gather.exception.NonExistTypeException;
 import com.woowa.gather.service.PostQueryService;
 import com.woowa.gather.service.PostReadService;
 import jakarta.validation.Valid;
@@ -41,8 +40,8 @@ public class PostController {
 
     @GetMapping("/post/over/{withinDate}")
     public ResponseEntity<ListApiResponse> findDuePosts(@PathVariable("withinDate") int withinDate) {
-        List<UserPostListResponse> duePostList = postReadService.findDuePosts(withinDate);
-        ListApiResponse duePostListApiResponse = ListApiResponse.<UserPostListResponse>builder()
+        List<PostListResponse> duePostList = postReadService.findDuePosts(withinDate);
+        ListApiResponse duePostListApiResponse = ListApiResponse.<PostListResponse>builder()
                 .resultCount(duePostList.size())
                 .ongoing(duePostList)
                 .build();
