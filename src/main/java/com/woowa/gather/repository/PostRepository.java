@@ -42,5 +42,5 @@ public interface PostRepository extends JpaRepository<Post, Long> {
             "and p.closeAt >= current_date " +
             "and p.closeAt <= :targetDate " +
             "order by p.closeAt asc")
-    Optional<List<PostListResponse>> findDuePosts(@Param("targetDate") LocalDateTime targetDate);
+    List<PostListResponse> findDuePosts(@Param("targetDate") LocalDateTime targetDate);
 }

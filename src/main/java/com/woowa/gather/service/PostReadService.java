@@ -32,8 +32,7 @@ public class PostReadService {
     }
 
     public List<PostListResponse> findDuePosts(int withinDate) {
-        return postRepository.findDuePosts(LocalDateTime.now().plusDays(withinDate))
-                .orElseThrow(() -> new NoSuchElementException(withinDate + "일 이내의 게시물이 존재하지 않습니다."));
+        return postRepository.findDuePosts(LocalDateTime.now().plusDays(withinDate));
     }
 
 }
