@@ -11,7 +11,6 @@ public enum AskStatus {
     ACCEPTED("수락"),
     REJECTED("거절"),
     PARTICIPATION("참여"),
-    NON_PARTICIPATION("미참여"),
     ;
 
     @JsonValue
