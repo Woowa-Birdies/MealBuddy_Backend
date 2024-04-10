@@ -2,8 +2,7 @@
 <project version="4">
   <component name="ProjectModuleManager">
     <modules>
-      <module fileurl="file://$PROJECT_DIR$/.idea/modules/woowa.iml" filepath="$PROJECT_DIR$/.idea/modules/woowa.iml" />
-      <module fileurl="file://$PROJECT_DIR$/.idea/modules/woowa.test.iml" filepath="$PROJECT_DIR$/.idea/modules/woowa.test.iml" />
+      <module fileurl="file://$PROJECT_DIR$/.idea/modules/woowa.main.iml" filepath="$PROJECT_DIR$/.idea/modules/woowa.main.iml" />
     </modules>
   </component>
 </project>
