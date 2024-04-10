@@ -26,8 +26,13 @@ public class PostReadService {
 
     }
 
-    public PostDetailsResponseDto findPostDetailsByPostId(Long postId) {
-        return postRepository.findPostDetailsByPostId(postId)
+//    public PostDetailsResponseDto findPostDetailsByPostId(Long postId) {
+//        return postRepository.findPostDetailsByPostId(postId)
+//                .orElseThrow(() -> new ResourceNotFoundException(postId, "Post"));
+//    }
+
+    public PostDetailsResponseDto findPostDetailsByPostIdAndUserId(Long postId, Long userId) {
+        return postRepository.findPostDetailsByPostIdAndUserId(postId, userId)
                 .orElseThrow(() -> new ResourceNotFoundException(postId, "Post"));
     }
 

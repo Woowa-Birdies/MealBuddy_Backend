@@ -34,8 +34,8 @@ public class PostController {
     }
 
     @GetMapping("/post/{postId}")
-    public ResponseEntity<PostDetailsResponseDto> getByPostId(@PathVariable("postId") Long postId) {
-        return ResponseEntity.ok(postReadService.findPostDetailsByPostId(postId));
+    public ResponseEntity<PostDetailsResponseDto> findPostDetails(@PathVariable("postId") Long postId, @RequestParam(required = false) Long userId) {
+        return ResponseEntity.ok(postReadService.findPostDetailsByPostIdAndUserId(postId, userId));
     }
 
     @GetMapping("/post/over/{withinDate}")

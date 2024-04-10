@@ -1,9 +1,6 @@
 package com.woowa.gather.domain.dto;
 
-import com.woowa.gather.domain.enums.Age;
-import com.woowa.gather.domain.enums.FoodType;
-import com.woowa.gather.domain.enums.Gender;
-import com.woowa.gather.domain.enums.PostStatus;
+import com.woowa.gather.domain.enums.*;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
@@ -36,4 +33,6 @@ public class PostDetailsResponseDto {
     private String address;
 
     private String contents;
+
+    private AskStatus askStatus = null;
 }
