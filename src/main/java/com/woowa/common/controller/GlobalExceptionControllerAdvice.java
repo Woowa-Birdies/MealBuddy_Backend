@@ -2,6 +2,8 @@ package com.woowa.common.controller;
 
 import static org.springframework.http.HttpStatus.*;
 
+import com.woowa.room.exception.CustomRoomException;
+import com.woowa.room.exception.RoomErrorCode;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatusCode;
 import org.springframework.http.ResponseEntity;
@@ -46,5 +48,16 @@ public class GlobalExceptionControllerAdvice extends ResponseEntityExceptionHand
 	public ResponseEntity<ExceptionResult> notAuthorizedException(NotAuthorizedException exception) {
 		return ResponseEntity.status(UNAUTHORIZED)
 			.body(new ExceptionResult("Ex002", exception.getMessage()));
+	}
+
+	/**
+	 * exception : room Domain Exception
+	 * category : RoomErrorCode
+	 */
+	@ExceptionHandler(CustomRoomException.class)
+	public ResponseEntity<ExceptionResult> roomException(CustomRoomException exception) {
+		final RoomErrorCode errorCode = exception.getErrorCode();
+		return ResponseEntity.status(errorCode.getHttpStatus())
+			.body(new ExceptionResult(errorCode.getCode(), errorCode.getMessage()));
 	}
 }
