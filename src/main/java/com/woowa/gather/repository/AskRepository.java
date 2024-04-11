@@ -4,6 +4,7 @@ import com.woowa.gather.domain.Ask;
 import com.woowa.gather.domain.Post;
 import com.woowa.gather.domain.dto.AskListResponse;
 import com.woowa.gather.domain.dto.PostAskListResponse;
+import com.woowa.gather.domain.enums.AskStatus;
 import com.woowa.gather.domain.enums.PostStatus;
 import com.woowa.user.domain.User;
 import org.springframework.data.jpa.repository.JpaRepository;
@@ -22,8 +23,18 @@ public interface AskRepository extends JpaRepository<Ask, Long> {
             "join Post p on a.post = p " +
             "join Location l on a.post.location = l " +
             "join User u on a.user = u " +
-            "where u.id = :userId and p.postStatus = :postStatus")
-    Optional<List<AskListResponse>> findAskListByWriterId(@Param("userId") Long userId, @Param("postStatus") PostStatus postStatus);
+            "where u.id = :userId and a.askStatus = :askStatus")
+    Optional<List<AskListResponse>> findUserAskListByWriterId(@Param("userId") Long userId, @Param("askStatus") AskStatus askStatus);
+
+    @Query("select new com.woowa.gather.domain.dto.AskListResponse(" +
+            "a.id, p.id, u.id, p.foodTypeTag, p.genderTag, p.ageTag, l.address, l.place, p.participantTotal, " +
+            "p.participantCount, p.postStatus, a.askStatus, p.meetAt, p.closeAt, p.createdAt) " +
+            "from Ask a " +
+            "join Post p on a.post = p " +
+            "join Location l on a.post.location = l " +
+            "join User u on a.user = u " +
+            "where u.id = :userId and a.askStatus = 'WAITING' or a.askStatus = 'REJECTED'")
+    Optional<List<AskListResponse>> findWaitingOrRejectedAskList(@Param("userId") Long userId);
 
     @Query("select new com.woowa.gather.domain.dto.PostAskListResponse(" +
             "u.id, a.askStatus, u.gender, u.age, u.introduce)" +

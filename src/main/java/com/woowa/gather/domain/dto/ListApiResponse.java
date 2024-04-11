@@ -23,6 +23,15 @@ public class ListApiResponse<T> {
     @JsonInclude(JsonInclude.Include.NON_EMPTY)
     public List<T> closed;
 
+    @JsonInclude(JsonInclude.Include.NON_EMPTY)
+    public List<T> waitingOrRejected;
+
+    @JsonInclude(JsonInclude.Include.NON_EMPTY)
+    public List<T> accepted;
+
+    @JsonInclude(JsonInclude.Include.NON_EMPTY)
+    public List<T> participated;
+
     @JsonInclude(JsonInclude.Include.NON_ABSENT)
     public List<T> result;
 }
