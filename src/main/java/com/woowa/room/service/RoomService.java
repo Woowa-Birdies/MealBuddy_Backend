@@ -5,6 +5,8 @@ import com.woowa.gather.repository.PostRepository;
 import com.woowa.room.domain.Room;
 import com.woowa.room.domain.RoomUser;
 import com.woowa.room.domain.dto.RoomResponseDto;
+import com.woowa.room.event.RoomJoinEvent;
+import com.woowa.room.event.RoomLeaveEvent;
 import com.woowa.room.exception.CustomRoomException;
 import com.woowa.room.exception.RoomErrorCode;
 import com.woowa.room.repository.RoomRepository;
@@ -14,8 +16,10 @@ import com.woowa.user.repository.UserRepository;
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.context.ApplicationEventPublisher;
 import org.springframework.stereotype.Service;
 
+import javax.print.DocFlavor;
 import java.util.List;
 
 @Slf4j
@@ -26,6 +30,7 @@ public class RoomService {
     private final RoomUserRepository roomUserRepository;
     private final PostRepository postRepository;
     private final UserRepository userRepository;
+    private final ApplicationEventPublisher applicationEventPublisher;
 
     /* 채팅방 불러오기
         * @param userId : 사용자
@@ -84,6 +89,8 @@ public class RoomService {
                 .room(createRoomIfNotExists(userId, post))
                 .build());
 
+        applicationEventPublisher.publishEvent(new RoomJoinEvent(savedRoomUser.getRoom().getId(), userId, savedRoomUser.getUser().getNickname()));
+
         return RoomResponseDto.builder()
                 .roomId(savedRoomUser.getRoom().getId())
                 .roomName(savedRoomUser.getRoom().getRoomName())
@@ -102,6 +109,8 @@ public class RoomService {
             log.error("leaveRoom() roomUser not found userId: {}, roomId: {}", userId, roomId);
             throw new CustomRoomException(RoomErrorCode.ROOM_NOT_FOUND);
         }
+
+        applicationEventPublisher.publishEvent(new RoomLeaveEvent(roomId, userId, getUser(userId).getNickname()));
 
         roomRepository.decreasePostCount(userId, roomId);
 
