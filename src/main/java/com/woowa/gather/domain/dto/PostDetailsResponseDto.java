@@ -34,5 +34,6 @@ public class PostDetailsResponseDto {
 
     private String contents;
 
+    @Builder.Default
     private AskStatus askStatus = null;
 }
