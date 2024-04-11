@@ -16,6 +16,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
+import java.util.Optional;
 
 @Slf4j
 @Service
@@ -26,6 +27,11 @@ public class AskService {
     private final PostRepository postRepository;
     private final UserRepository userRepository;
 
+    /**
+     * 신청
+     * @param askRequest - userId, postId
+     * @return askResponse - askUserId, askId, postId, askStatus
+     */
     public AskResponse saveAsk(AskRequest askRequest) {
         Post foundPost = postRepository.findById(askRequest.getPostId())
                 .orElseThrow(() -> new ResourceNotFoundException(askRequest.getPostId(), "포스트"));
@@ -35,14 +41,21 @@ public class AskService {
 
         Ask ask = askRepository.save(Ask.createAsk(foundPost, foundUser));
 
+        Ask byId = askRepository.findById(ask.getId()).get();
+
         return AskResponse.builder()
-                .askId(ask.getId())
+                .askId(byId.getId())
                 .askUserId(foundUser.getId())
                 .postId(foundPost.getId())
-                .askStatus(ask.getAskStatus())
+                .askStatus(byId.getAskStatus())
                 .build();
     }
 
+    /**
+     * 신청 취소(삭제)
+     * @param askId -
+     * @return askId
+     */
     public Long deleteAsk(Long askId) {
         Ask ask = askRepository.findById(askId)
                 .orElseThrow(() -> new ResourceNotFoundException(askId, "신청 내용"));
@@ -54,6 +67,11 @@ public class AskService {
         return ask.getId();
     }
 
+    /**
+     * 신청 상태 변경 (대기 -> 수락/거절)
+     * @param askUpdate - userId, postId, askId, askStatus
+     * @return askResponse - askUserId, askId, postId, askStatus
+     */
     public AskResponse changeAskStatus(AskUpdate askUpdate) {
         Post post = postRepository.findById(askUpdate.getPostId())
                 .orElseThrow(() -> new ResourceNotFoundException(askUpdate.getPostId(), "게시글"));
@@ -71,6 +89,11 @@ public class AskService {
                 .build();
     }
 
+    /**
+     * 신청 리스트 조회
+     * @param postId -
+     * @return List<PostAskListResponse> - userId, askStatus, gender, age, introduce
+     */
     public List<PostAskListResponse> getPostAskList(Long postId) {
         return askRepository.findAskedUserByPostId(postId)
                 .orElseThrow(() -> new ResourceNotFoundException(postId, "신청자 리스트"));

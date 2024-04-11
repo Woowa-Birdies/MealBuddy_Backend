@@ -31,8 +31,8 @@ public class Ask extends BaseEntity {
     private User user;
 
     @Enumerated(value = EnumType.STRING)
-    @ColumnDefault("'WAITING'")
-    private AskStatus askStatus;
+    @Builder.Default
+    private AskStatus askStatus = AskStatus.WAITING;
 
     public static Ask createAsk(Post post, User user) {
         Ask ask = Ask.builder()
