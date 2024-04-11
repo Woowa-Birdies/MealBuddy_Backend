@@ -18,6 +18,9 @@
   <component name="NewModuleRootManager">
     <output-test url="file://$MODULE_DIR$/../../build/classes/java/test" />
     <exclude-output />
+    <content url="file://$MODULE_DIR$/../../build/generated/sources/annotationProcessor/java/test">
+      <sourceFolder url="file://$MODULE_DIR$/../../build/generated/sources/annotationProcessor/java/test" isTestSource="true" generated="true" />
+    </content>
     <content url="file://$MODULE_DIR$/../../src/test">
       <sourceFolder url="file://$MODULE_DIR$/../../src/test/java" isTestSource="true" />
     </content>
@@ -35,6 +38,7 @@
     <orderEntry type="library" name="Gradle: org.springdoc:springdoc-openapi-ui:1.7.0" level="project" />
     <orderEntry type="library" name="Gradle: org.springframework.boot:spring-boot-starter-data-jpa:3.2.3" level="project" />
     <orderEntry type="library" name="Gradle: org.springframework.boot:spring-boot-starter-data-mongodb:3.2.3" level="project" />
+    <orderEntry type="library" name="Gradle: com.querydsl:querydsl-jpa:jakarta:5.0.0" level="project" />
     <orderEntry type="library" scope="PROVIDED" name="Gradle: org.projectlombok:lombok:1.18.30" level="project" />
     <orderEntry type="library" name="Gradle: org.springframework.security:spring-security-test:6.2.2" level="project" />
     <orderEntry type="library" name="Gradle: org.springframework.boot:spring-boot-starter-test:3.2.3" level="project" />
@@ -64,6 +68,7 @@
     <orderEntry type="library" name="Gradle: org.springframework:spring-aspects:6.1.4" level="project" />
     <orderEntry type="library" name="Gradle: org.springframework.data:spring-data-mongodb:4.2.3" level="project" />
     <orderEntry type="library" name="Gradle: org.mongodb:mongodb-driver-sync:4.11.1" level="project" />
+    <orderEntry type="library" name="Gradle: com.querydsl:querydsl-core:5.0.0" level="project" />
     <orderEntry type="library" name="Gradle: org.springframework:spring-test:6.1.4" level="project" />
     <orderEntry type="library" name="Gradle: org.springframework:spring-core:6.1.4" level="project" />
     <orderEntry type="library" name="Gradle: org.springframework.boot:spring-boot-test-autoconfigure:3.2.3" level="project" />
@@ -117,6 +122,7 @@
     <orderEntry type="library" name="Gradle: jakarta.transaction:jakarta.transaction-api:2.0.1" level="project" />
     <orderEntry type="library" name="Gradle: org.mongodb:mongodb-driver-core:4.11.1" level="project" />
     <orderEntry type="library" name="Gradle: org.mongodb:bson:4.11.1" level="project" />
+    <orderEntry type="library" name="Gradle: com.mysema.commons:mysema-commons-lang:0.2.4" level="project" />
     <orderEntry type="library" name="Gradle: org.springframework:spring-jcl:6.1.4" level="project" />
     <orderEntry type="library" name="Gradle: jakarta.activation:jakarta.activation-api:2.1.2" level="project" />
     <orderEntry type="library" name="Gradle: net.minidev:accessors-smart:2.5.0" level="project" />
