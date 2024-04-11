@@ -8,8 +8,7 @@ import lombok.Getter;
 @AllArgsConstructor
 public enum FoodType {
     MEAL("식사"),
-    DESSERT("간식"),
-    CAFE("커피"),
+    CAFE("카페"),
     ALCOHOL("술")
     ;
 
