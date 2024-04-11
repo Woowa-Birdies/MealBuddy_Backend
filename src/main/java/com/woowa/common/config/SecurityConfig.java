@@ -14,9 +14,11 @@ import org.springframework.security.config.annotation.web.configuration.WebSecur
 import org.springframework.security.config.annotation.web.configurers.AbstractHttpConfigurer;
 import org.springframework.security.config.http.SessionCreationPolicy;
 import org.springframework.security.web.SecurityFilterChain;
+import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
 import org.springframework.web.cors.CorsConfiguration;
 
 import com.woowa.user.handler.CustomSuccessHandler;
+import com.woowa.user.jwt.JWTFilter;
 import com.woowa.user.jwt.JWTUtil;
 import com.woowa.user.service.CustomOAuth2UserService;
 
@@ -49,7 +51,7 @@ public class SecurityConfig {
 	@ConditionalOnProperty(name = "spring.h2.console.enabled", havingValue = "true")
 	public WebSecurityCustomizer configureH2ConsoleEnable() {
 		return web -> web.ignoring()
-				.requestMatchers(PathRequest.toH2Console());
+			.requestMatchers(PathRequest.toH2Console());
 	}
 
 	@Bean
@@ -76,8 +78,10 @@ public class SecurityConfig {
 	private static void configureMapping(HttpSecurity http) throws Exception {
 		http
 			.authorizeHttpRequests(auth -> auth
-				.requestMatchers("/actuator/health", "/login/**", "/oauth2/**", "/gather/**", "/post/**", "/ask/**").permitAll()
-				.anyRequest().authenticated());
+				.requestMatchers("/actuator/health", "/login/**", "/oauth2/**", "/gather/**", "/post/**", "/ask/**")
+				.permitAll()
+				.anyRequest()
+				.authenticated());
 	}
 
 	private void configureOAuth(HttpSecurity http) throws Exception {
@@ -86,6 +90,9 @@ public class SecurityConfig {
 				.userInfoEndpoint(userInfoEndpointConfig -> userInfoEndpointConfig
 					.userService(customOAuth2UserService))
 				.successHandler(customSuccessHandler));
+
+		http
+			.addFilterBefore(new JWTFilter(jwtUtil), UsernamePasswordAuthenticationFilter.class);
 	}
 
 	private void configureCors(HttpSecurity http) throws Exception {
