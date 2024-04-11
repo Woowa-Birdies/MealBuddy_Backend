@@ -29,13 +29,17 @@ public class JWTFilter extends OncePerRequestFilter {
 		FilterChain filterChain) throws ServletException, IOException {
 
 		String authorizationHeader = request.getHeader(AUTHORIZATION);
-		if (isAuthorizationHeaderNull(request, response, filterChain, authorizationHeader))
+		if (isAuthorizationHeaderNull(request, response, filterChain, authorizationHeader)) {
+			System.out.println("isAuthorizationHeaderNull(request, response, filterChain, authorizationHeader)에 걸림");
 			return;
+		}
 
 		String accessToken = authorizationHeader.substring(7);
 
-		if (isExpired(accessToken))
+		if (isExpired(accessToken)) {
+			System.out.println("isExpired(accessToken)에 걸림");
 			return;
+		}
 
 		CustomOAuth2User customUserDetails = getCustomOAuth2User(accessToken);
 
