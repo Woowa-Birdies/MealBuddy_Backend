@@ -2,8 +2,6 @@ package com.woowa.common.controller;
 
 import static org.springframework.http.HttpStatus.*;
 
-import com.woowa.room.exception.CustomRoomException;
-import com.woowa.room.exception.RoomErrorCode;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatusCode;
 import org.springframework.http.ResponseEntity;
@@ -13,9 +11,13 @@ import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.context.request.WebRequest;
 import org.springframework.web.servlet.mvc.method.annotation.ResponseEntityExceptionHandler;
 
+import com.woowa.common.domain.DuplicateException;
+import com.woowa.common.domain.EmailException;
 import com.woowa.common.domain.NotAuthorizedException;
 import com.woowa.common.domain.ResourceNotFoundException;
 import com.woowa.common.domain.dto.ExceptionResult;
+import com.woowa.room.exception.CustomRoomException;
+import com.woowa.room.exception.RoomErrorCode;
 
 @ControllerAdvice
 public class GlobalExceptionControllerAdvice extends ResponseEntityExceptionHandler {
@@ -48,6 +50,26 @@ public class GlobalExceptionControllerAdvice extends ResponseEntityExceptionHand
 	public ResponseEntity<ExceptionResult> notAuthorizedException(NotAuthorizedException exception) {
 		return ResponseEntity.status(UNAUTHORIZED)
 			.body(new ExceptionResult("Ex002", exception.getMessage()));
+	}
+
+	/**
+	 * exception : Ex003
+	 * category : DuplicateException
+	 */
+	@ExceptionHandler(DuplicateException.class)
+	public ResponseEntity<ExceptionResult> duplicateException(DuplicateException exception) {
+		return ResponseEntity.status(BAD_REQUEST)
+			.body(new ExceptionResult("Ex003", exception.getMessage()));
+	}
+
+	/**
+	 * exception : Ex004
+	 * category : EmailException
+	 */
+	@ExceptionHandler(EmailException.class)
+	public ResponseEntity<ExceptionResult> emailException(EmailException exception) {
+		return ResponseEntity.status(BAD_REQUEST)
+			.body(new ExceptionResult("Ex004", exception.getMessage()));
 	}
 
 	/**
