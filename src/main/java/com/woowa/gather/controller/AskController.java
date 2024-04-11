@@ -30,7 +30,7 @@ public class AskController extends BaseAskController {
     }
 
     @GetMapping("/gather/ask/list/{postId}")
-    public ListApiResponse<?> getApplicantList(@PathVariable Long postId) {
+    public ListApiResponse<?> getAskList(@PathVariable Long postId) {
         return makeResponse(askService.getPostAskList(postId));
     }
 
@@ -40,16 +40,16 @@ public class AskController extends BaseAskController {
             throw new NonExistTypeException("타입 범위는 [0,1,2]입니다");
         }
 
-        return makeResponse(type, askService.getUserPostList(userId, type));
+        return makeUserPostResponse(type, askService.getUserPostList(userId, type));
     }
 
     @GetMapping("/ask/list/{userId}")
-    public ListApiResponse<AskListResponse> getAskList(@RequestParam int type, @PathVariable Long userId) {
+    public ListApiResponse<AskListResponse> getUserAskList(@RequestParam int type, @PathVariable Long userId) {
         if (type > 2 || type < 0) {
             throw new NonExistTypeException("타입 범위는 [0,1,2]입니다");
         }
 
-        return makeResponse(type, askService.getAskList(userId, type));
+        return makeUserAskResponse(type, askService.getAskList(userId, type));
     }
 
 }

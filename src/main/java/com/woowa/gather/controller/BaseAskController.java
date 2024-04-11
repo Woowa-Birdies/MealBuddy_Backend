@@ -12,7 +12,37 @@ abstract class BaseAskController {
                 .result(result)
                 .build();
     }
-    public <T> ListApiResponse<T> makeResponse(int type, List<T> result) {
+
+    // 유저 신청 리스트
+    public <T> ListApiResponse<T> makeUserAskResponse(int type, List<T> result) {
+        return type == 0 ? makeWaitingOrRejectedListResponse(result)
+                : type == 1 ? makeAcceptedListResponse(result)
+                : makeParticipatedListResponse(result);
+    }
+
+    public <T> ListApiResponse<T> makeWaitingOrRejectedListResponse(List<T> result) {
+        return ListApiResponse.<T>builder()
+                .resultCount(result.size())
+                .waitingOrRejected(result)
+                .build();
+    }
+
+    public <T> ListApiResponse<T> makeAcceptedListResponse(List<T> result) {
+        return ListApiResponse.<T>builder()
+                .resultCount(result.size())
+                .accepted(result)
+                .build();
+    }
+
+    public <T> ListApiResponse<T> makeParticipatedListResponse(List<T> result) {
+        return ListApiResponse.<T>builder()
+                .resultCount(result.size())
+                .participated(result)
+                .build();
+    }
+
+    // 유저 모집 리스트
+    public <T> ListApiResponse<T> makeUserPostResponse(int type, List<T> result) {
         return type == 0 ? makeOngoingListResponse(result)
                 : type == 1 ? makeCompletedListResponse(result)
                 : makeClosedListResponse(result);
