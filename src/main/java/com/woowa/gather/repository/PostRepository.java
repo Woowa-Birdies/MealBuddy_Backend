@@ -23,14 +23,24 @@ public interface PostRepository extends JpaRepository<Post, Long> {
             "order by p.createdAt asc")
     Optional<List<PostListResponse>> findPostListByWriterId(@Param("userId") Long userId, @Param("postStatus") PostStatus postStatus);
 
+//    @Query("select new com.woowa.gather.domain.dto.PostDetailsResponseDto(" +
+//            "p.id, u.id, u.nickname, p.meetAt, p.closeAt, p.foodTypeTag, p.ageTag, p.genderTag, " +
+//            "p.participantTotal, p.participantCount, p.postStatus, l.place, l.address, p.contents) " +
+//            "from Post p " +
+//            "join Location l on p.location = l " +
+//            "left join User u on p.user = u " +
+//            "where p.id = :postId")
+//    Optional<PostDetailsResponseDto> findPostDetailsByPostId(@Param("postId") Long postId);
+
     @Query("select new com.woowa.gather.domain.dto.PostDetailsResponseDto(" +
             "p.id, u.id, u.nickname, p.meetAt, p.closeAt, p.foodTypeTag, p.ageTag, p.genderTag, " +
-            "p.participantTotal, p.participantCount, p.postStatus, l.place, l.address, p.contents) " +
+            "p.participantTotal, p.participantCount, p.postStatus, l.place, l.address, p.contents, a.askStatus) " +
             "from Post p " +
             "join Location l on p.location = l " +
             "left join User u on p.user = u " +
+            "left join p.asks a with a.user.id = :userId " +
             "where p.id = :postId")
-    Optional<PostDetailsResponseDto> findPostDetailsByPostId(@Param("postId") Long postId);
+    Optional<PostDetailsResponseDto> findPostDetailsByPostIdAndUserId(@Param("postId") Long postId, @Param("userId") Long userId);
 
     @Query("select new com.woowa.gather.domain.dto.PostListResponse(" +
             "p.id, u.id, p.foodTypeTag, p.genderTag, p.ageTag, l.address, l.place, " +
@@ -42,5 +52,5 @@ public interface PostRepository extends JpaRepository<Post, Long> {
             "and p.closeAt >= current_date " +
             "and p.closeAt <= :targetDate " +
             "order by p.closeAt asc")
-    Optional<List<PostListResponse>> findDuePosts(@Param("targetDate") LocalDateTime targetDate);
+    List<PostListResponse> findDuePosts(@Param("targetDate") LocalDateTime targetDate);
 }

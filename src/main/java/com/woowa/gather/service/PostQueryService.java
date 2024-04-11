@@ -1,10 +1,13 @@
 package com.woowa.gather.service;
 
 import com.woowa.common.domain.ResourceNotFoundException;
+import com.woowa.gather.domain.Ask;
 import com.woowa.gather.domain.Location;
 import com.woowa.gather.domain.Post;
 import com.woowa.gather.domain.dto.PostCreateDto;
 import com.woowa.gather.domain.dto.PostUpdateDto;
+import com.woowa.gather.domain.enums.PostStatus;
+import com.woowa.gather.repository.AskRepository;
 import com.woowa.gather.repository.LocationRepository;
 import com.woowa.gather.repository.PostRepository;
 import com.woowa.user.domain.User;
@@ -14,6 +17,8 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.util.List;
+
 @Service
 @Builder
 @Transactional
@@ -21,6 +26,7 @@ import org.springframework.transaction.annotation.Transactional;
 public class PostQueryService {
     private final UserRepository userRepository;
     private final PostRepository postRepository;
+    private final AskRepository askRepository;
     private final LocationRepository locationRepository;
     private final PostReadService postReadService;
 
@@ -72,11 +78,23 @@ public class PostQueryService {
         return post.getId();
     }
 
+    public Long updatePostStatus(Long postId, PostStatus postStatus) {
+        Post post = postReadService.getById(postId);
+        post.updatePostStatus(postStatus);
+        return post.getId();
+    }
+
     public Long delete(Long postId) {
         Post post = postReadService.getById(postId);
+        List<Ask> asks = post.getAsks();
         Location location = post.getLocation();
 
-        locationRepository.delete(location); // OneToOne Join Location 테이블의 컬럼 삭제
+        // Ask 엔티티 삭제
+        for (Ask ask : asks) {
+            askRepository.delete(ask);
+        }
+        // Location 엔티티 삭제
+        locationRepository.delete(location);
         postRepository.deleteById(postId);
 
         return post.getId();

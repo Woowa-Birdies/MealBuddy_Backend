@@ -74,6 +74,7 @@ public class Post extends BaseEntity {
         this.closeAt = postUpdateDto.getCloseAt();
     }
 
+
     public void addAsk(Ask ask) {
         asks.add(ask);
     }
