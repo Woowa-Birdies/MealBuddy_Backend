@@ -36,7 +36,8 @@ public class Post extends BaseEntity {
     @JoinColumn(name = "location_id")
     private Location location;
 
-    private int participantTotal;
+    @Builder.Default
+    private int participantTotal = 0;
     private int participantCount;
 
     @Column(columnDefinition = "text")

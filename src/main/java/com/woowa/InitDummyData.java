@@ -3,10 +3,7 @@ package com.woowa;
 import com.woowa.gather.domain.Ask;
 import com.woowa.gather.domain.Location;
 import com.woowa.gather.domain.Post;
-import com.woowa.gather.domain.enums.Age;
-import com.woowa.gather.domain.enums.FoodType;
-import com.woowa.gather.domain.enums.Gender;
-import com.woowa.gather.domain.enums.PostStatus;
+import com.woowa.gather.domain.enums.*;
 import com.woowa.gather.repository.AskRepository;
 import com.woowa.gather.repository.PostRepository;
 import com.woowa.user.domain.User;
@@ -77,7 +74,9 @@ public class InitDummyData {
             int end = start + postCount;
             for (int j = 0; j < posts.size(); j ++){
                 if (j >= start && j < end) continue;
-                createAsk(users.get(i), posts.get(j));
+                Ask ask = createAsk(users.get(i), posts.get(j));
+                if (j % 3 == 1) ask.changeAskStatus(AskStatus.ACCEPTED);
+                else if (j % 3 == 2) ask.changeAskStatus(AskStatus.PARTICIPATION);
             }
         }
     }
@@ -123,8 +122,8 @@ public class InitDummyData {
                 .build());
     }
 
-    private void createAsk(User user, Post post) {
-        askRepository.save(Ask.builder()
+    private Ask createAsk(User user, Post post) {
+        return askRepository.save(Ask.builder()
                 .user(user)
                 .post(post)
                 .build());
