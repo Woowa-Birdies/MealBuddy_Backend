@@ -35,14 +35,19 @@ public class Ask extends BaseEntity {
     private AskStatus askStatus;
 
     public static Ask createAsk(Post post, User user) {
-        //        post.addAsk(ask);
-        return Ask.builder()
+        Ask ask = Ask.builder()
                 .post(post)
                 .user(user)
                 .build();
+        post.addAsk(ask);
+        return ask;
     }
 
     public void changeAskStatus(AskStatus askStatus) {
         this.askStatus = askStatus;
+    }
+
+    public void changeAskStatusToParticipation() {
+        this.askStatus = AskStatus.PARTICIPATION;
     }
 }

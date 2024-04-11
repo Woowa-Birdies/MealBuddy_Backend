@@ -47,6 +47,8 @@ public class AskService {
         Ask ask = askRepository.findById(askId)
                 .orElseThrow(() -> new ResourceNotFoundException(askId, "신청 내용"));
 
+        ask.getPost().removeAsk(ask);
+
         askRepository.deleteById(askId);
 
         return ask.getId();

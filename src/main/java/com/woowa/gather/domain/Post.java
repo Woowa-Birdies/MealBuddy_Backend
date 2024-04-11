@@ -74,8 +74,20 @@ public class Post extends BaseEntity {
         this.closeAt = postUpdateDto.getCloseAt();
     }
 
+    public void addAsk(Ask ask) {
+        asks.add(ask);
+    }
+
+    public void removeAsk(Ask ask) {
+        asks.remove(ask);
+    }
+
     public void addParticipantCount() {
         this.participantCount++;
+        // todo : 신청 상태 변경 [수락->참여]
+        if (asks.size() == this.participantTotal) {
+            postStatus = PostStatus.COMPLETION;
+        }
     }
 
     public void subParticipantCount() {
