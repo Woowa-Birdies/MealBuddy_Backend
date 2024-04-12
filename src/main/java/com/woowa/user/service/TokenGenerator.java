@@ -2,6 +2,8 @@ package com.woowa.user.service;
 
 import static com.woowa.common.domain.SecurityConstant.*;
 
+import java.util.Random;
+
 import org.springframework.stereotype.Component;
 
 import com.woowa.user.jwt.JWTUtil;
@@ -16,6 +18,7 @@ public class TokenGenerator {
 	private final JWTUtil jwtUtil;
 	private final AuthService authService;
 	private final CookieUtils cookieUtils;
+	private final Random random = new Random();
 
 	public String generateTokens(HttpServletResponse response, String refreshToken) {
 		Long userId = jwtUtil.getUserId(refreshToken);
@@ -28,6 +31,10 @@ public class TokenGenerator {
 		response.addCookie(cookieUtils.createHttpOnlyCookie(REFRESH_TOKEN, newRefreshToken, REFRESH_TOKEN_DURATION));
 
 		return "Success generating tokens";
+	}
+
+	public String generateEmailVerificationToken() {
+		return String.format("%06d", random.nextInt(1000000));
 	}
 
 }
