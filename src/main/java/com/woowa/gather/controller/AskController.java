@@ -1,7 +1,8 @@
 package com.woowa.gather.controller;
 
 import com.woowa.gather.domain.dto.*;
-import com.woowa.gather.exception.NonExistTypeException;
+import com.woowa.gather.exception.AskErrorCode;
+import com.woowa.gather.exception.AskException;
 import com.woowa.gather.service.AskService;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
@@ -29,6 +30,11 @@ public class AskController extends BaseAskController {
         return ResponseEntity.ok().body(askService.changeAskStatus(askUpdate));
     }
 
+    @PatchMapping("/ask/participate")
+    public ResponseEntity<AskResponse> participate(@RequestBody @Valid AskParticipate askParticipate) {
+        return ResponseEntity.ok().body(askService.participate(askParticipate));
+    }
+
     @GetMapping("/gather/ask/list/{postId}")
     public ListApiResponse<?> getAskList(@PathVariable Long postId) {
         return makeResponse(askService.getPostAskList(postId));
@@ -37,7 +43,7 @@ public class AskController extends BaseAskController {
     @GetMapping("/gather/list/{userId}")
     public ListApiResponse<PostListResponse> getUserPostList(@RequestParam int type, @PathVariable Long userId) {
         if (type > 2 || type < 0) {
-            throw new NonExistTypeException("타입 범위는 [0,1,2]입니다");
+            throw new AskException(AskErrorCode.INVALID_PARAMETER_TYPE);
         }
 
         return makeUserPostResponse(type, askService.getUserPostList(userId, type));
@@ -46,7 +52,7 @@ public class AskController extends BaseAskController {
     @GetMapping("/ask/list/{userId}")
     public ListApiResponse<AskListResponse> getUserAskList(@RequestParam int type, @PathVariable Long userId) {
         if (type > 2 || type < 0) {
-            throw new NonExistTypeException("타입 범위는 [0,1,2]입니다");
+            throw new AskException(AskErrorCode.INVALID_PARAMETER_TYPE);
         }
 
         return makeUserAskResponse(type, askService.getAskList(userId, type));
