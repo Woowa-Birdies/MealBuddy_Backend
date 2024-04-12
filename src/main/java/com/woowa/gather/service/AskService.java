@@ -97,16 +97,20 @@ public class AskService {
         Post post = postRepository.findById(askParticipate.getPostId())
                 .orElseThrow(() -> new ResourceNotFoundException(askParticipate.getPostId(), "게시글"));
 
-        if (askRepository.countParticipantCountByPostId(AskStatus.PARTICIPATION, post) == post.getParticipantTotal()) {
+        if (askRepository.countParticipantCountByPostId(post) == post.getParticipantTotal()) {
             throw new AskException(AskErrorCode.PARTICIPATION_DENIED);
         }
 
         Ask ask = askRepository.findById(askParticipate.getAskId())
                 .orElseThrow(() -> new ResourceNotFoundException(askParticipate.getAskId(), "신청 내용"));
 
+        if (ask.getAskStatus() == AskStatus.PARTICIPATION) {
+            throw new  AskException(AskErrorCode.ALREADY_PARTICIPATED_USER);
+        }
+
         ask.changeAskStatus(AskStatus.PARTICIPATION);
 
-        if (askRepository.countParticipantCountByPostId(AskStatus.PARTICIPATION, post) == post.getParticipantTotal()) {
+        if (askRepository.countParticipantCountByPostId(post) == post.getParticipantTotal()) {
             post.updatePostStatus(PostStatus.COMPLETION);
         }
 

@@ -44,8 +44,8 @@ public interface AskRepository extends JpaRepository<Ask, Long> {
             "where p.id = :postId")
     Optional<List<PostAskListResponse>> findAskedUserByPostId(@Param("postId") Long postId);
 
-    @Query("select count(a.id) from Ask a where a.askStatus = :askStatus and a.post = :post")
-    int countParticipantCountByPostId(@Param("askStatus") AskStatus askStatus, @Param("post") Post post);
+    @Query("select count(a.id) from Ask a where a.askStatus = 'PARTICIPATION' and a.post = :post")
+    int countParticipantCountByPostId(@Param("post") Post post);
 
     boolean existsAskByUserAndPost(User user, Post post);
 }
