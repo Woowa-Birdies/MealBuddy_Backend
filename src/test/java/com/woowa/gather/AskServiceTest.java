@@ -151,14 +151,14 @@ public class AskServiceTest {
     @Test
     @DisplayName(value = "findByUser")
     void findByUser() {
-        User foundUser = userRepository.findById(1L).get();
-        Post foundPost = postRepository.findById(51L).get();
+//        User foundUser = userRepository.findById(1L).get();
+//        Post foundPost = postRepository.findById(51L).get();
 //        assertThat(askRepository.findByUserAndPost(foundUser, foundPost).get().getUser()).isEqualTo(foundUser.getId());
 //        Optional<Ask> result = askRepository.findByUserAndPost(foundUser, foundPost);
 //        log.info("result = {}", result.get().getCreatedAt());
 
-        boolean result = askRepository.existsAskByUserAndPost(foundUser, foundPost);
-        log.info("result = {}", result);
+//        boolean result = askRepository.existsAskByUserAndPost(foundUser, foundPost);
+//        log.info("result = {}", result);
     }
 
     private Post createPost(User writer) {

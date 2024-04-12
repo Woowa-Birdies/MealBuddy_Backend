@@ -6,6 +6,8 @@ import com.woowa.gather.domain.Post;
 import com.woowa.gather.domain.dto.*;
 import com.woowa.gather.domain.enums.AskStatus;
 import com.woowa.gather.domain.enums.PostStatus;
+import com.woowa.gather.exception.AskErrorCode;
+import com.woowa.gather.exception.AskException;
 import com.woowa.gather.repository.AskRepository;
 import com.woowa.gather.repository.PostRepository;
 import com.woowa.user.domain.User;
@@ -85,6 +87,31 @@ public class AskService {
 
         return AskResponse.builder()
                 .askUserId(askUpdate.getUserId())
+                .askId(ask.getId())
+                .postId(post.getId())
+                .askStatus(ask.getAskStatus())
+                .build();
+    }
+
+    public AskResponse participate(AskParticipate askParticipate){
+        Post post = postRepository.findById(askParticipate.getPostId())
+                .orElseThrow(() -> new ResourceNotFoundException(askParticipate.getPostId(), "게시글"));
+
+        if (askRepository.countParticipantCountByPostId(AskStatus.PARTICIPATION, post) == post.getParticipantTotal()) {
+            throw new AskException(AskErrorCode.PARTICIPATION_DENIED);
+        }
+
+        Ask ask = askRepository.findById(askParticipate.getAskId())
+                .orElseThrow(() -> new ResourceNotFoundException(askParticipate.getAskId(), "신청 내용"));
+
+        ask.changeAskStatus(AskStatus.PARTICIPATION);
+
+        if (askRepository.countParticipantCountByPostId(AskStatus.PARTICIPATION, post) == post.getParticipantTotal()) {
+            post.updatePostStatus(PostStatus.COMPLETION);
+        }
+
+        return AskResponse.builder()
+                .askUserId(askParticipate.getUserId())
                 .askId(ask.getId())
                 .postId(post.getId())
                 .askStatus(ask.getAskStatus())
