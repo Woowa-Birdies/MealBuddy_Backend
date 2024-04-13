@@ -8,6 +8,7 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RestController;
 
+import com.woowa.common.domain.DuplicateException;
 import com.woowa.user.domain.dto.SignupRequest;
 import com.woowa.user.service.UserService;
 
@@ -20,13 +21,14 @@ public class UserController {
 
 	@GetMapping("/check/{nickname}")
 	public ResponseEntity<Void> checkDuplicateNickName(@PathVariable("nickname") String nickName) {
-		userService.checkDuplicateNickname(nickName);
+		userService.findByNickname(nickName).ifPresent((user) -> {
+			throw new DuplicateException(nickName, "User");
+		});
 		return ResponseEntity.status(HttpStatus.OK).build();
 	}
 
 	@PostMapping("/signup")
 	public ResponseEntity<Long> addInfo(@RequestBody SignupRequest request) {
-		return ResponseEntity.status(HttpStatus.CREATED)
-			.body(userService.setAdditionalInfo(request));
+		return ResponseEntity.ok(userService.setAdditionalInfo(request));
 	}
 }
