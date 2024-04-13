@@ -5,6 +5,7 @@ import com.woowa.gather.domain.dto.PostDetailsResponseDto;
 import com.woowa.gather.domain.dto.PostListResponse;
 import com.woowa.gather.domain.enums.PostStatus;
 import org.springframework.data.jpa.repository.JpaRepository;
+import org.springframework.data.jpa.repository.Modifying;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
 
@@ -53,4 +54,11 @@ public interface PostRepository extends JpaRepository<Post, Long> {
             "and p.closeAt <= :targetDate " +
             "order by p.closeAt asc")
     List<PostListResponse> findDuePosts(@Param("targetDate") LocalDateTime targetDate);
+
+    @Modifying(clearAutomatically = true)
+    @Query("update Post p set p.postStatus = 'CLOSED' " +
+            "where p.meetAt <= now() " +
+            "and p.postStatus " +
+            "in (com.woowa.gather.domain.enums.PostStatus.ONGOING, com.woowa.gather.domain.enums.PostStatus.COMPLETION)")
+    int updatePosts();
 }
