@@ -93,20 +93,16 @@ public class AskService {
                 .build();
     }
 
-    public AskResponse participate(AskParticipate askParticipate){
-        Post post = postRepository.findById(askParticipate.getPostId())
-                .orElseThrow(() -> new ResourceNotFoundException(askParticipate.getPostId(), "게시글"));
+    public AskResponse participate(AskUpdate askUpdate){
+        Post post = postRepository.findById(askUpdate.getPostId())
+                .orElseThrow(() -> new ResourceNotFoundException(askUpdate.getPostId(), "게시글"));
 
         if (askRepository.countParticipantCountByPostId(post) == post.getParticipantTotal()) {
             throw new AskException(AskErrorCode.PARTICIPATION_DENIED);
         }
 
-        Ask ask = askRepository.findById(askParticipate.getAskId())
-                .orElseThrow(() -> new ResourceNotFoundException(askParticipate.getAskId(), "신청 내용"));
-
-        if (ask.getAskStatus() == AskStatus.PARTICIPATION) {
-            throw new  AskException(AskErrorCode.ALREADY_PARTICIPATED_USER);
-        }
+        Ask ask = askRepository.findById(askUpdate.getAskId())
+                .orElseThrow(() -> new ResourceNotFoundException(askUpdate.getAskId(), "신청 내용"));
 
         ask.changeAskStatus(AskStatus.PARTICIPATION);
 
@@ -115,7 +111,7 @@ public class AskService {
         }
 
         return AskResponse.builder()
-                .askUserId(askParticipate.getUserId())
+                .askUserId(askUpdate.getUserId())
                 .askId(ask.getId())
                 .postId(post.getId())
                 .askStatus(ask.getAskStatus())
