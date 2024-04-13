@@ -1,6 +1,7 @@
 package com.woowa.gather.controller;
 
 import com.woowa.gather.domain.dto.*;
+import com.woowa.gather.domain.enums.AskStatus;
 import com.woowa.gather.exception.AskErrorCode;
 import com.woowa.gather.exception.AskException;
 import com.woowa.gather.service.AskService;
@@ -27,12 +28,18 @@ public class AskController extends BaseAskController {
 
     @PatchMapping("/ask")
     public ResponseEntity<AskResponse> acceptAsk(@RequestBody @Valid AskUpdate askUpdate) {
+        if (askUpdate.getAskStatus() == AskStatus.PARTICIPATION) {
+            throw new AskException(AskErrorCode.INVALID_STATUS_VALUE);
+        }
         return ResponseEntity.ok().body(askService.changeAskStatus(askUpdate));
     }
 
     @PatchMapping("/ask/participate")
-    public ResponseEntity<AskResponse> participate(@RequestBody @Valid AskParticipate askParticipate) {
-        return ResponseEntity.ok().body(askService.participate(askParticipate));
+    public ResponseEntity<AskResponse> participate(@RequestBody @Valid AskUpdate askUpdate) {
+        if (askUpdate.getAskStatus() == AskStatus.PARTICIPATION) {
+            throw new AskException(AskErrorCode.ALREADY_PARTICIPATED_USER);
+        }
+        return ResponseEntity.ok().body(askService.participate(askUpdate));
     }
 
     @GetMapping("/gather/ask/list/{postId}")
@@ -42,20 +49,22 @@ public class AskController extends BaseAskController {
 
     @GetMapping("/gather/list/{userId}")
     public ListApiResponse<PostListResponse> getUserPostList(@RequestParam int type, @PathVariable Long userId) {
-        if (type > 2 || type < 0) {
-            throw new AskException(AskErrorCode.INVALID_PARAMETER_TYPE);
-        }
+        checkType(type);
 
         return makeUserPostResponse(type, askService.getUserPostList(userId, type));
     }
 
     @GetMapping("/ask/list/{userId}")
     public ListApiResponse<AskListResponse> getUserAskList(@RequestParam int type, @PathVariable Long userId) {
+        checkType(type);
+
+        return makeUserAskResponse(type, askService.getAskList(userId, type));
+    }
+
+    private static void checkType(int type) {
         if (type > 2 || type < 0) {
             throw new AskException(AskErrorCode.INVALID_PARAMETER_TYPE);
         }
-
-        return makeUserAskResponse(type, askService.getAskList(userId, type));
     }
 
 }
