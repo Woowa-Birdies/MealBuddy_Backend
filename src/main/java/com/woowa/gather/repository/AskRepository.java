@@ -1,18 +1,18 @@
 package com.woowa.gather.repository;
 
+import java.util.List;
+import java.util.Optional;
+
+import org.springframework.data.jpa.repository.JpaRepository;
+import org.springframework.data.jpa.repository.Query;
+import org.springframework.data.repository.query.Param;
+
 import com.woowa.gather.domain.Ask;
 import com.woowa.gather.domain.Post;
 import com.woowa.gather.domain.dto.AskListResponse;
 import com.woowa.gather.domain.dto.PostAskListResponse;
 import com.woowa.gather.domain.enums.AskStatus;
-import com.woowa.gather.domain.enums.PostStatus;
 import com.woowa.user.domain.User;
-import org.springframework.data.jpa.repository.JpaRepository;
-import org.springframework.data.jpa.repository.Query;
-import org.springframework.data.repository.query.Param;
-
-import java.util.List;
-import java.util.Optional;
 
 public interface AskRepository extends JpaRepository<Ask, Long> {
 

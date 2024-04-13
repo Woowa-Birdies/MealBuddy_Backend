@@ -1,6 +1,11 @@
 package com.woowa.user.domain;
 
+import java.time.LocalDateTime;
+
+import org.hibernate.annotations.DynamicUpdate;
+
 import com.woowa.common.domain.BaseEntity;
+import com.woowa.user.domain.dto.SignupRequest;
 
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
@@ -17,6 +22,7 @@ import lombok.NoArgsConstructor;
 @Table(name = "users")
 @Entity
 @Getter
+@DynamicUpdate
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 public class User extends BaseEntity {
 	@Id
@@ -31,16 +37,16 @@ public class User extends BaseEntity {
 	private String introduce;
 
 	@Column
-	private int age;
+	private LocalDateTime birthDate;
 
 	@Column(length = 8)
 	@Enumerated(EnumType.STRING)
 	private Gender gender;
 
-	@Column(length = 128)
-	private String phone;
+	@Column(length = 36)
+	private String email;
 
-	@Column()
+	@Column
 	private String image;
 
 	public User(String nickname) {
@@ -49,5 +55,12 @@ public class User extends BaseEntity {
 
 	public void update(String nickname) {
 		this.nickname = nickname;
+	}
+
+	public void updateAdditionalInfo(SignupRequest request) {
+		this.nickname = request.getNickname();
+		this.birthDate = request.getBirthDate();
+		this.gender = request.getGender();
+		this.email = request.getEmail();
 	}
 }

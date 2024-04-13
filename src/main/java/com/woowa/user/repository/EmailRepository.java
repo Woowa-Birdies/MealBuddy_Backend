@@ -8,4 +8,6 @@ import com.woowa.user.domain.EmailVerification;
 
 public interface EmailRepository extends JpaRepository<EmailVerification, Long> {
 	Optional<EmailVerification> findByUserId(Long userId);
+
+	Optional<EmailVerification> findByToken(String token);
 }

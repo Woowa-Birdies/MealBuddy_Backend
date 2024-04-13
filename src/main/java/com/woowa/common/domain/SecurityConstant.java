@@ -15,7 +15,7 @@ public final class SecurityConstant {
 	public static final String AUTHORIZATION = "Authorization";
 	public static final String BEARER = "Bearer ";
 	public static final String ROLE_USER = "ROLE_USER";
-	public static final String PROFILE = "profile";
+	public static final String NICKNAME = "nickname";
 	public static final String ACCESS_TOKEN = "access";
 	public static final String REFRESH_TOKEN = "refresh";
 	public static final Long ACCESS_TOKEN_DURATION = 1800000L; // 30분
