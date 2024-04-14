@@ -17,14 +17,14 @@ public class UserStatus {
     @Field(value = "_id", targetType = FieldType.OBJECT_ID)
     private String StatusId;
 
-    private String userId;
+    private Long userId;
 
     private Long roomId;
 
     private LocalDateTime lastReadAt;
 
     @Builder
-    public UserStatus(String StatusId, String userId, Long roomId, LocalDateTime lastReadAt) {
+    public UserStatus(String StatusId, Long userId, Long roomId, LocalDateTime lastReadAt) {
         this.StatusId = StatusId;
         this.userId = userId;
         this.roomId = roomId;
