@@ -37,12 +37,13 @@ public interface AskRepository extends JpaRepository<Ask, Long> {
     Optional<List<AskListResponse>> findWaitingOrRejectedAskList(@Param("userId") Long userId);
 
     @Query("select new com.woowa.gather.domain.dto.PostAskListResponse(" +
-            "u.id, a.askStatus, u.gender, u.age, u.introduce)" +
+            "u.id, a.askStatus, u.gender, u.birthDate, u.introduce) " +
             "from Ask a " +
             "join Post p on a.post = p " +
             "join User u on a.user = u " +
             "where p.id = :postId")
     Optional<List<PostAskListResponse>> findAskedUserByPostId(@Param("postId") Long postId);
 
-    boolean existsAskByUserAndPost(User user, Post post);
+    @Query("select count(a.id) from Ask a where a.askStatus = 'PARTICIPATION' and a.post = :post")
+    int countParticipantCountByPostId(@Param("post") Post post);
 }
