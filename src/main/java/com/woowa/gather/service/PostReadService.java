@@ -18,9 +18,11 @@ import org.springframework.transaction.annotation.Transactional;
 import java.time.DayOfWeek;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
+import java.time.LocalTime;
 import java.time.temporal.TemporalAdjusters;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.function.Function;
 
 @Service
 @Transactional(readOnly = true)
@@ -53,39 +55,67 @@ public class PostReadService {
         // 기본 Specification : ONGOING 상태
         Specification<Post> baseSpec = PostSpecification.findPostsEqualPostStatus(PostStatus.ONGOING);
 
-        // 모임 날짜 필터링 Specification
-        List<Specification<Post>> dateSpecs = new ArrayList<>();
+        Specification<Post> resultDateSpec = combineDateSpecs(dateTypes); // 모임 날짜 Specification
+        Specification<Post> resultFoodTypeSpec = combineTagSpecs(foodTypes, PostSpecification::findPostsEqualFoodType); // 냠냠 유형 Specification
+        Specification<Post> resultAgeSpec = combineTagSpecs(ages, PostSpecification::findPostsEqualAge); // 연령대 Specification
+        Specification<Post> resultGenderSpec = combineTagSpecs(genders, PostSpecification::findPostsEqualGender); // 성별 Specification
 
-        // 모임 날짜 필터링
-        if (dateTypes != null) {
-            LocalDateTime startOfToday = LocalDate.now().atStartOfDay(); // Today 00:00:00
-            LocalDateTime endOfToday = LocalDate.now().atTime(23, 59, 59); // Today 23:59:59
-            LocalDateTime startOfThisSaturday = startOfToday.with(TemporalAdjusters.nextOrSame(DayOfWeek.SATURDAY)); // This Saturday 00:00:00
-            LocalDateTime endOfThisSunday = startOfThisSaturday.plusDays(1).withHour(23).withMinute(59).withSecond(59); // This Sunday 23:59:59
+        Specification<Post> resultSpec = baseSpec;
+        if (resultDateSpec != null) resultSpec = resultSpec.and(resultDateSpec);
+        if (resultFoodTypeSpec != null) resultSpec = resultSpec.and(resultFoodTypeSpec);
+        if (resultAgeSpec != null) resultSpec = resultSpec.and(resultAgeSpec);
+        if (resultGenderSpec != null) resultSpec = resultSpec.and(resultGenderSpec);
 
-            // dateType [0: 오늘 / 1: 내일 / 2: 이번 주말]
-            for (Integer dateType : dateTypes) {
-                switch (dateType) {
-                    case 0:
-                        dateSpecs.add(PostSpecification.findPostsBetweenDates(startOfToday, endOfToday));
-                        break;
-                    case 1:
-                        dateSpecs.add(PostSpecification.findPostsBetweenDates(startOfToday.plusDays(1), endOfToday.plusDays(1)));
-                        break;
-                    case 2:
-                        dateSpecs.add(PostSpecification.findPostsBetweenDates(startOfThisSaturday, endOfThisSunday));
-                        break;
-                }
+        return postRepository.findAll(resultSpec);
+    }
+
+    // 각 Specification을 or로 결합
+    private <T> Specification<Post> combineTagSpecs(List<T> filters, Function<T, Specification<Post>> specFunction) {
+        return filters == null ? null : filters.stream()
+                .map(specFunction)
+                .reduce(Specification::or)
+                .orElse(null);
+    }
+
+    private Specification<Post> combineDateSpecs(List<Integer> dateTypes) {
+        if (dateTypes == null || dateTypes.isEmpty()) {
+            return null;
+        }
+
+        LocalDateTime now = LocalDateTime.now();
+        LocalDateTime start = null;
+        LocalDateTime end = null;
+
+        List<Specification<Post>> specs = new ArrayList<>();
+
+        // dateType 0: 오늘 / 1: 내일 / 2: 이번 주말
+        for (Integer dateType : dateTypes) {
+            switch (dateType) {
+                case 0:
+                    start = now.with(LocalTime.MIN); // Today 00:00:00
+                    end = now.with(LocalTime.MAX); // Today 23:59:59
+                    break;
+                case 1:
+                    start = now.plusDays(1).with(LocalTime.MIN);
+                    end = now.plusDays(1).with(LocalTime.MAX);
+                    break;
+                case 2:
+                    start = now.with(TemporalAdjusters.nextOrSame(DayOfWeek.SATURDAY)).with(LocalTime.MIN); // This Saturday 00:00:00
+                    end = now.with(TemporalAdjusters.nextOrSame(DayOfWeek.SUNDAY)).with(LocalTime.MAX); // This Sunday 23:59:59
+                    break;
+                default:
+                    continue;
+            }
+
+            if (start != null && end != null) {
+                Specification<Post> spec = PostSpecification.findPostsBetweenDates(start, end);
+                specs.add(spec);
             }
         }
 
-        // dateSpecs 내의 각 Specification을 or 연산으로 결합
-        Specification<Post> combinedSpec = dateSpecs.stream()
+        return specs.stream()
                 .reduce(Specification::or)
-                .map(baseSpec::and)
-                .orElse(baseSpec);
-
-        return postRepository.findAll(combinedSpec);
+                .orElse(null);
     }
 
 }
