@@ -18,13 +18,15 @@ public class PostAskListResponse {
 	private Gender gender;
 	private int age;
 	private String introduce;
+	private String image;
 
 	public PostAskListResponse(Long userId, AskStatus askStatus, Gender gender, LocalDateTime birthDate,
-		String introduce) {
+		String introduce, String image) {
 		this.userId = userId;
 		this.askStatus = askStatus;
 		this.gender = gender;
 		this.age = LocalDate.now().getYear() - birthDate.getYear() + 1;
 		this.introduce = introduce;
+		this.image = image;
 	}
 }
