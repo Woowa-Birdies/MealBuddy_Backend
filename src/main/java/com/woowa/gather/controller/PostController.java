@@ -75,10 +75,10 @@ public class PostController {
                                                               @RequestParam(required = false) List<Age> ages,
                                                               @RequestParam(required = false) List<Gender> genders) {
 
-        // foodTypes, ages, genders 쿼리 파라미터 null 체크 및 처리
-        if (foodTypes == null) foodTypes = new ArrayList<>();
-        if (ages == null) ages = new ArrayList<>();
-        if (genders == null) genders = new ArrayList<>();
+//        // foodTypes, ages, genders 쿼리 파라미터 null 체크 및 처리
+//        if (foodTypes == null) foodTypes = new ArrayList<>();
+//        if (ages == null) ages = new ArrayList<>();
+//        if (genders == null) genders = new ArrayList<>();
 
 //        // foodTypes 상태 logging
 //        if (foodTypes != null) {

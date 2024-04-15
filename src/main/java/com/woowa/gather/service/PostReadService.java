@@ -53,8 +53,8 @@ public class PostReadService {
         // 기본 Specification : ONGOING 상태
         Specification<Post> baseSpec = PostSpecification.findPostsEqualPostStatus(PostStatus.ONGOING);
 
-        // 모임 날짜 필터링 Specification
-        List<Specification<Post>> dateSpecs = new ArrayList<>();
+        List<Specification<Post>> dateSpec = new ArrayList<>(); // 모임 날짜 필터링 Specification
+        List<Specification<Post>> foodTypeSpec = new ArrayList<>(); // 냠냠 유형 필터링 Specification
 
         // 모임 날짜 필터링
         if (dateTypes != null) {
@@ -67,25 +67,43 @@ public class PostReadService {
             for (Integer dateType : dateTypes) {
                 switch (dateType) {
                     case 0:
-                        dateSpecs.add(PostSpecification.findPostsBetweenDates(startOfToday, endOfToday));
+                        dateSpec.add(PostSpecification.findPostsBetweenDates(startOfToday, endOfToday));
                         break;
                     case 1:
-                        dateSpecs.add(PostSpecification.findPostsBetweenDates(startOfToday.plusDays(1), endOfToday.plusDays(1)));
+                        dateSpec.add(PostSpecification.findPostsBetweenDates(startOfToday.plusDays(1), endOfToday.plusDays(1)));
                         break;
                     case 2:
-                        dateSpecs.add(PostSpecification.findPostsBetweenDates(startOfThisSaturday, endOfThisSunday));
+                        dateSpec.add(PostSpecification.findPostsBetweenDates(startOfThisSaturday, endOfThisSunday));
                         break;
+                    default:
+                        continue;
                 }
             }
         }
 
-        // dateSpecs 내의 각 Specification을 or 연산으로 결합
-        Specification<Post> combinedSpec = dateSpecs.stream()
+        // 냠냠 유형 필터링
+        if (foodTypes != null) {
+            for (FoodType foodType : foodTypes) {
+                foodTypeSpec.add(PostSpecification.findPostsEqualFoodType(foodType));
+            }
+        }
+
+        // dateSpec의 각 Specification을 or로 결합
+        Specification<Post> dateCombinedSpec = dateSpec.stream()
                 .reduce(Specification::or)
                 .map(baseSpec::and)
                 .orElse(baseSpec);
 
-        return postRepository.findAll(combinedSpec);
+        // foodTypeSpec의 각 Specification을 or로 결합
+        Specification<Post> foodTypeCombinedSpec = foodTypeSpec.stream()
+                .reduce(Specification::or)
+                .map(baseSpec::and)
+                .orElse(baseSpec);
+
+        // 최종 결과: (baseSpec and dateSpec) and (baseSpecfood and TypeSpecs)
+        Specification<Post> resultSpec = dateCombinedSpec.and(foodTypeCombinedSpec);
+
+        return postRepository.findAll(resultSpec);
     }
 
 }
