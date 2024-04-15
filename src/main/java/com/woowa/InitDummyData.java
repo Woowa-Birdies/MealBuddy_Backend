@@ -79,8 +79,6 @@ public class InitDummyData {
                 else if (j % 3 == 2) ask.changeAskStatus(AskStatus.PARTICIPATION);
             }
         }
-
-        postRepository.updatePosts();
     }
 
     private User createUser(String nickname) {
