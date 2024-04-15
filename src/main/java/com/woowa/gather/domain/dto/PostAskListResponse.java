@@ -25,7 +25,7 @@ public class PostAskListResponse {
 		this.userId = userId;
 		this.askStatus = askStatus;
 		this.gender = gender;
-		this.age = LocalDate.now().getYear() - birthDate.getYear() + 1;
+//		this.age = LocalDate.now().getYear() - birthDate.getYear() + 1;
 		this.introduce = introduce;
 		this.image = image;
 	}
