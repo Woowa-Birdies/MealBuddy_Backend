@@ -46,7 +46,7 @@ public class EmailService {
 		EmailVerification emailVerification = emailRepository.findByToken(emailVerificationDTO.getToken())
 			.orElseThrow(() -> new NotAuthorizedException("이메일 인증에 실패하였습니다."));
 		emailVerification.checkExpiredToken();
-		emailVerification.checkEqualsToken(emailVerificationDTO.getToken());
+		
 		return emailVerification.configureVerificationHash();
 	}
 

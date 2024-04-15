@@ -43,14 +43,9 @@ public class EmailVerification {
 			throw new NotAuthorizedException("이메일 인증 토큰의 만료 시간이 지났습니다.");
 	}
 
-	public void checkEqualsToken(String token) {
-		if (!this.token.equals(token)) {
-			throw new NotAuthorizedException("이메일 인증 코드가 서로 다릅니다.");
-		}
-	}
-
 	public String configureVerificationHash() {
 		this.verificationHash = UUID.randomUUID().toString();
 		return this.verificationHash;
 	}
+
 }
