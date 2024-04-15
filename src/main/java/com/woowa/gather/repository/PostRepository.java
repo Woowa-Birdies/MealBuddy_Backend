@@ -57,7 +57,7 @@ public interface PostRepository extends JpaRepository<Post, Long> {
 
     @Modifying(clearAutomatically = true)
     @Query("update Post p set p.postStatus = 'CLOSED' " +
-            "where p.meetAt <= now() " +
+            "where p.closeAt <= now() " +
             "and p.postStatus " +
             "in (com.woowa.gather.domain.enums.PostStatus.ONGOING, com.woowa.gather.domain.enums.PostStatus.COMPLETION)")
     int updatePosts();
