@@ -10,4 +10,6 @@ public interface EmailRepository extends JpaRepository<EmailVerification, Long> 
 	Optional<EmailVerification> findByUserId(Long userId);
 
 	Optional<EmailVerification> findByToken(String token);
+
+	Optional<EmailVerification> findByVerificationHash(String verificationHash);
 }
