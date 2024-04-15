@@ -10,21 +10,16 @@ import com.woowa.gather.service.PostQueryService;
 import com.woowa.gather.service.PostReadService;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
-import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
 
 @RestController
 @RequiredArgsConstructor
 public class PostController {
-    private static final Logger logger = LoggerFactory.getLogger(PostController.class);
-
     private final PostQueryService postQueryService;
     private final PostReadService postReadService;
 
@@ -74,18 +69,6 @@ public class PostController {
                                                               @RequestParam(required = false) List<FoodType> foodTypes,
                                                               @RequestParam(required = false) List<Age> ages,
                                                               @RequestParam(required = false) List<Gender> genders) {
-
-//        // foodTypes, ages, genders 쿼리 파라미터 null 체크 및 처리
-//        if (foodTypes == null) foodTypes = new ArrayList<>();
-//        if (ages == null) ages = new ArrayList<>();
-//        if (genders == null) genders = new ArrayList<>();
-
-//        // foodTypes 상태 logging
-//        if (foodTypes != null) {
-//            logger.info("Received foodTypes: {}", foodTypes);
-//        } else {
-//            logger.info("Received foodTypes is null or empty");
-//        }
 
         List<Post> filteringPostList = postReadService.filterPosts(dateTypes, foodTypes, ages, genders);
 
