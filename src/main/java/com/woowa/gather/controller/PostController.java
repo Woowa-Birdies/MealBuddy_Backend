@@ -10,8 +10,6 @@ import com.woowa.gather.service.PostQueryService;
 import com.woowa.gather.service.PostReadService;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -23,8 +21,6 @@ import java.util.stream.Collectors;
 @RestController
 @RequiredArgsConstructor
 public class PostController {
-    private static final Logger logger = LoggerFactory.getLogger(PostController.class);
-
     private final PostQueryService postQueryService;
     private final PostReadService postReadService;
 
@@ -69,28 +65,45 @@ public class PostController {
         return ResponseEntity.ok(duePostListApiResponse);
     }
 
+    @GetMapping("/post/search")
+    public ResponseEntity<ListApiResponse> findSearchingPosts(@RequestParam(required = false) String keyword) {
+        List<Post> searchingPostList;
+
+        if (keyword == null || keyword.trim().isEmpty()) { // 검색 키워드가 없거나, 빈 문자열 또는 공백만 있는 경우
+            searchingPostList = new ArrayList<>();
+        } else {
+            searchingPostList = postReadService.searchPosts(keyword);
+        }
+
+        List<PostListResponse> searchingPostListResponseList = PostListToPostListResponseList(searchingPostList);
+
+        ListApiResponse searchingPostListApiResponse = ListApiResponse.<PostListResponse>builder()
+                .resultCount(searchingPostListResponseList.size())
+                .ongoing(searchingPostListResponseList)
+                .build();
+
+        return ResponseEntity.ok(searchingPostListApiResponse);
+    }
+
     @GetMapping("/post/filter")
     public ResponseEntity<ListApiResponse> findFilteringPosts(@RequestParam(required = false) List<Integer> dateTypes,
                                                               @RequestParam(required = false) List<FoodType> foodTypes,
                                                               @RequestParam(required = false) List<Age> ages,
                                                               @RequestParam(required = false) List<Gender> genders) {
 
-//        // foodTypes, ages, genders 쿼리 파라미터 null 체크 및 처리
-//        if (foodTypes == null) foodTypes = new ArrayList<>();
-//        if (ages == null) ages = new ArrayList<>();
-//        if (genders == null) genders = new ArrayList<>();
-
-//        // foodTypes 상태 logging
-//        if (foodTypes != null) {
-//            logger.info("Received foodTypes: {}", foodTypes);
-//        } else {
-//            logger.info("Received foodTypes is null or empty");
-//        }
-
         List<Post> filteringPostList = postReadService.filterPosts(dateTypes, foodTypes, ages, genders);
+        List<PostListResponse> filteringPostListResponseList = PostListToPostListResponseList(filteringPostList);
 
-        // Post 엔티티 리스트를 PostListResponse DTO 리스트로 변환
-        List<PostListResponse> filteringPostListResponseList = filteringPostList.stream()
+        ListApiResponse filteringPostListApiResponse = ListApiResponse.<PostListResponse>builder()
+                .resultCount(filteringPostListResponseList.size())
+                .ongoing(filteringPostListResponseList)
+                .build();
+        return ResponseEntity.ok(filteringPostListApiResponse);
+    }
+
+    // Post 엔티티 리스트를 PostListResponse DTO 리스트로 변환
+    private List<PostListResponse> PostListToPostListResponseList(List<Post> postList) {
+        List<PostListResponse> PostListResponseList = postList.stream()
                 .map(post -> PostListResponse.builder()
                         .postId(post.getId())
                         .userId(post.getUser().getId())
@@ -108,11 +121,6 @@ public class PostController {
                         .build())
                 .collect(Collectors.toList());
 
-        ListApiResponse filteringPostListApiResponse = ListApiResponse.<PostListResponse>builder()
-                .resultCount(filteringPostListResponseList.size())
-                .ongoing(filteringPostListResponseList)
-                .build();
-        return ResponseEntity.ok(filteringPostListApiResponse);
+        return PostListResponseList;
     }
-
 }
