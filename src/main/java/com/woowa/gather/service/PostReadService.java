@@ -50,6 +50,18 @@ public class PostReadService {
         return postRepository.findDuePosts(LocalDateTime.now().plusDays(withinDate));
     }
 
+    public List<Post> searchPosts(String keyword) {
+        Specification<Post> baseSpec = PostSpecification.findPostsEqualPostStatus(PostStatus.ONGOING);
+
+        Specification<Post> placeSpec = PostSpecification.findPostsByPlaceContaining(keyword); // 식당 이름 검색
+        Specification<Post> addressSpec = PostSpecification.findPostsByAddressContaining(keyword); // 주소 검색
+
+        // (식당 이름 or 주소) and ONGOING
+        Specification<Post> resultSpec = placeSpec.or(addressSpec).and(baseSpec);
+
+        return postRepository.findAll(resultSpec);
+    }
+
     public List<Post> filterPosts(List<Integer> dateTypes, List<FoodType> foodTypes, List<Age> ages, List<Gender> genders) {
         // 기본 Specification : ONGOING 상태
         Specification<Post> baseSpec = PostSpecification.findPostsEqualPostStatus(PostStatus.ONGOING);
