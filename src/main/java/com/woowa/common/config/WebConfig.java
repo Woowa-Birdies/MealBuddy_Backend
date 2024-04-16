@@ -33,4 +33,5 @@ public class WebConfig implements WebMvcConfigurer {
 			.maxAge(maxAge)
 			.allowCredentials(true);
 	}
+
 }
