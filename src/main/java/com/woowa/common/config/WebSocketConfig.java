@@ -37,7 +37,6 @@ public class WebSocketConfig implements WebSocketMessageBrokerConfigurer {
     /**
      * 클라이언트로부터 들어오는 웹소켓 메세지 처리
      */
-    // TODO: 메세지 처리 과정에서 추가할 부분 있는 지 확인 후 해당 메소드 삭제 or 수정 결정
     @Override
     public void configureClientInboundChannel(ChannelRegistration registration) {
         registration.interceptors(jwtInterceptor);
