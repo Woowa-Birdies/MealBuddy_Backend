@@ -5,8 +5,6 @@ import com.woowa.gather.domain.Post;
 import com.woowa.gather.domain.dto.AskListResponse;
 import com.woowa.gather.domain.dto.PostAskListResponse;
 import com.woowa.gather.domain.enums.AskStatus;
-import com.woowa.gather.domain.enums.PostStatus;
-import com.woowa.user.domain.User;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
@@ -36,12 +34,13 @@ public interface AskRepository extends JpaRepository<Ask, Long> {
             "where u.id = :userId and a.askStatus = 'WAITING' or a.askStatus = 'REJECTED'")
     Optional<List<AskListResponse>> findWaitingOrRejectedAskList(@Param("userId") Long userId);
 
+    /** 모집글 신청자 리스트 */
     @Query("select new com.woowa.gather.domain.dto.PostAskListResponse(" +
             "u.id, a.askStatus, u.gender, u.birthDate, u.introduce, u.image) " +
             "from Ask a " +
             "join Post p on a.post = p " +
             "join User u on a.user = u " +
-            "where p.id = :postId and a.askStatus not in (com.woowa.gather.domain.enums.AskStatus.REJECTED)")
+            "where p.id = :postId and a.askStatus = 'WAITING'")
     Optional<List<PostAskListResponse>> findAskedUserByPostId(@Param("postId") Long postId);
 
     @Query("select new com.woowa.gather.domain.dto.PostAskListResponse(" +
@@ -49,17 +48,18 @@ public interface AskRepository extends JpaRepository<Ask, Long> {
             "from Ask a " +
             "join Post p on a.post = p " +
             "join User u on a.user = u " +
-            "where p.id = :postId and a.askStatus = 'WAITING'")
-    Optional<List<PostAskListResponse>> findWaitingUserByPostId(@Param("postId") Long postId);
+            "where p.id = :postId and a.askStatus = 'ACCEPTED'")
+    Optional<List<PostAskListResponse>> findAcceptedUserByPostId(@Param("postId") Long postId);
 
     @Query("select new com.woowa.gather.domain.dto.PostAskListResponse(" +
             "u.id, a.askStatus, u.gender, u.birthDate, u.introduce, u.image) " +
             "from Ask a " +
             "join Post p on a.post = p " +
             "join User u on a.user = u " +
-            "where p.id = :postId and a.askStatus in (com.woowa.gather.domain.enums.AskStatus.ACCEPTED, com.woowa.gather.domain.enums.AskStatus.PARTICIPATION)")
-    Optional<List<PostAskListResponse>> findAcceptedAndParticipatedUserByPostId(@Param("postId") Long postId);
+            "where p.id = :postId and a.askStatus = 'PARTICIPATION'")
+    Optional<List<PostAskListResponse>> findParticipatedUserByPostId(@Param("postId") Long postId);
 
     @Query("select count(a.id) from Ask a where a.askStatus = 'PARTICIPATION' and a.post = :post")
     int countParticipantCountByPostId(@Param("post") Post post);
+
 }
