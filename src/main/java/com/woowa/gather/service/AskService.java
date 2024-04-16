@@ -124,9 +124,17 @@ public class AskService {
      * @param postId - 게시글 ID
      * @return List of PostAskListResponse - userId, askStatus, gender, age, introduce
      */
-    public List<PostAskListResponse> getPostAskList(Long postId) {
-        return askRepository.findAskedUserByPostId(postId)
-                .orElseThrow(() -> new ResourceNotFoundException(postId, "신청자 리스트"));
+    public List<PostAskListResponse> getPostAskList(Long postId, int type) {
+        if (type == 0) {
+            return askRepository.findAskedUserByPostId(postId)
+                    .orElseThrow(() -> new ResourceNotFoundException(postId, "신청자 리스트"));
+        } else if (type == 1) {
+            return askRepository.findWaitingUserByPostId(postId)
+                    .orElseThrow(() -> new ResourceNotFoundException(postId, "신청자 리스트"));
+        } else {
+            return askRepository.findAcceptedAndParticipatedUserByPostId(postId)
+                    .orElseThrow(() -> new ResourceNotFoundException(postId, "신청자 리스트"));
+        }
     }
 
     /**
