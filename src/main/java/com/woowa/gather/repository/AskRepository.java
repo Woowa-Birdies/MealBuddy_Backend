@@ -79,24 +79,24 @@ public interface AskRepository extends JpaRepository<Ask, Long> {
             "from Ask a " +
             "join Post p on a.post = p " +
             "join User u on a.user = u " +
-            "where p.id = :postId and a.askStatus = 'WAITING'")
-    Optional<List<PostAskListResponse>> findAskedUserByPostId(@Param("postId") Long postId);
+            "where p.id = :postId and a.askStatus = :askStatus " +
+            "order by a.id desc " +
+            "limit 3")
+    Optional<List<PostAskListResponse>> findAskedUserByPostId(@Param("postId") Long postId, @Param("askStatus") AskStatus askStatus);
 
     @Query("select new com.woowa.gather.domain.dto.PostAskListResponse(" +
             "u.id, a.askStatus, u.gender, u.birthDate, u.introduce, u.image) " +
             "from Ask a " +
             "join Post p on a.post = p " +
             "join User u on a.user = u " +
-            "where p.id = :postId and a.askStatus = 'ACCEPTED'")
-    Optional<List<PostAskListResponse>> findAcceptedUserByPostId(@Param("postId") Long postId);
-
-    @Query("select new com.woowa.gather.domain.dto.PostAskListResponse(" +
-            "u.id, a.askStatus, u.gender, u.birthDate, u.introduce, u.image) " +
-            "from Ask a " +
-            "join Post p on a.post = p " +
-            "join User u on a.user = u " +
-            "where p.id = :postId and a.askStatus = 'PARTICIPATION'")
-    Optional<List<PostAskListResponse>> findParticipatedUserByPostId(@Param("postId") Long postId);
+            "where p.id = :postId and a.askStatus = :askStatus " +
+            "and a.id < :askId " +
+            "order by a.id desc " +
+            "limit 3")
+    Optional<List<PostAskListResponse>> findAskedUserByPostId(
+            @Param("postId") Long postId,
+            @Param("askStatus") AskStatus askStatus,
+            @Param("askId") Long askId);
 
     @Query("select count(a.id) from Ask a where a.askStatus = 'PARTICIPATION' and a.post = :post")
     int countParticipantCountByPostId(@Param("post") Post post);
