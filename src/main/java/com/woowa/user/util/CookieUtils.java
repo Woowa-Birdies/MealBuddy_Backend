@@ -12,6 +12,7 @@ public class CookieUtils {
 			.sameSite("none")
 			.domain("localhost")
 			.httpOnly(true)
+			.secure(true)
 			.maxAge(age)
 			.build();
 		return cookie.toString();
@@ -22,6 +23,7 @@ public class CookieUtils {
 			.path("/")
 			.sameSite("none")
 			.domain("localhost")
+			.secure(true)
 			.maxAge(age)
 			.build();
 		return cookie.toString();
