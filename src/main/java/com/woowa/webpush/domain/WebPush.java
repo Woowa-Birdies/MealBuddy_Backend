@@ -1,13 +1,14 @@
 package com.woowa.webpush;
 
+import com.woowa.common.domain.BaseEntity;
 import com.woowa.gather.domain.Post;
 import jakarta.persistence.*;
 
 @Entity
-public class WebPush {
+public class WebPush extends BaseEntity {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private int push_id;
+    private Long push_id;
 
     @JoinColumn(name = "post_id")
     @ManyToOne
