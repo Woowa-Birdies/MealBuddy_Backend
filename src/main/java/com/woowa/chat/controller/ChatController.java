@@ -24,7 +24,7 @@ public class ChatController {
     private final ChatService chatService;
 
     @PostMapping("/chat")
-    public ResponseEntity<Slice<ChatResponseDto>> saveChat(@AuthenticationPrincipal CustomOAuth2User customOAuth2User,
+    public ResponseEntity<Slice<ChatResponseDto>> getChat(@AuthenticationPrincipal CustomOAuth2User customOAuth2User,
                                                            @RequestBody ChatRequestDto chatRequestDto){
         log.info("saveChat() roomId: {}", chatRequestDto.roomId());
         Pageable page = PageRequest.of(chatRequestDto.page(), chatRequestDto.offset());
