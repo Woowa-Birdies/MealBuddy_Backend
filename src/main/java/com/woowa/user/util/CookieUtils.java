@@ -11,8 +11,9 @@ public class CookieUtils {
 		Cookie cookie = new Cookie(key, value);
 		cookie.setMaxAge(Math.toIntExact(age));
 		cookie.setPath("/");
+		cookie.setSecure(true);
 		cookie.setHttpOnly(true);
-
+		cookie.setAttribute("SameSite", "None");
 		return cookie;
 	}
 
@@ -20,7 +21,8 @@ public class CookieUtils {
 		Cookie cookie = new Cookie(key, value);
 		cookie.setMaxAge(Math.toIntExact(age));
 		cookie.setPath("/");
-
+		cookie.setSecure(true);
+		cookie.setAttribute("SameSite", "None");
 		return cookie;
 	}
 }

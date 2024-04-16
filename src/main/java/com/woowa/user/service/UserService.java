@@ -10,6 +10,7 @@ import com.woowa.common.domain.NotAuthorizedException;
 import com.woowa.common.domain.ResourceNotFoundException;
 import com.woowa.user.domain.User;
 import com.woowa.user.domain.dto.SignupRequest;
+import com.woowa.user.domain.dto.UpdateProfileRequest;
 import com.woowa.user.repository.EmailRepository;
 import com.woowa.user.repository.UserRepository;
 
@@ -17,6 +18,7 @@ import lombok.RequiredArgsConstructor;
 
 @RequiredArgsConstructor
 @Service
+@Transactional(readOnly = true)
 public class UserService {
 	private final UserRepository userRepository;
 	private final EmailRepository emailRepository;
@@ -35,6 +37,16 @@ public class UserService {
 			.orElseThrow(() -> new NotAuthorizedException("이메일 인증을 완료해주세요."));
 
 		user.updateAdditionalInfo(signupRequest);
+
+		return user.getId();
+	}
+
+	@Transactional
+	public Long updateProfile(UpdateProfileRequest request) {
+		User user = userRepository.findById(request.getUserId())
+			.orElseThrow(() -> new ResourceNotFoundException(request.getUserId(), "User"));
+
+		user.update(request);
 
 		return user.getId();
 	}
