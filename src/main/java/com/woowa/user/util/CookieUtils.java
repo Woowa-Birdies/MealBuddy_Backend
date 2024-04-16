@@ -15,7 +15,7 @@ public class CookieUtils {
 			.path("/")
 			.sameSite("none")
 			.httpOnly(true)
-			.domain(url.replace("https://", ""))
+			.domain("." + url.replace("https://", ""))
 			.secure(true)
 			.maxAge(age)
 			.build();
@@ -27,7 +27,7 @@ public class CookieUtils {
 			.path("/")
 			.sameSite("none")
 			.secure(true)
-			.domain(url.replace("https://", ""))
+			.domain("." + url.replace("https://", ""))
 			.maxAge(age)
 			.build();
 		return cookie.toString();
