@@ -57,10 +57,9 @@ public class AskController extends BaseAskController {
     }
 
     @GetMapping("/ask/list/{userId}")
-    public ListApiResponse<AskListResponse> getUserAskList(@RequestParam int type, @PathVariable Long userId) {
+    public ListApiResponse<AskListResponse> getUserAskList(@RequestParam int type, @RequestParam(required = false) Long askId, @PathVariable Long userId) {
         checkType(type);
-
-        return makeUserAskResponse(type, askService.getAskList(userId, type));
+        return makeUserAskResponse(type, askService.getAskList(userId, type, askId));
     }
 
     private static void checkType(int type) {

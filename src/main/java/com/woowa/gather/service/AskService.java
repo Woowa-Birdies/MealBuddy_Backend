@@ -158,21 +158,37 @@ public class AskService {
      * @param type   - 게시글 상태
      * @return List of AskListResponse
      */
-    public List<AskListResponse> getAskList(Long userId, int type) {
+    public List<AskListResponse> getAskList(Long userId, int type, Long askId) {
+        log.info("askId : {}", askId);
         PostStatus postStatus = getPostStatus(type);
+        return askId == null ?
+                getAskListTop3(userId, type, postStatus) :
+                getAskListNext3(userId, type, askId, postStatus);
+    }
 
+    private List<AskListResponse> getAskListTop3(Long userId, int type, PostStatus postStatus) {
         if (type == 0) {
             return askRepository.findWaitingOrRejectedAskList(userId)
-                    .orElseThrow(() -> new ResourceNotFoundException(userId, postStatus.getValue() + "신청한 리스트"));
-        } else if (type == 1) {
-            return askRepository.findUserAskListByWriterId(userId, AskStatus.ACCEPTED)
-                    .orElseThrow(() -> new ResourceNotFoundException(userId, postStatus.getValue() + "신청한 리스트"));
+                    .orElseThrow(() -> new ResourceNotFoundException(userId, postStatus.getValue() + "리스트"));
         } else {
-            return askRepository.findUserAskListByWriterId(userId, AskStatus.PARTICIPATION)
-                    .orElseThrow(() -> new ResourceNotFoundException(userId, postStatus.getValue() + "신청한 리스트"));
+            return askRepository.findUserAskListByWriterId(userId, getAskStatus(type))
+                    .orElseThrow(() -> new ResourceNotFoundException(userId, postStatus.getValue() + "리스트"));
         }
+    }
 
+    private List<AskListResponse> getAskListNext3(Long userId, int type, Long askId, PostStatus postStatus) {
+        log.info("getAskListNext3 - askId : {}", askId);
+        if (type == 0) {
+            return askRepository.findWaitingOrRejectedAskList(userId, askId)
+                    .orElseThrow(() -> new ResourceNotFoundException(userId, postStatus.getValue() + "리스트"));
+        } else {
+            return askRepository.findUserAskListByWriterId(userId, getAskStatus(type), askId)
+                    .orElseThrow(() -> new ResourceNotFoundException(userId, postStatus.getValue() + "리스트"));
+        }
+    }
 
+    private static AskStatus getAskStatus(int type) {
+        return type == 1 ? AskStatus.ACCEPTED : AskStatus.PARTICIPATION;
     }
 
     private static PostStatus getPostStatus(int type) {
