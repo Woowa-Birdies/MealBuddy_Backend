@@ -1,6 +1,6 @@
 package com.woowa.webpush.controller;
 
-import com.woowa.webpush.domain.ApplyDTO;
+import com.woowa.webpush.domain.dto.ApplyDto;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.messaging.handler.annotation.MessageMapping;
 import org.springframework.messaging.handler.annotation.SendTo;
@@ -14,7 +14,7 @@ public class WebPushController {
 
     @MessageMapping("/message") // 테스트용 이후에 변경
     @SendTo("/topic/messages")
-    public ApplyDTO ApplyRequest(@RequestBody ApplyDTO request) {
+    public ApplyDto ApplyRequest(@RequestBody ApplyDto request) {
         log.info("ApplyRequest = {} Path = {} ",request.getMessage(),WebPushController.class);
 
         // TODO: 들어온 request ApplyDTO 처리

@@ -1,6 +1,6 @@
 package com.woowa.common.config;
 
-import com.woowa.webpush.StompHandler;
+import com.woowa.webpush.handler.StompHandler;
 import lombok.RequiredArgsConstructor;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.messaging.simp.config.ChannelRegistration;

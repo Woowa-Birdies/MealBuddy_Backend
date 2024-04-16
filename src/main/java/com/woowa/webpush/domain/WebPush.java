@@ -1,4 +1,4 @@
-package com.woowa.webpush;
+package com.woowa.webpush.domain;
 
 import com.woowa.common.domain.BaseEntity;
 import com.woowa.gather.domain.Post;
@@ -10,7 +10,7 @@ public class WebPush extends BaseEntity {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long push_id;
 
-    @JoinColumn(name = "post_id")
     @ManyToOne
+    @JoinColumn(name = "post_id")
     private Post post;
 }
