@@ -41,8 +41,24 @@ public interface AskRepository extends JpaRepository<Ask, Long> {
             "from Ask a " +
             "join Post p on a.post = p " +
             "join User u on a.user = u " +
-            "where p.id = :postId")
+            "where p.id = :postId and a.askStatus not in (com.woowa.gather.domain.enums.AskStatus.REJECTED)")
     Optional<List<PostAskListResponse>> findAskedUserByPostId(@Param("postId") Long postId);
+
+    @Query("select new com.woowa.gather.domain.dto.PostAskListResponse(" +
+            "u.id, a.askStatus, u.gender, u.birthDate, u.introduce, u.image) " +
+            "from Ask a " +
+            "join Post p on a.post = p " +
+            "join User u on a.user = u " +
+            "where p.id = :postId and a.askStatus = 'WAITING'")
+    Optional<List<PostAskListResponse>> findWaitingUserByPostId(@Param("postId") Long postId);
+
+    @Query("select new com.woowa.gather.domain.dto.PostAskListResponse(" +
+            "u.id, a.askStatus, u.gender, u.birthDate, u.introduce, u.image) " +
+            "from Ask a " +
+            "join Post p on a.post = p " +
+            "join User u on a.user = u " +
+            "where p.id = :postId and a.askStatus in (com.woowa.gather.domain.enums.AskStatus.ACCEPTED, com.woowa.gather.domain.enums.AskStatus.PARTICIPATION)")
+    Optional<List<PostAskListResponse>> findAcceptedAndParticipatedUserByPostId(@Param("postId") Long postId);
 
     @Query("select count(a.id) from Ask a where a.askStatus = 'PARTICIPATION' and a.post = :post")
     int countParticipantCountByPostId(@Param("post") Post post);
