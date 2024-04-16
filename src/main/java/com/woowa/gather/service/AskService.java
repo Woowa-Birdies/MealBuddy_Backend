@@ -129,10 +129,10 @@ public class AskService {
             return askRepository.findAskedUserByPostId(postId)
                     .orElseThrow(() -> new ResourceNotFoundException(postId, "신청자 리스트"));
         } else if (type == 1) {
-            return askRepository.findWaitingUserByPostId(postId)
+            return askRepository.findAcceptedUserByPostId(postId)
                     .orElseThrow(() -> new ResourceNotFoundException(postId, "신청자 리스트"));
         } else {
-            return askRepository.findAcceptedAndParticipatedUserByPostId(postId)
+            return askRepository.findParticipatedUserByPostId(postId)
                     .orElseThrow(() -> new ResourceNotFoundException(postId, "신청자 리스트"));
         }
     }
@@ -152,7 +152,7 @@ public class AskService {
     }
 
     /**
-     * 신청 리스트 조회
+     * 유저의 신청 리스트 조회
      *
      * @param userId - 유저 ID
      * @param type   - 게시글 상태
