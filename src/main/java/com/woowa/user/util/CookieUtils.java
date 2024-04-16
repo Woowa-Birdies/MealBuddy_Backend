@@ -10,7 +10,6 @@ public class CookieUtils {
 		ResponseCookie cookie = ResponseCookie.from(key, value)
 			.path("/")
 			.sameSite("none")
-			.domain("localhost")
 			.httpOnly(true)
 			.secure(true)
 			.maxAge(age)
@@ -22,7 +21,6 @@ public class CookieUtils {
 		ResponseCookie cookie = ResponseCookie.from(key, value)
 			.path("/")
 			.sameSite("none")
-			.domain("localhost")
 			.secure(true)
 			.maxAge(age)
 			.build();
