@@ -1,6 +1,7 @@
 package com.woowa.chat.domain;
 
 import lombok.Builder;
+import lombok.Getter;
 import lombok.NoArgsConstructor;
 import org.springframework.data.annotation.Id;
 import org.springframework.data.mongodb.core.mapping.Document;
@@ -8,7 +9,7 @@ import org.springframework.data.mongodb.core.mapping.Field;
 import org.springframework.data.mongodb.core.mapping.FieldType;
 
 import java.time.LocalDateTime;
-
+@Getter
 @NoArgsConstructor
 @Document(collection = "userStatus")
 public class UserStatus {
@@ -30,5 +31,4 @@ public class UserStatus {
         this.roomId = roomId;
         this.lastReadAt = lastReadAt;
     }
-
 }
