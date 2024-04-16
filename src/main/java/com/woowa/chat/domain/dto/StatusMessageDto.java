@@ -9,12 +9,12 @@ import java.time.LocalDateTime;
 @Getter
 @NoArgsConstructor
 public class StatusMessageDto {
-    private Long userId;
+    private Long roomId;
     private LocalDateTime lastReadAt;
 
     @Builder
-    public StatusMessageDto(Long userId, LocalDateTime lastReadAt) {
-        this.userId = userId;
+    public StatusMessageDto(Long roomId, LocalDateTime lastReadAt) {
+        this.roomId = roomId;
         this.lastReadAt = lastReadAt;
     }
 }

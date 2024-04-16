@@ -3,6 +3,7 @@ package com.woowa.chat.service;
 import com.woowa.chat.domain.Chat;
 import com.woowa.chat.domain.UserStatus;
 import com.woowa.chat.domain.dto.ChatResponseDto;
+import com.woowa.chat.domain.dto.MessageResponseDto;
 import com.woowa.chat.domain.dto.StatusMessageDto;
 import com.woowa.chat.domain.dto.StatusResponseDto;
 import com.woowa.chat.repository.ChatRepository;
@@ -41,13 +42,14 @@ public class ChatService {
                         .build());
     }
 
-    public void saveChat(final Long userId, final Long roomId, final String message){
+    public MessageResponseDto saveChat(final Long userId, final Long roomId, final String message){
         log.info("saveChat() userId: {}, roomId: {}", userId, roomId);
-        chatRepository.save(Chat.builder()
+
+        return new MessageResponseDto().from(chatRepository.save(Chat.builder()
                 .sender(userId)
                 .roomId(roomId)
                 .message(message)
-                .build());
+                .build()));
     }
 
     public StatusResponseDto getUserStatus(final Long userId, final Long roomId){
@@ -58,7 +60,7 @@ public class ChatService {
                 .roomId(roomId)
                 .joinUsers(userStatusList.stream()
                         .map(userStatus -> StatusMessageDto.builder()
-                                .userId(userStatus.getUserId())
+                                .roomId(roomId)
                                 .lastReadAt(userStatus.getLastReadAt())
                                 .build())
                         .collect(Collectors.toList()))
