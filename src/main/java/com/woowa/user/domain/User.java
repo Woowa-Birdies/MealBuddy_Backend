@@ -6,6 +6,7 @@ import org.hibernate.annotations.DynamicUpdate;
 
 import com.woowa.common.domain.BaseEntity;
 import com.woowa.user.domain.dto.SignupRequest;
+import com.woowa.user.domain.dto.UpdateProfileRequest;
 
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
@@ -55,6 +56,11 @@ public class User extends BaseEntity {
 
 	public void update(String nickname) {
 		this.nickname = nickname;
+	}
+
+	public void update(UpdateProfileRequest request) {
+		this.nickname = request.getNickname();
+		this.introduce = request.getIntroduce();
 	}
 
 	public void updateAdditionalInfo(SignupRequest request) {

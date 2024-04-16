@@ -20,7 +20,7 @@ public class CookieUtils {
 		Cookie cookie = new Cookie(key, value);
 		cookie.setMaxAge(Math.toIntExact(age));
 		cookie.setPath("/");
-
+		cookie.setAttribute("SameSite", "None");
 		return cookie;
 	}
 }
