@@ -7,15 +7,18 @@ import org.springframework.stereotype.Component;
 @Component
 public class CookieUtils {
 
-	@Value("${frontend.url}")
-	private String url;
+	private final String url;
+
+	public CookieUtils(@Value("${frontend.url}") String url) {
+		this.url = url.replace("https://", ".");
+	}
 
 	public String createHttpOnlyCookie(String key, String value, Long age) {
 		ResponseCookie cookie = ResponseCookie.from(key, value)
 			.path("/")
 			.sameSite("none")
 			.httpOnly(true)
-			.domain("." + url.replace("https://", ""))
+			.domain(url)
 			.secure(true)
 			.maxAge(age)
 			.build();
@@ -27,7 +30,7 @@ public class CookieUtils {
 			.path("/")
 			.sameSite("none")
 			.secure(true)
-			.domain("." + url.replace("https://", ""))
+			.domain(url)
 			.maxAge(age)
 			.build();
 		return cookie.toString();
