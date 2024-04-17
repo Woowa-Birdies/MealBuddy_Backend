@@ -3,7 +3,6 @@ package com.woowa.user.controller;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
 
-import java.time.Instant;
 import java.time.LocalDateTime;
 
 import org.assertj.core.api.Assertions;
@@ -61,7 +60,7 @@ class UserControllerTest extends IntegrationTestSupport {
 		User savedUser = userRepository.save(new User("temp"));
 
 		EmailVerification emailVerification = emailRepository.save(
-			new EmailVerification("123456", Instant.now().plusSeconds(1000), savedUser.getId()));
+			new EmailVerification("123456", savedUser.getId()));
 		String hash = emailVerification.configureVerificationHash();
 		emailRepository.save(emailVerification);
 
@@ -91,7 +90,7 @@ class UserControllerTest extends IntegrationTestSupport {
 		User savedUser = userRepository.save(new User("temp"));
 
 		EmailVerification emailVerification = emailRepository.save(
-			new EmailVerification("123456", Instant.now().plusSeconds(1000), savedUser.getId()));
+			new EmailVerification("123456", savedUser.getId()));
 		String hash = emailVerification.configureVerificationHash();
 		emailRepository.save(emailVerification);
 

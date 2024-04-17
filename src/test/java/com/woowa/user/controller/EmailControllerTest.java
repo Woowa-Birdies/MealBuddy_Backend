@@ -4,8 +4,6 @@ import static org.assertj.core.api.Assertions.*;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
 
-import java.time.Instant;
-
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -50,10 +48,8 @@ class EmailControllerTest extends IntegrationTestSupport {
 	void 사용자는_인증_번호를_입력해_이메일_인증을_완료할_수_있다() throws Exception {
 		//given
 		User testUser = userRepository.save(new User("test"));
-		Instant expiryDate = Instant.now().plusSeconds(1000);
-		System.out.println(expiryDate);
 		EmailVerification emailVerification = emailRepository.save(
-			new EmailVerification("123456", expiryDate, testUser.getId()));
+			new EmailVerification("123456", testUser.getId()));
 		EmailVerificationDTO emailVerificationDTO = new EmailVerificationDTO(testUser.getId(),
 			emailVerification.getToken());
 		objectMapper.registerModule(new JavaTimeModule());
@@ -64,7 +60,7 @@ class EmailControllerTest extends IntegrationTestSupport {
 				.content(objectMapper.writeValueAsString(emailVerificationDTO)))
 			.andExpect(status().isOk())
 			.andReturn();
-		
+
 		String responseContent = result.getResponse().getContentAsString();
 		assertThat(responseContent).isNotNull();
 		assertThat(responseContent).isNotEmpty();
