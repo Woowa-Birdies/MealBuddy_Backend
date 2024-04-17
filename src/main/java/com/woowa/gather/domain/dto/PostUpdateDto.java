@@ -40,9 +40,9 @@ public class PostUpdateDto {
     private Gender genderTag;
 
     @NotNull
-//    @JsonDeserialize(using = KSTLocalDateTimeDeserializer.class)
+    @JsonDeserialize(using = KSTLocalDateTimeDeserializer.class)
     private LocalDateTime meetAt;
     @NotNull
-//    @JsonDeserialize(using = KSTLocalDateTimeDeserializer.class)
+    @JsonDeserialize(using = KSTLocalDateTimeDeserializer.class)
     private LocalDateTime closeAt;
 }
