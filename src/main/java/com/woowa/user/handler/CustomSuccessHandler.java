@@ -6,6 +6,7 @@ import java.io.IOException;
 import java.util.Collection;
 import java.util.Iterator;
 
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.web.authentication.SimpleUrlAuthenticationSuccessHandler;
@@ -28,6 +29,9 @@ public class CustomSuccessHandler extends SimpleUrlAuthenticationSuccessHandler 
 
 	private final CookieUtils cookieUtils;
 
+	@Value("${frontend.url}")
+	private String frontendUrl;
+
 	@Override
 	public void onAuthenticationSuccess(HttpServletRequest request, HttpServletResponse response,
 		Authentication authentication) throws IOException, ServletException {
@@ -49,7 +53,7 @@ public class CustomSuccessHandler extends SimpleUrlAuthenticationSuccessHandler 
 			cookieUtils.createCookie(ACCESS_TOKEN, accessToken, ACCESS_TOKEN_DURATION));
 		// TODO: 추후 변경
 		// response.sendRedirect("http://localhost:3000/");
-		response.sendRedirect("http://localhost:5173/");
+		response.sendRedirect(frontendUrl);
 	}
 
 }
