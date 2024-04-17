@@ -43,24 +43,23 @@ public class AskController extends BaseAskController {
     }
 
     @GetMapping("/gather/ask/list/{postId}")
-    public ListApiResponse<?> getAskList(@PathVariable Long postId, @RequestParam int type) {
+    public ListApiResponse<?> getAskList(@PathVariable Long postId, @RequestParam int type, @RequestParam(required = false) Long askId) {
         checkType(type);
 
-        return makeResponse(askService.getPostAskList(postId, type));
+        return makeResponse(askService.getPostAskList(postId, type, askId));
     }
 
     @GetMapping("/gather/list/{userId}")
-    public ListApiResponse<PostListResponse> getUserPostList(@RequestParam int type, @PathVariable Long userId) {
+    public ListApiResponse<PostListResponse> getUserPostList(@RequestParam int type, @RequestParam(required = false) Long postId, @PathVariable Long userId) {
         checkType(type);
 
-        return makeUserPostResponse(type, askService.getUserPostList(userId, type));
+        return makeUserPostResponse(type, askService.getUserPostList(userId, type, postId));
     }
 
     @GetMapping("/ask/list/{userId}")
-    public ListApiResponse<AskListResponse> getUserAskList(@RequestParam int type, @PathVariable Long userId) {
+    public ListApiResponse<AskListResponse> getUserAskList(@RequestParam int type, @RequestParam(required = false) Long askId, @PathVariable Long userId) {
         checkType(type);
-
-        return makeUserAskResponse(type, askService.getAskList(userId, type));
+        return makeUserAskResponse(type, askService.getAskList(userId, type, askId));
     }
 
     private static void checkType(int type) {
