@@ -8,11 +8,11 @@ import lombok.Setter;
 @Setter
 @JsonIgnoreProperties(ignoreUnknown = true)
 public class ProfileDto {
-    private Long review_Id;
-    private Long user_Id;
+    private Long reviewId;
+    private Long userId;
 
-    public ProfileDto(Long review_Id, Long user_Id) {
-        this.review_Id = review_Id;
-        this.user_Id = user_Id;
+    public ProfileDto(Long reviewId, Long userId) {
+        this.reviewId = reviewId;
+        this.userId = userId;
     }
 }

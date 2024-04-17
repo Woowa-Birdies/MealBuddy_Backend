@@ -18,8 +18,8 @@ public class ProfileService {
     }
 
     @Transactional
-    public List<ProfileDto> findProfileByUserId(Long user_Id) {
-        List<Object[]> result = profileRepository.findProfileByUserId(user_Id);
+    public List<ProfileDto> findProfileByUserId(Long userId) {
+        List<Object[]> result = profileRepository.findProfileByUserId(userId);
         return result.stream()
             .map(objects -> new ProfileDto((Long) objects[0], (Long) objects[1]))
             .collect(Collectors.toList());

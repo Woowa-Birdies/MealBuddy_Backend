@@ -17,7 +17,7 @@ public class MealbuddyApplication {
 		SpringApplication.run(MealbuddyApplication.class, args);
 	}
 
-	//entityManger
+//	entityManger
 	@Bean
 	public JPAQueryFactory jpaQueryFactory(EntityManager entityManager) {
 		return new JPAQueryFactory(entityManager);

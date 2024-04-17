@@ -17,13 +17,13 @@ public class ProfileController {
         this.profileService = profileService;
     }
 
-    @GetMapping("/profile/search/{user_Id}")
-    public ResponseEntity<?> getReviewCountsByUserId(@PathVariable Long user_Id) {
+    @GetMapping("/profile/search/{userId}")
+    public ResponseEntity<?> getProfileByUserId(@PathVariable Long userId) {
         try {
-            return new ResponseEntity<>("불러오기 성공 : " + profileService.findProfileByUserId(user_Id), HttpStatus.OK);
+            return new ResponseEntity<>("불러오기 성공 : " + profileService.findProfileByUserId(userId), HttpStatus.OK);
         }
         catch (Exception e) {
-            return new ResponseEntity<>("불러오기 실패 : " + user_Id, HttpStatus.INTERNAL_SERVER_ERROR);
+            return new ResponseEntity<>("불러오기 실패 : " + userId, HttpStatus.INTERNAL_SERVER_ERROR);
         }
     }
 }

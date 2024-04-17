@@ -5,9 +5,9 @@ import com.woowa.review.service.ReviewService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
+
+import java.util.List;
 
 @RestController
 public class ReviewController {
@@ -27,5 +27,10 @@ public class ReviewController {
         catch (Exception e) {
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).build();
         }
+    }
+
+    @GetMapping("/review/userInfo/{postId}")
+    public List<Long> getUserInfosByPostId(@PathVariable Long postId) {
+        return reviewService.findUserIdsByPostId(postId);
     }
 }
