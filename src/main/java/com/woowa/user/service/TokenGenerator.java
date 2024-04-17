@@ -30,6 +30,7 @@ public class TokenGenerator {
 		response.setHeader(AUTHORIZATION, BEARER + newAccessToken);
 		response.addHeader("Set-Cookie",
 			cookieUtils.createHttpOnlyCookie(REFRESH_TOKEN, refreshToken, REFRESH_TOKEN_DURATION));
+
 		return "Success generating tokens";
 	}
 

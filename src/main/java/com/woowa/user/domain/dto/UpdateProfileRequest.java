@@ -20,4 +20,5 @@ public class UpdateProfileRequest {
 		this.nickname = nickname;
 		this.introduce = introduce;
 	}
+
 }

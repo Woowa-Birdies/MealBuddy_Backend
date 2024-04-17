@@ -58,15 +58,15 @@ public class User extends BaseEntity {
 		this.nickname = nickname;
 	}
 
+	public void update(UpdateProfileRequest request) {
+		this.nickname = request.getNickname();
+		this.introduce = request.getIntroduce();
+	}
+
 	public void updateAdditionalInfo(SignupRequest request) {
 		this.nickname = request.getNickname();
 		this.birthDate = request.getBirthDate();
 		this.gender = request.getGender();
 		this.email = request.getEmail();
-	}
-
-	public void update(UpdateProfileRequest request) {
-		this.nickname = request.getNickname();
-		this.introduce = request.getIntroduce();
 	}
 }

@@ -24,7 +24,7 @@ public class Chat {
 
     private String message;
 
-    private String sender;
+    private Long sender;
 
     @CreatedDate
     private LocalDateTime createAt;
@@ -33,7 +33,7 @@ public class Chat {
     private LocalDateTime updateAt;
 
     @Builder
-    public Chat(String messageId, Long roomId, String message, String sender) {
+    public Chat(String messageId, Long roomId, String message, Long sender) {
         this.messageId = messageId;
         this.roomId = roomId;
         this.message = message;

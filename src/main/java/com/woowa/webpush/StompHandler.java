@@ -1,4 +1,4 @@
-package com.woowa.webpush.handler;
+package com.woowa.webpush;
 
 import org.springframework.messaging.Message;
 import org.springframework.messaging.MessageChannel;

@@ -31,7 +31,7 @@ public class UserController {
 	}
 
 	@PostMapping("/signup")
-	public ResponseEntity<Long> addInfo(@RequestBody SignupRequest request) {
+	public ResponseEntity<Long> addInfo(@RequestBody @Valid SignupRequest request) {
 		return ResponseEntity.ok(userService.setAdditionalInfo(request));
 	}
 

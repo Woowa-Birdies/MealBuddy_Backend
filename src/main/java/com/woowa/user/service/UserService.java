@@ -6,10 +6,12 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import com.woowa.common.domain.DuplicateException;
+import com.woowa.common.domain.NotAuthorizedException;
 import com.woowa.common.domain.ResourceNotFoundException;
 import com.woowa.user.domain.User;
 import com.woowa.user.domain.dto.SignupRequest;
 import com.woowa.user.domain.dto.UpdateProfileRequest;
+import com.woowa.user.repository.EmailRepository;
 import com.woowa.user.repository.UserRepository;
 
 import lombok.RequiredArgsConstructor;
@@ -19,6 +21,7 @@ import lombok.RequiredArgsConstructor;
 @Transactional(readOnly = true)
 public class UserService {
 	private final UserRepository userRepository;
+	private final EmailRepository emailRepository;
 
 	public Optional<User> findByNickname(String nickName) {
 		return userRepository.findByNickname(nickName);
@@ -30,14 +33,12 @@ public class UserService {
 		userRepository.findByEmail(signupRequest.getEmail()).ifPresent(anotherUser -> {
 			throw new DuplicateException(signupRequest.getEmail(), "User");
 		});
+		emailRepository.findByVerificationHash(signupRequest.getVerificationHash())
+			.orElseThrow(() -> new NotAuthorizedException("이메일 인증을 완료해주세요."));
 
 		user.updateAdditionalInfo(signupRequest);
 
 		return user.getId();
-	}
-
-	private User getByUserId(Long userId) {
-		return userRepository.findById(userId).orElseThrow(() -> new ResourceNotFoundException(userId, "User"));
 	}
 
 	@Transactional
@@ -49,4 +50,9 @@ public class UserService {
 
 		return user.getId();
 	}
+
+	private User getByUserId(Long userId) {
+		return userRepository.findById(userId).orElseThrow(() -> new ResourceNotFoundException(userId, "User"));
+	}
+
 }
