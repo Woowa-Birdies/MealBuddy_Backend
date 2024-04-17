@@ -66,7 +66,7 @@ class UserControllerTest extends IntegrationTestSupport {
 		emailRepository.save(emailVerification);
 
 		LocalDateTime now = LocalDateTime.now();
-		SignupRequest request = new SignupRequest(savedUser.getId(), "test2", hash, now, Gender.OTHER,
+		SignupRequest request = new SignupRequest(savedUser.getId(), "test2", hash, "971017-1",
 			"test22@test.co.kr");
 		objectMapper.registerModule(new JavaTimeModule());
 		//when
@@ -78,8 +78,8 @@ class UserControllerTest extends IntegrationTestSupport {
 
 		User user = userRepository.findByNickname("test2").get();
 		Assertions.assertThat(user.getNickname()).isEqualTo(request.getNickname());
-		Assertions.assertThat(user.getBirthDate()).isEqualTo(now);
-		Assertions.assertThat(user.getGender()).isEqualTo(Gender.OTHER);
+		Assertions.assertThat(user.getBirthDate()).isEqualTo(LocalDateTime.of(1997, 10, 17, 0, 0, 0));
+		Assertions.assertThat(user.getGender()).isEqualTo(Gender.MALE);
 		Assertions.assertThat(user.getEmail()).isEqualTo(request.getEmail());
 	}
 
@@ -96,7 +96,7 @@ class UserControllerTest extends IntegrationTestSupport {
 		emailRepository.save(emailVerification);
 
 		LocalDateTime now = LocalDateTime.now();
-		SignupRequest request = new SignupRequest(savedUser.getId(), "test2", "FailedHash", now, Gender.OTHER,
+		SignupRequest request = new SignupRequest(savedUser.getId(), "test2", "FailedHash", "971010",
 			"test22@test.co.kr");
 		objectMapper.registerModule(new JavaTimeModule());
 		//when
