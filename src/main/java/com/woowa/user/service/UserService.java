@@ -54,4 +54,5 @@ public class UserService {
 	private User getByUserId(Long userId) {
 		return userRepository.findById(userId).orElseThrow(() -> new ResourceNotFoundException(userId, "User"));
 	}
+
 }

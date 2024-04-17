@@ -19,6 +19,7 @@ import com.woowa.user.domain.EmailVerification;
 import com.woowa.user.domain.Gender;
 import com.woowa.user.domain.User;
 import com.woowa.user.domain.dto.SignupRequest;
+import com.woowa.user.domain.dto.UpdateProfileRequest;
 import com.woowa.user.repository.EmailRepository;
 import com.woowa.user.repository.UserRepository;
 
@@ -104,6 +105,27 @@ class UserControllerTest extends IntegrationTestSupport {
 				.contentType(MediaType.APPLICATION_JSON)
 				.content(objectMapper.writeValueAsString(request)))
 			.andExpect(status().isUnauthorized());
+	}
+
+	@Test
+	@DisplayName("사용자는 프로필을 수정할 수 있다")
+	@WithMockUser
+	void 사용자는_프로필을_수정할_수_있다() throws Exception {
+		//given
+		User test = userRepository.save(new User("test"));
+
+		UpdateProfileRequest updateProfileRequest = new UpdateProfileRequest(test.getId(), "test22",
+			"introduce myself");
+		//when
+		//then
+		mockMvc.perform(patch("/profile")
+				.contentType(MediaType.APPLICATION_JSON)
+				.content(objectMapper.writeValueAsString(updateProfileRequest)))
+			.andExpect(status().isOk());
+
+		User user = userRepository.findById(test.getId()).get();
+		Assertions.assertThat(user.getNickname()).isEqualTo(updateProfileRequest.getNickname());
+		Assertions.assertThat(user.getIntroduce()).isEqualTo(updateProfileRequest.getIntroduce());
 	}
 
 }

@@ -30,7 +30,7 @@ public class CustomSuccessHandler extends SimpleUrlAuthenticationSuccessHandler 
 	private final CookieUtils cookieUtils;
 
 	@Value("${frontend.url}")
-	private String redirectUrl;
+	private String frontendUrl;
 
 	@Override
 	public void onAuthenticationSuccess(HttpServletRequest request, HttpServletResponse response,
@@ -52,11 +52,8 @@ public class CustomSuccessHandler extends SimpleUrlAuthenticationSuccessHandler 
 		response.addHeader("Set-Cookie",
 			cookieUtils.createCookie(ACCESS_TOKEN, accessToken, ACCESS_TOKEN_DURATION));
 
-		// response.addCookie(cookieUtils.createCookie(ACCESS_TOKEN, accessToken, ACCESS_TOKEN_DURATION));
-		// response.addCookie(cookieUtils.createHttpOnlyCookie(REFRESH_TOKEN, refreshToken, REFRESH_TOKEN_DURATION));
-		// TODO: 추후 변경
-		// response.sendRedirect("http://localhost:3000/");
-		response.sendRedirect(redirectUrl);
+		response.sendRedirect(frontendUrl);
+
 	}
 
 }

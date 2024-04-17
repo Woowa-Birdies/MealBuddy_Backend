@@ -1,7 +1,6 @@
 package com.woowa.user.controller;
 
 import org.springframework.http.HttpStatus;
-import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PatchMapping;
@@ -36,7 +35,7 @@ public class UserController {
 		return ResponseEntity.ok(userService.setAdditionalInfo(request));
 	}
 
-	@PatchMapping(value = "/profile", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
+	@PatchMapping("/profile")
 	public ResponseEntity<Long> updateProfile(@RequestBody @Valid UpdateProfileRequest request) {
 		return ResponseEntity.ok(userService.updateProfile(request));
 	}
