@@ -10,6 +10,7 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.woowa.common.domain.DuplicateException;
+import com.woowa.user.controller.dto.UserProfileResponse;
 import com.woowa.user.domain.dto.SignupRequest;
 import com.woowa.user.domain.dto.UpdateProfileRequest;
 import com.woowa.user.service.UserService;
@@ -38,5 +39,10 @@ public class UserController {
 	@PatchMapping("/profile")
 	public ResponseEntity<Long> updateProfile(@RequestBody @Valid UpdateProfileRequest request) {
 		return ResponseEntity.ok(userService.updateProfile(request));
+	}
+
+	@GetMapping("/profile/{userId}")
+	public ResponseEntity<UserProfileResponse> getProfile(@PathVariable("userId") Long userId) {
+		return ResponseEntity.ok(UserProfileResponse.toResponse(userService.getById(userId)));
 	}
 }

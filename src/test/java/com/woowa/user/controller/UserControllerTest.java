@@ -128,4 +128,18 @@ class UserControllerTest extends IntegrationTestSupport {
 		Assertions.assertThat(user.getIntroduce()).isEqualTo(updateProfileRequest.getIntroduce());
 	}
 
+	@Test
+	@DisplayName("사용자는 프로필을 조회할 수 있다")
+	@WithMockUser
+	void 사용자는_프로필을_조회할_수_있다() throws Exception {
+		//given
+		User test = userRepository.save(new User("test"));
+		//when
+		//then
+		mockMvc.perform(get("/profile/{userId}", test.getId()))
+			.andExpect(status().isOk())
+			.andExpect(jsonPath("$.userId").value(test.getId()))
+			.andExpect(jsonPath("$.nickname").value(test.getNickname()));
+	}
+
 }
