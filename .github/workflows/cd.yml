@@ -59,7 +59,7 @@ jobs:
             PIDS=$(ps -ef | grep "java -jar" | grep "$FILE_NAME" | awk '{print $2}')
             
             if [ -z "$PIDS" ]; then
-              echo "#### THERE IS NO PROCESS ####"
+              echo "#### THERE IS NO PROCESS ####" 
             else
               echo "#### KILL $PIDS ####"
               for PID in $PIDS; do
