@@ -56,6 +56,7 @@ public class SecurityConfig {
 
 	@Bean
 	public SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
+
 		disableAnotherLogin(http);
 
 		configureCors(http);
@@ -78,7 +79,8 @@ public class SecurityConfig {
 	private static void configureMapping(HttpSecurity http) throws Exception {
 		http
 			.authorizeHttpRequests(auth -> auth
-				.requestMatchers("/actuator/health", "/login/**", "/oauth2/**", "/gather/**", "/post/**", "/ask/**")
+				.requestMatchers("email/**", "/actuator/health", "/login/**", "/oauth2/**", "/gather/**", "/post/**",
+					"/ask/**")
 				.permitAll()
 				.anyRequest()
 				.authenticated());

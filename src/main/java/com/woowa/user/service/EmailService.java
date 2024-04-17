@@ -5,6 +5,7 @@ import java.time.Instant;
 
 import org.springframework.mail.javamail.JavaMailSender;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import com.woowa.common.domain.DuplicateException;
 import com.woowa.common.domain.EmailException;
@@ -35,14 +36,18 @@ public class EmailService {
 			javaMailSender.send(createVerificationMessage(toEmail, token));
 			emailRepository.save(new EmailVerification(token, Instant.now(), userId));
 		} catch (Exception e) {
+			System.out.println(e.getMessage());
 			throw new EmailException();
 		}
 	}
 
-	public void verifyEmailToken(EmailVerificationDTO emailVerificationDTO) {
+	@Transactional
+	public String verifyEmailToken(EmailVerificationDTO emailVerificationDTO) {
 		EmailVerification emailVerification = emailRepository.findByToken(emailVerificationDTO.getToken())
 			.orElseThrow(() -> new NotAuthorizedException("이메일 인증에 실패하였습니다."));
-		emailVerification.checkExpired();
+		emailVerification.checkExpiredToken();
+		
+		return emailVerification.configureVerificationHash();
 	}
 
 	private MimeMessage createVerificationMessage(String toEmail, String token) throws
@@ -67,4 +72,5 @@ public class EmailService {
 
 		return message;
 	}
+
 }

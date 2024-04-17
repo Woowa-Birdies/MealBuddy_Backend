@@ -1,8 +1,10 @@
 package com.woowa.gather.domain.dto;
 
+import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
 import com.woowa.gather.domain.enums.Age;
 import com.woowa.gather.domain.enums.FoodType;
 import com.woowa.gather.domain.enums.Gender;
+import com.woowa.gather.serializer.KSTLocalDateTimeDeserializer;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
 import lombok.AllArgsConstructor;
@@ -38,7 +40,9 @@ public class PostUpdateDto {
     private Gender genderTag;
 
     @NotNull
+    @JsonDeserialize(using = KSTLocalDateTimeDeserializer.class)
     private LocalDateTime meetAt;
     @NotNull
+    @JsonDeserialize(using = KSTLocalDateTimeDeserializer.class)
     private LocalDateTime closeAt;
 }

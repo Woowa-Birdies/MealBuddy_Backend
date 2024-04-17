@@ -29,7 +29,6 @@ public class EmailConfig {
 		javaMailSender.setPassword(password);
 		javaMailSender.setJavaMailProperties(getMailProperties());
 		javaMailSender.setDefaultEncoding("UTF-8");
-
 		return javaMailSender;
 	}
 
@@ -40,7 +39,8 @@ public class EmailConfig {
 		properties.setProperty("mail.smtp.starttls.enable", "true");
 		properties.setProperty("mail.debug", "true");
 		properties.setProperty("mail.smtp.ssl.trust", host);
-		properties.setProperty("mail.smtp.ssl.enable", "true");
+		// TODO: HTTPS 설정 해보기
+		properties.setProperty("mail.smtp.ssl.enable", "false");
 
 		return properties;
 	}
