@@ -11,6 +11,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+@RequestMapping("/api")
 @RestController
 @RequiredArgsConstructor
 public class AskController extends BaseAskController {
@@ -43,22 +44,23 @@ public class AskController extends BaseAskController {
     }
 
     @GetMapping("/gather/ask/list/{postId}")
-    public ListApiResponse<?> getAskList(@PathVariable Long postId) {
-        return makeResponse(askService.getPostAskList(postId));
+    public ListApiResponse<PostAskListResponse> getAskList(@PathVariable Long postId, @RequestParam int type, @RequestParam(required = false) Long askId) {
+        checkType(type);
+
+        return makeResponse(askService.getPostAskList(postId, type, askId));
     }
 
     @GetMapping("/gather/list/{userId}")
-    public ListApiResponse<PostListResponse> getUserPostList(@RequestParam int type, @PathVariable Long userId) {
+    public ListApiResponse<PostListResponse> getUserPostList(@RequestParam int type, @RequestParam(required = false) Long postId, @PathVariable Long userId) {
         checkType(type);
 
-        return makeUserPostResponse(type, askService.getUserPostList(userId, type));
+        return makeUserPostResponse(type, askService.getUserPostList(userId, type, postId));
     }
 
     @GetMapping("/ask/list/{userId}")
-    public ListApiResponse<AskListResponse> getUserAskList(@RequestParam int type, @PathVariable Long userId) {
+    public ListApiResponse<AskListResponse> getUserAskList(@RequestParam int type, @RequestParam(required = false) Long askId, @PathVariable Long userId) {
         checkType(type);
-
-        return makeUserAskResponse(type, askService.getAskList(userId, type));
+        return makeUserAskResponse(type, askService.getAskList(userId, type, askId));
     }
 
     private static void checkType(int type) {

@@ -1,11 +1,14 @@
 package com.woowa.user.domain;
 
+import java.time.LocalDate;
 import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
 
 import org.hibernate.annotations.DynamicUpdate;
 
 import com.woowa.common.domain.BaseEntity;
 import com.woowa.user.domain.dto.SignupRequest;
+import com.woowa.user.domain.dto.UpdateProfileRequest;
 
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
@@ -57,10 +60,33 @@ public class User extends BaseEntity {
 		this.nickname = nickname;
 	}
 
+	public void update(UpdateProfileRequest request) {
+		this.nickname = request.getNickname();
+		this.introduce = request.getIntroduce();
+	}
+
 	public void updateAdditionalInfo(SignupRequest request) {
 		this.nickname = request.getNickname();
-		this.birthDate = request.getBirthDate();
-		this.gender = request.getGender();
 		this.email = request.getEmail();
+		String[] registerNumber = request.getRegisterNumber().split("-");
+		parseGender(registerNumber[1]);
+		parseBirthDate(registerNumber);
+	}
+
+	private void parseBirthDate(String[] registerNumber) {
+		String dateStr;
+		if (registerNumber[1].equals("1") || registerNumber[1].equals("2")) {
+			dateStr = "19" + registerNumber[0];
+		} else {
+			dateStr = "20" + registerNumber[0];
+		}
+
+		DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyyMMdd");
+		LocalDate date = LocalDate.parse(dateStr, formatter);
+		this.birthDate = date.atStartOfDay(); // 자정 시간으로 설정
+	}
+
+	public void parseGender(String genderStr) {
+		this.gender = Gender.fromRegisterNumber(genderStr);
 	}
 }

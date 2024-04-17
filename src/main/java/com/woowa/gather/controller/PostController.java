@@ -1,6 +1,10 @@
 package com.woowa.gather.controller;
 
+import com.woowa.gather.domain.Post;
 import com.woowa.gather.domain.dto.*;
+import com.woowa.gather.domain.enums.Age;
+import com.woowa.gather.domain.enums.FoodType;
+import com.woowa.gather.domain.enums.Gender;
 import com.woowa.gather.domain.enums.PostStatus;
 import com.woowa.gather.service.PostQueryService;
 import com.woowa.gather.service.PostReadService;
@@ -10,8 +14,11 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.ArrayList;
 import java.util.List;
+import java.util.stream.Collectors;
 
+@RequestMapping("/api")
 @RestController
 @RequiredArgsConstructor
 public class PostController {
@@ -51,12 +58,70 @@ public class PostController {
 
     @GetMapping("/post/over/{withinDate}")
     public ResponseEntity<ListApiResponse> findDuePosts(@PathVariable("withinDate") int withinDate) {
-        List<PostListResponse> duePostList = postReadService.findDuePosts(withinDate);
+        List<PostListResponse> duePostListResponseList = postReadService.findDuePosts(withinDate);
         ListApiResponse duePostListApiResponse = ListApiResponse.<PostListResponse>builder()
-                .resultCount(duePostList.size())
-                .ongoing(duePostList)
+                .resultCount(duePostListResponseList.size())
+                .ongoing(duePostListResponseList)
                 .build();
         return ResponseEntity.ok(duePostListApiResponse);
     }
 
+    @GetMapping("/post/search")
+    public ResponseEntity<ListApiResponse> findSearchingPosts(@RequestParam(required = false) String keyword) {
+        List<Post> searchingPostList;
+
+        if (keyword == null || keyword.trim().isEmpty()) { // 검색 키워드가 없거나, 빈 문자열 또는 공백만 있는 경우
+            searchingPostList = new ArrayList<>();
+        } else {
+            searchingPostList = postReadService.searchPosts(keyword);
+        }
+
+        List<PostListResponse> searchingPostListResponseList = PostListToPostListResponseList(searchingPostList);
+
+        ListApiResponse searchingPostListApiResponse = ListApiResponse.<PostListResponse>builder()
+                .resultCount(searchingPostListResponseList.size())
+                .ongoing(searchingPostListResponseList)
+                .build();
+
+        return ResponseEntity.ok(searchingPostListApiResponse);
+    }
+
+    @GetMapping("/post/filter")
+    public ResponseEntity<ListApiResponse> findFilteringPosts(@RequestParam(required = false) List<Integer> dateTypes,
+                                                              @RequestParam(required = false) List<FoodType> foodTypes,
+                                                              @RequestParam(required = false) List<Age> ages,
+                                                              @RequestParam(required = false) List<Gender> genders) {
+
+        List<Post> filteringPostList = postReadService.filterPosts(dateTypes, foodTypes, ages, genders);
+        List<PostListResponse> filteringPostListResponseList = PostListToPostListResponseList(filteringPostList);
+
+        ListApiResponse filteringPostListApiResponse = ListApiResponse.<PostListResponse>builder()
+                .resultCount(filteringPostListResponseList.size())
+                .ongoing(filteringPostListResponseList)
+                .build();
+        return ResponseEntity.ok(filteringPostListApiResponse);
+    }
+
+    // Post 엔티티 리스트를 PostListResponse DTO 리스트로 변환
+    private List<PostListResponse> PostListToPostListResponseList(List<Post> postList) {
+        List<PostListResponse> PostListResponseList = postList.stream()
+                .map(post -> PostListResponse.builder()
+                        .postId(post.getId())
+                        .userId(post.getUser().getId())
+                        .foodTypeTag(post.getFoodTypeTag())
+                        .genderTag(post.getGenderTag())
+                        .ageTag(post.getAgeTag())
+                        .address(post.getLocation().getAddress())
+                        .place(post.getLocation().getPlace())
+                        .participantTotal(post.getParticipantTotal())
+                        .participantCount(post.getParticipantCount())
+                        .postStatus(post.getPostStatus())
+                        .meetAt(post.getMeetAt())
+                        .closeAt(post.getCloseAt())
+                        .createdAt(post.getCreatedAt())
+                        .build())
+                .collect(Collectors.toList());
+
+        return PostListResponseList;
+    }
 }
