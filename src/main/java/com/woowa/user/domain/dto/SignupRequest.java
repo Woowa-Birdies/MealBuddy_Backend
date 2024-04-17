@@ -1,13 +1,8 @@
 package com.woowa.user.domain.dto;
 
-import java.time.LocalDateTime;
-
-import com.woowa.user.domain.Gender;
-
 import jakarta.validation.constraints.Email;
 import jakarta.validation.constraints.NotEmpty;
 import jakarta.validation.constraints.NotNull;
-import jakarta.validation.constraints.Past;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 
@@ -20,19 +15,15 @@ public class SignupRequest {
 	private String nickname;
 	@NotNull
 	private String verificationHash;
-	@Past
-	private LocalDateTime birthDate;
-	private Gender gender;
+	private String registerNumber;
 	@Email
 	private String email;
 
-	public SignupRequest(Long userId, String nickname, String verificationHash, LocalDateTime birthDate, Gender gender,
-		String email) {
+	public SignupRequest(Long userId, String nickname, String verificationHash, String registerNumber, String email) {
 		this.userId = userId;
 		this.nickname = nickname;
 		this.verificationHash = verificationHash;
-		this.birthDate = birthDate;
-		this.gender = gender;
+		this.registerNumber = registerNumber;
 		this.email = email;
 	}
 }
