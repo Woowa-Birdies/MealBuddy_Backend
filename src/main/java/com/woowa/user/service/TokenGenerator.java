@@ -28,7 +28,7 @@ public class TokenGenerator {
 		String newRefreshToken = jwtUtil.createJwt(REFRESH_TOKEN, userId, role, ACCESS_TOKEN_DURATION);
 		authService.updateRefreshToken(newRefreshToken);
 		response.setHeader(AUTHORIZATION, BEARER + newAccessToken);
-		response.addCookie(cookieUtils.createHttpOnlyCookie(REFRESH_TOKEN, newRefreshToken, REFRESH_TOKEN_DURATION));
+		// response.addCookie(cookieUtils.createHttpOnlyCookie(REFRESH_TOKEN, newRefreshToken, REFRESH_TOKEN_DURATION));
 
 		return "Success generating tokens";
 	}
