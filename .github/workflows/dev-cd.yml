@@ -68,4 +68,4 @@ jobs:
             fi
             
             echo "#### RUN $SOURCE_DIR/$FILE_NAME ####"
-            sudo nohup java -jar  "$SOURCE_DIR/$FILE_NAME" --spring.profiles.active=dev > application.log 2>&1 &
+            sudo nohup java -jar "$SOURCE_DIR/$FILE_NAME" > application.log 2>&1 &

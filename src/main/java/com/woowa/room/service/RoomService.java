@@ -13,12 +13,11 @@ import com.woowa.room.repository.RoomRepository;
 import com.woowa.room.repository.RoomUserRepository;
 import com.woowa.user.domain.User;
 import com.woowa.user.repository.UserRepository;
-
+import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.context.ApplicationEventPublisher;
 import org.springframework.stereotype.Service;
-import org.springframework.transaction.annotation.Transactional;
 
 import javax.print.DocFlavor;
 import java.util.List;
@@ -26,7 +25,6 @@ import java.util.List;
 @Slf4j
 @Service
 @RequiredArgsConstructor
-@Transactional(readOnly = true)
 public class RoomService {
     private final RoomRepository roomRepository;
     private final RoomUserRepository roomUserRepository;

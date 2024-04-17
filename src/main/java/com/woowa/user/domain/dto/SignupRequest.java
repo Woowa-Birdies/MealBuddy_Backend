@@ -18,19 +18,15 @@ public class SignupRequest {
 	private Long userId;
 	@NotEmpty
 	private String nickname;
-	@NotNull
-	private String verificationHash;
 	@Past
 	private LocalDateTime birthDate;
 	private Gender gender;
 	@Email
 	private String email;
 
-	public SignupRequest(Long userId, String nickname, String verificationHash, LocalDateTime birthDate, Gender gender,
-		String email) {
+	public SignupRequest(Long userId, String nickname, LocalDateTime birthDate, Gender gender, String email) {
 		this.userId = userId;
 		this.nickname = nickname;
-		this.verificationHash = verificationHash;
 		this.birthDate = birthDate;
 		this.gender = gender;
 		this.email = email;

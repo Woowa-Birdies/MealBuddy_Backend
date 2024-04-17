@@ -13,7 +13,7 @@ abstract class BaseAskController {
                 .build();
     }
 
-    // 유저의 신청 리스트
+    // 유저 신청 리스트
     public <T> ListApiResponse<T> makeUserAskResponse(int type, List<T> result) {
         return type == 0 ? makeWaitingOrRejectedListResponse(result)
                 : type == 1 ? makeAcceptedListResponse(result)

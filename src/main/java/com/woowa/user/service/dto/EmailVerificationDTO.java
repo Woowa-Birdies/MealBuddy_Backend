@@ -8,9 +8,4 @@ import lombok.NoArgsConstructor;
 public class EmailVerificationDTO {
 	Long userId;
 	String token;
-
-	public EmailVerificationDTO(Long userId, String token) {
-		this.userId = userId;
-		this.token = token;
-	}
 }

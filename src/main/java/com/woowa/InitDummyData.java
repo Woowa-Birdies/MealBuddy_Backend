@@ -75,8 +75,8 @@ public class InitDummyData {
             for (int j = 0; j < posts.size(); j ++){
                 if (j >= start && j < end) continue;
                 Ask ask = createAsk(users.get(i), posts.get(j));
-//                if (j % 3 == 1) ask.changeAskStatus(AskStatus.ACCEPTED);
-//                else if (j % 3 == 2) ask.changeAskStatus(AskStatus.PARTICIPATION);
+                if (j % 3 == 1) ask.changeAskStatus(AskStatus.ACCEPTED);
+                else if (j % 3 == 2) ask.changeAskStatus(AskStatus.PARTICIPATION);
             }
         }
     }
@@ -123,15 +123,9 @@ public class InitDummyData {
     }
 
     private Ask createAsk(User user, Post post) {
-        int r = 0;
-        while (true) {
-            r = getRandNum1(4);
-            if (r != 2) break;
-        }
         return askRepository.save(Ask.builder()
                 .user(user)
                 .post(post)
-                .askStatus(AskStatus.values()[r])
                 .build());
     }
 

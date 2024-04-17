@@ -3,7 +3,6 @@ package com.woowa.user.controller;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
 
-import java.time.Instant;
 import java.time.LocalDateTime;
 
 import org.assertj.core.api.Assertions;
@@ -15,19 +14,15 @@ import org.springframework.security.test.context.support.WithMockUser;
 
 import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
 import com.woowa.IntegrationTestSupport;
-import com.woowa.user.domain.EmailVerification;
 import com.woowa.user.domain.Gender;
 import com.woowa.user.domain.User;
 import com.woowa.user.domain.dto.SignupRequest;
-import com.woowa.user.repository.EmailRepository;
 import com.woowa.user.repository.UserRepository;
 
 class UserControllerTest extends IntegrationTestSupport {
 
 	@Autowired
 	private UserRepository userRepository;
-	@Autowired
-	private EmailRepository emailRepository;
 
 	@Test
 	@DisplayName("중복된 닉네임이 있으면 에러가 발생한다")
@@ -58,15 +53,8 @@ class UserControllerTest extends IntegrationTestSupport {
 	void 사용자는_추가적인_정보를_작성할_수_있다() throws Exception {
 		//given
 		User savedUser = userRepository.save(new User("temp"));
-
-		EmailVerification emailVerification = emailRepository.save(
-			new EmailVerification("123456", Instant.now().plusSeconds(1000), savedUser.getId()));
-		String hash = emailVerification.configureVerificationHash();
-		emailRepository.save(emailVerification);
-
 		LocalDateTime now = LocalDateTime.now();
-		SignupRequest request = new SignupRequest(savedUser.getId(), "test2", hash, now, Gender.OTHER,
-			"test22@test.co.kr");
+		SignupRequest request = new SignupRequest(savedUser.getId(), "test2", now, Gender.OTHER, "test22@test.co.kr");
 		objectMapper.registerModule(new JavaTimeModule());
 		//when
 		//then
@@ -81,29 +69,4 @@ class UserControllerTest extends IntegrationTestSupport {
 		Assertions.assertThat(user.getGender()).isEqualTo(Gender.OTHER);
 		Assertions.assertThat(user.getEmail()).isEqualTo(request.getEmail());
 	}
-
-	@Test
-	@DisplayName("사용자는 이메일 인증을 못하면 추가적인 정보 입력에 실패한다")
-	@WithMockUser
-	void 사용자는_이메일_인증을_못하면_추가적인_정보_입력에_실패한다() throws Exception {
-		//given
-		User savedUser = userRepository.save(new User("temp"));
-
-		EmailVerification emailVerification = emailRepository.save(
-			new EmailVerification("123456", Instant.now().plusSeconds(1000), savedUser.getId()));
-		String hash = emailVerification.configureVerificationHash();
-		emailRepository.save(emailVerification);
-
-		LocalDateTime now = LocalDateTime.now();
-		SignupRequest request = new SignupRequest(savedUser.getId(), "test2", "FailedHash", now, Gender.OTHER,
-			"test22@test.co.kr");
-		objectMapper.registerModule(new JavaTimeModule());
-		//when
-		//then
-		mockMvc.perform(post("/signup")
-				.contentType(MediaType.APPLICATION_JSON)
-				.content(objectMapper.writeValueAsString(request)))
-			.andExpect(status().isUnauthorized());
-	}
-
 }
