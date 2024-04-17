@@ -43,7 +43,7 @@ public class AskController extends BaseAskController {
     }
 
     @GetMapping("/gather/ask/list/{postId}")
-    public ListApiResponse<?> getAskList(@PathVariable Long postId, @RequestParam int type, @RequestParam(required = false) Long askId) {
+    public ListApiResponse<PostAskListResponse> getAskList(@PathVariable Long postId, @RequestParam int type, @RequestParam(required = false) Long askId) {
         checkType(type);
 
         return makeResponse(askService.getPostAskList(postId, type, askId));

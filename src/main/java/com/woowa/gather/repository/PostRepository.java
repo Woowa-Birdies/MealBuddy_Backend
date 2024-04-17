@@ -15,6 +15,8 @@ import java.util.List;
 import java.util.Optional;
 
 public interface PostRepository extends JpaRepository<Post, Long>, JpaSpecificationExecutor<Post> {
+    Optional<Post> findByIdAndPostStatus(Long postId, PostStatus postStatus);
+
     @Query("select new com.woowa.gather.domain.dto.PostListResponse(" +
             "p.id, u.id, p.foodTypeTag, p.genderTag, p.ageTag, l.address, l.place, p.participantTotal, " +
             "p.participantCount, p.postStatus, p.meetAt, p.closeAt, p.createdAt) " +
