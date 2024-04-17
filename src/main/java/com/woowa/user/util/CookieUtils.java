@@ -10,7 +10,8 @@ public class CookieUtils {
 	private final String url;
 
 	public CookieUtils(@Value("${frontend.url}") String url) {
-		this.url = url.replace("https://", ".");
+		this.url = url.replace("https://", "");
+		System.out.println(this.url);
 	}
 
 	public String createHttpOnlyCookie(String key, String value, Long age) {
