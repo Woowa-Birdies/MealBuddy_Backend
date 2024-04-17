@@ -75,7 +75,7 @@ public interface AskRepository extends JpaRepository<Ask, Long> {
 
     /** 모집글 신청자 리스트 */
     @Query("select new com.woowa.gather.domain.dto.PostAskListResponse(" +
-            "u.id, a.askStatus, u.gender, u.birthDate, u.introduce, u.image) " +
+            "u.id, a.id, a.askStatus, u.gender, u.birthDate, u.introduce, u.image) " +
             "from Ask a " +
             "join Post p on a.post = p " +
             "join User u on a.user = u " +
@@ -85,7 +85,7 @@ public interface AskRepository extends JpaRepository<Ask, Long> {
     Optional<List<PostAskListResponse>> findAskedUserByPostId(@Param("postId") Long postId, @Param("askStatus") AskStatus askStatus);
 
     @Query("select new com.woowa.gather.domain.dto.PostAskListResponse(" +
-            "u.id, a.askStatus, u.gender, u.birthDate, u.introduce, u.image) " +
+            "u.id, a.id, a.askStatus, u.gender, u.birthDate, u.introduce, u.image) " +
             "from Ask a " +
             "join Post p on a.post = p " +
             "join User u on a.user = u " +

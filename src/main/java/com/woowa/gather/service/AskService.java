@@ -35,11 +35,15 @@ public class AskService {
      * @return askResponse - askUserId, askId, postId, askStatus
      */
     public AskResponse saveAsk(AskRequest askRequest) {
-        Post foundPost = postRepository.findById(askRequest.getPostId())
-                .orElseThrow(() -> new ResourceNotFoundException(askRequest.getPostId(), "포스트"));
+        Post foundPost = postRepository.findByIdAndPostStatus(askRequest.getPostId(), PostStatus.ONGOING)
+                .orElseThrow(() -> new AskException(AskErrorCode.CLOSED_GATHER));
+
+        log.info("postStatus : {}", foundPost.getPostStatus());
 
         User foundUser = userRepository.findById(askRequest.getUserId())
                 .orElseThrow(() -> new ResourceNotFoundException(askRequest.getUserId(), "유저"));
+
+        // todo 이미 신청한 유저 -> 오류
 
         Ask ask = askRepository.save(Ask.createAsk(foundPost, foundUser));
 
@@ -77,6 +81,7 @@ public class AskService {
      * @return askResponse - askUserId, askId, postId, askStatus
      */
     public AskResponse changeAskStatus(AskUpdate askUpdate) {
+
         Post post = postRepository.findById(askUpdate.getPostId())
                 .orElseThrow(() -> new ResourceNotFoundException(askUpdate.getPostId(), "게시글"));
 
