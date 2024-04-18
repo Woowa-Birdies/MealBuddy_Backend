@@ -6,7 +6,7 @@ import lombok.NoArgsConstructor;
 
 
 public class RoomLeaveEvent extends RoomNoticeEvent {
-    public RoomLeaveEvent(Long roomId, Long userId, String userName) {
-        super(roomId, userId, userName);
+    public RoomLeaveEvent(Long roomId, Long userId, Long postId, String userName) {
+        super(roomId, userId, postId, userName);
     }
 }
