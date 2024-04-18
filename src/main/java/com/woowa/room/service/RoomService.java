@@ -92,7 +92,7 @@ public class RoomService {
                 .room(createRoomIfNotExists(userId, post))
                 .build());
 
-        applicationEventPublisher.publishEvent(new RoomJoinEvent(savedRoomUser.getRoom().getId(), userId, savedRoomUser.getUser().getNickname()));
+        applicationEventPublisher.publishEvent(new RoomJoinEvent(savedRoomUser.getRoom().getId(), userId, post.getId(), savedRoomUser.getUser().getNickname()));
 
         return RoomResponseDto.builder()
                 .roomId(savedRoomUser.getRoom().getId())
@@ -113,7 +113,7 @@ public class RoomService {
             throw new CustomRoomException(RoomErrorCode.ROOM_NOT_FOUND);
         }
 
-        applicationEventPublisher.publishEvent(new RoomLeaveEvent(roomId, userId, getUser(userId).getNickname()));
+        applicationEventPublisher.publishEvent(new RoomLeaveEvent(roomId, userId, roomRepository.postIdByRoomId(roomId), getUser(userId).getNickname()));
 
         roomRepository.decreasePostCount(userId, roomId);
 
@@ -133,7 +133,7 @@ public class RoomService {
             throw new CustomRoomException(RoomErrorCode.UNABLE_TO_KICK);
         }
 
-        applicationEventPublisher.publishEvent(new RoomKickEvent(roomId, targetUserId, getUser(targetUserId).getNickname()));
+        applicationEventPublisher.publishEvent(new RoomKickEvent(roomId, targetUserId, roomRepository.postIdByRoomId(roomId), getUser(targetUserId).getNickname()));
     }
 
     /* 채팅방 삭제
