@@ -47,6 +47,9 @@ public class SecurityConfig {
 	@Value("${cors.maxAge}")
 	private Long maxAge;
 
+	@Value("${spring.security.mapping}")
+	private String[] mapping;
+
 	@Bean
 	@ConditionalOnProperty(name = "spring.h2.console.enabled", havingValue = "true")
 	public WebSecurityCustomizer configureH2ConsoleEnable() {
@@ -70,17 +73,16 @@ public class SecurityConfig {
 		return http.build();
 	}
 
-	private static void configureSession(HttpSecurity http) throws Exception {
+	private void configureSession(HttpSecurity http) throws Exception {
 		http
 			.sessionManagement(session -> session
 				.sessionCreationPolicy(SessionCreationPolicy.STATELESS));
 	}
 
-	private static void configureMapping(HttpSecurity http) throws Exception {
+	private void configureMapping(HttpSecurity http) throws Exception {
 		http
 			.authorizeHttpRequests(auth -> auth
-				.requestMatchers("email/**", "/actuator/health", "/login/**", "/oauth2/**", "/gather/**", "/post/**",
-					"/ask/**")
+				.requestMatchers(mapping)
 				.permitAll()
 				.anyRequest()
 				.authenticated());
