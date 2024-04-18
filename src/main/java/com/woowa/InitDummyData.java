@@ -10,6 +10,7 @@ import com.woowa.user.domain.User;
 import com.woowa.user.repository.UserRepository;
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.boot.context.event.ApplicationReadyEvent;
 import org.springframework.context.event.EventListener;
 import org.springframework.stereotype.Component;
@@ -18,6 +19,7 @@ import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 
+@Slf4j
 @Component
 @RequiredArgsConstructor
 public class InitDummyData {
@@ -79,6 +81,13 @@ public class InitDummyData {
 //                else if (j % 3 == 2) ask.changeAskStatus(AskStatus.PARTICIPATION);
             }
         }
+
+        User user = createUser("4");
+        log.info("user : {}", user.getId());
+        createUser("5");
+        createUser("6");
+        createUser("7");
+        createUser("8");
     }
 
     private User createUser(String nickname) {

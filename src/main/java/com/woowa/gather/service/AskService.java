@@ -75,7 +75,7 @@ public class AskService {
     }
 
     /**
-     * 신청 상태 변경 (대기 -> 수락/거절)
+     * 신청 상태 변경 (대기 -> 수락/거절 or 수락 -> 참여)
      *
      * @param askUpdate userId, postId, askId, askStatus(업데이트할 상태)
      * @return askResponse - askUserId, askId, postId, askStatus
@@ -98,16 +98,16 @@ public class AskService {
                 .build();
     }
 
-    public AskResponse participate(AskUpdate askUpdate){
-        Post post = postRepository.findById(askUpdate.getPostId())
-                .orElseThrow(() -> new ResourceNotFoundException(askUpdate.getPostId(), "게시글"));
+    public void participate(Long postId, Long askId){
+        Post post = postRepository.findById(postId)
+                .orElseThrow(() -> new ResourceNotFoundException(postId, "게시글"));
 
         if (askRepository.countParticipantCountByPostId(post) == post.getParticipantTotal()) {
             throw new AskException(AskErrorCode.PARTICIPATION_DENIED);
         }
 
-        Ask ask = askRepository.findById(askUpdate.getAskId())
-                .orElseThrow(() -> new ResourceNotFoundException(askUpdate.getAskId(), "신청 내용"));
+        Ask ask = askRepository.findById(askId)
+                .orElseThrow(() -> new ResourceNotFoundException(askId, "신청 내용"));
 
         ask.changeAskStatus(AskStatus.PARTICIPATION);
 
@@ -115,12 +115,6 @@ public class AskService {
             post.updatePostStatus(PostStatus.COMPLETION);
         }
 
-        return AskResponse.builder()
-                .askUserId(askUpdate.getUserId())
-                .askId(ask.getId())
-                .postId(post.getId())
-                .askStatus(ask.getAskStatus())
-                .build();
     }
 
     /**
