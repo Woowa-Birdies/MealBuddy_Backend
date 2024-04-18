@@ -1,6 +1,8 @@
 package com.woowa.user.domain;
 
+import java.time.LocalDate;
 import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
 
 import org.hibernate.annotations.DynamicUpdate;
 
@@ -65,8 +67,26 @@ public class User extends BaseEntity {
 
 	public void updateAdditionalInfo(SignupRequest request) {
 		this.nickname = request.getNickname();
-		this.birthDate = request.getBirthDate();
-		this.gender = request.getGender();
 		this.email = request.getEmail();
+		String[] registerNumber = request.getRegisterNumber().split("-");
+		parseGender(registerNumber[1]);
+		parseBirthDate(registerNumber);
+	}
+
+	private void parseBirthDate(String[] registerNumber) {
+		String dateStr;
+		if (registerNumber[1].equals("1") || registerNumber[1].equals("2")) {
+			dateStr = "19" + registerNumber[0];
+		} else {
+			dateStr = "20" + registerNumber[0];
+		}
+
+		DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyyMMdd");
+		LocalDate date = LocalDate.parse(dateStr, formatter);
+		this.birthDate = date.atStartOfDay(); // 자정 시간으로 설정
+	}
+
+	public void parseGender(String genderStr) {
+		this.gender = Gender.fromRegisterNumber(genderStr);
 	}
 }

@@ -3,7 +3,6 @@ package com.woowa.user.controller;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
 
-import java.time.Instant;
 import java.time.LocalDateTime;
 
 import org.assertj.core.api.Assertions;
@@ -38,7 +37,7 @@ class UserControllerTest extends IntegrationTestSupport {
 		userRepository.save(new User("test"));
 		//when
 		//then
-		mockMvc.perform(get("/check/test"))
+		mockMvc.perform(get("/api/check/test"))
 			.andExpect(status().isBadRequest());
 	}
 
@@ -49,7 +48,7 @@ class UserControllerTest extends IntegrationTestSupport {
 		//given
 		//when
 		//then
-		mockMvc.perform(get("/check/test"))
+		mockMvc.perform(get("/api/check/test"))
 			.andExpect(status().isOk());
 	}
 
@@ -61,25 +60,25 @@ class UserControllerTest extends IntegrationTestSupport {
 		User savedUser = userRepository.save(new User("temp"));
 
 		EmailVerification emailVerification = emailRepository.save(
-			new EmailVerification("123456", Instant.now().plusSeconds(1000), savedUser.getId()));
+			new EmailVerification("123456", savedUser.getId()));
 		String hash = emailVerification.configureVerificationHash();
 		emailRepository.save(emailVerification);
 
 		LocalDateTime now = LocalDateTime.now();
-		SignupRequest request = new SignupRequest(savedUser.getId(), "test2", hash, now, Gender.OTHER,
+		SignupRequest request = new SignupRequest(savedUser.getId(), "test2", hash, "971017-1",
 			"test22@test.co.kr");
 		objectMapper.registerModule(new JavaTimeModule());
 		//when
 		//then
-		mockMvc.perform(post("/signup")
+		mockMvc.perform(post("/api/signup")
 				.contentType(MediaType.APPLICATION_JSON)
 				.content(objectMapper.writeValueAsString(request)))
 			.andExpect(status().isOk());
 
 		User user = userRepository.findByNickname("test2").get();
 		Assertions.assertThat(user.getNickname()).isEqualTo(request.getNickname());
-		Assertions.assertThat(user.getBirthDate()).isEqualTo(now);
-		Assertions.assertThat(user.getGender()).isEqualTo(Gender.OTHER);
+		Assertions.assertThat(user.getBirthDate()).isEqualTo(LocalDateTime.of(1997, 10, 17, 0, 0, 0));
+		Assertions.assertThat(user.getGender()).isEqualTo(Gender.MALE);
 		Assertions.assertThat(user.getEmail()).isEqualTo(request.getEmail());
 	}
 
@@ -91,17 +90,17 @@ class UserControllerTest extends IntegrationTestSupport {
 		User savedUser = userRepository.save(new User("temp"));
 
 		EmailVerification emailVerification = emailRepository.save(
-			new EmailVerification("123456", Instant.now().plusSeconds(1000), savedUser.getId()));
+			new EmailVerification("123456", savedUser.getId()));
 		String hash = emailVerification.configureVerificationHash();
 		emailRepository.save(emailVerification);
 
 		LocalDateTime now = LocalDateTime.now();
-		SignupRequest request = new SignupRequest(savedUser.getId(), "test2", "FailedHash", now, Gender.OTHER,
+		SignupRequest request = new SignupRequest(savedUser.getId(), "test2", "FailedHash", "971010",
 			"test22@test.co.kr");
 		objectMapper.registerModule(new JavaTimeModule());
 		//when
 		//then
-		mockMvc.perform(post("/signup")
+		mockMvc.perform(post("/api/signup")
 				.contentType(MediaType.APPLICATION_JSON)
 				.content(objectMapper.writeValueAsString(request)))
 			.andExpect(status().isUnauthorized());
@@ -118,7 +117,7 @@ class UserControllerTest extends IntegrationTestSupport {
 			"introduce myself");
 		//when
 		//then
-		mockMvc.perform(patch("/profile")
+		mockMvc.perform(patch("/api/profile")
 				.contentType(MediaType.APPLICATION_JSON)
 				.content(objectMapper.writeValueAsString(updateProfileRequest)))
 			.andExpect(status().isOk());
@@ -126,6 +125,20 @@ class UserControllerTest extends IntegrationTestSupport {
 		User user = userRepository.findById(test.getId()).get();
 		Assertions.assertThat(user.getNickname()).isEqualTo(updateProfileRequest.getNickname());
 		Assertions.assertThat(user.getIntroduce()).isEqualTo(updateProfileRequest.getIntroduce());
+	}
+
+	@Test
+	@DisplayName("사용자는 프로필을 조회할 수 있다")
+	@WithMockUser
+	void 사용자는_프로필을_조회할_수_있다() throws Exception {
+		//given
+		User test = userRepository.save(new User("test"));
+		//when
+		//then
+		mockMvc.perform(get("/api/profile/{userId}", test.getId()))
+			.andExpect(status().isOk())
+			.andExpect(jsonPath("$.userId").value(test.getId()))
+			.andExpect(jsonPath("$.nickname").value(test.getNickname()));
 	}
 
 }

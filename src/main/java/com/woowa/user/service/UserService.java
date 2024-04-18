@@ -23,6 +23,10 @@ public class UserService {
 	private final UserRepository userRepository;
 	private final EmailRepository emailRepository;
 
+	public User getById(Long id) {
+		return userRepository.findById(id).orElseThrow(() -> new ResourceNotFoundException(id, "User"));
+	}
+
 	public Optional<User> findByNickname(String nickName) {
 		return userRepository.findByNickname(nickName);
 	}
