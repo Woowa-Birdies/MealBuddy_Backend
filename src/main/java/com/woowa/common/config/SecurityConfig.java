@@ -1,5 +1,6 @@
 package com.woowa.common.config;
 
+import java.util.Arrays;
 import java.util.List;
 
 import org.springframework.beans.factory.annotation.Value;
@@ -47,8 +48,8 @@ public class SecurityConfig {
 	@Value("${cors.maxAge}")
 	private Long maxAge;
 
-	@Value("${spring.security.mapping}")
-	private String[] mapping;
+	@Value("${backend.security.uris}")
+	private String[] uris;
 
 	@Bean
 	@ConditionalOnProperty(name = "spring.h2.console.enabled", havingValue = "true")
@@ -80,9 +81,10 @@ public class SecurityConfig {
 	}
 
 	private void configureMapping(HttpSecurity http) throws Exception {
+		System.out.println(Arrays.toString(uris));
 		http
 			.authorizeHttpRequests(auth -> auth
-				.requestMatchers(mapping)
+				.requestMatchers(uris)
 				.permitAll()
 				.anyRequest()
 				.authenticated());
