@@ -6,6 +6,7 @@ import com.woowa.room.domain.Room;
 import com.woowa.room.domain.RoomUser;
 import com.woowa.room.domain.dto.RoomResponseDto;
 import com.woowa.room.event.RoomJoinEvent;
+import com.woowa.room.event.RoomKickEvent;
 import com.woowa.room.event.RoomLeaveEvent;
 import com.woowa.room.exception.CustomRoomException;
 import com.woowa.room.exception.RoomErrorCode;
@@ -131,6 +132,8 @@ public class RoomService {
             log.error("kickUser() roomUser not found userId: {}, roomId: {}, targetUserId: {}", userId, roomId, targetUserId);
             throw new CustomRoomException(RoomErrorCode.UNABLE_TO_KICK);
         }
+
+        applicationEventPublisher.publishEvent(new RoomKickEvent(roomId, targetUserId, getUser(targetUserId).getNickname()));
     }
 
     /* 채팅방 삭제
