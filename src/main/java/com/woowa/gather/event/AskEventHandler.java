@@ -14,11 +14,16 @@ public class AskEventHandler {
 
     @EventListener
     public void participate(RoomJoinEvent roomJoinEvent) {
-
+        askService.participate(roomJoinEvent.getPostId(), roomJoinEvent.getUserId());
     }
 
     @EventListener
     public void deleteAsk(RoomLeaveEvent roomLeaveEvent) {
+        askService.deleteAsk(roomLeaveEvent.getPostId(), roomLeaveEvent.getUserId());
+    }
 
+    @EventListener
+    public void deleteKickedUserAsk(RoomLeaveEvent roomLeaveEvent) {
+        askService.deleteAsk(roomLeaveEvent.getPostId(), roomLeaveEvent.getUserId());
     }
 }

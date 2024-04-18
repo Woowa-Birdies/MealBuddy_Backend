@@ -69,9 +69,18 @@ public class AskService {
 
         ask.getPost().removeAsk(ask);
 
-        askRepository.deleteById(askId);
+        askRepository.delete(ask);
 
         return ask.getId();
+    }
+
+    public void deleteAsk(Long postId, Long userId) {
+        Ask ask = askRepository.findByPostIdAndUserId(postId, userId)
+                .orElseThrow(() -> new ResourceNotFoundException(userId, "신청 내용"));
+
+        ask.getPost().removeAsk(ask);
+
+        askRepository.delete(ask);
     }
 
     /**
@@ -98,23 +107,27 @@ public class AskService {
                 .build();
     }
 
-    public void participate(Long postId, Long askId){
+    public void participate(Long postId, Long userId){
         Post post = postRepository.findById(postId)
                 .orElseThrow(() -> new ResourceNotFoundException(postId, "게시글"));
 
+        // 인원 찬 경우
         if (askRepository.countParticipantCountByPostId(post) == post.getParticipantTotal()) {
             throw new AskException(AskErrorCode.PARTICIPATION_DENIED);
         }
 
-        Ask ask = askRepository.findById(askId)
-                .orElseThrow(() -> new ResourceNotFoundException(askId, "신청 내용"));
+        Ask ask = askRepository.findByPostIdAndUserId(postId, userId)
+                .orElseThrow(() -> new ResourceNotFoundException(userId, "신청 내용"));
+
+        if (ask.getAskStatus() == AskStatus.PARTICIPATION) {
+            throw new AskException(AskErrorCode.ALREADY_PARTICIPATED_USER);
+        }
 
         ask.changeAskStatus(AskStatus.PARTICIPATION);
 
         if (askRepository.countParticipantCountByPostId(post) == post.getParticipantTotal()) {
             post.updatePostStatus(PostStatus.COMPLETION);
         }
-
     }
 
     /**

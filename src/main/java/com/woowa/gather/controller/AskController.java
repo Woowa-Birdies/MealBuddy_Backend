@@ -36,11 +36,11 @@ public class AskController extends BaseAskController {
     }
 
 //    @PatchMapping("/ask/participate")
-//    public ResponseEntity<AskResponse> participate(@RequestBody @Valid AskUpdate askUpdate) {
+//    public ResponseEntity<Long> participate(@RequestBody @Valid AskUpdate askUpdate) {
 //        if (askUpdate.getAskStatus() == AskStatus.PARTICIPATION) {
 //            throw new AskException(AskErrorCode.ALREADY_PARTICIPATED_USER);
 //        }
-//        return ResponseEntity.ok().body(askService.participate(askUpdate));
+//        return ResponseEntity.ok().body(askService.participate(askUpdate.getPostId(), askUpdate.getUserId()));
 //    }
 
     @GetMapping("/gather/ask/list/{postId}")

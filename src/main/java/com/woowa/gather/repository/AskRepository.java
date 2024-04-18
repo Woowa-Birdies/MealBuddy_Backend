@@ -13,6 +13,8 @@ import java.util.List;
 import java.util.Optional;
 
 public interface AskRepository extends JpaRepository<Ask, Long> {
+    @Query("select a from Ask a where a.post.id = :postId and a.user.id = :userId")
+    Optional<Ask> findByPostIdAndUserId(@Param("postId") Long postId, @Param("userId") Long userId);
 
     /** 유저가 신청한 리스트 */
     @Query("select new com.woowa.gather.domain.dto.AskListResponse(" +
