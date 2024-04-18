@@ -22,7 +22,7 @@ public class ReviewController {
     /**
         유저 후기 저장
      */
-    @PostMapping("/review/save")
+    @PostMapping("/api/review/save")
     public ResponseEntity<Void> saveReview(@RequestBody Review review) {
         try {
             reviewService.saveReview(review);
@@ -36,7 +36,7 @@ public class ReviewController {
     /**
         postId로 roomId 찾고 찾은 roomId로 userId 찾아서 리턴
      */
-    @GetMapping("/review/userInfo/{postId}")
+    @GetMapping("/api/review/userInfo/{postId}")
     public List<Long> getUserListByPostId(@PathVariable Long postId) {
         Long roomId = reviewService.getRoomId(postId);
         log.info("roomId : {}",roomId);
