@@ -69,13 +69,22 @@ public class AskService {
 
         ask.getPost().removeAsk(ask);
 
-        askRepository.deleteById(askId);
+        askRepository.delete(ask);
 
         return ask.getId();
     }
 
+    public void deleteAsk(Long postId, Long userId) {
+        Ask ask = askRepository.findByPostIdAndUserId(postId, userId)
+                .orElseThrow(() -> new ResourceNotFoundException(userId, "신청 내용"));
+
+        ask.getPost().removeAsk(ask);
+
+        askRepository.delete(ask);
+    }
+
     /**
-     * 신청 상태 변경 (대기 -> 수락/거절)
+     * 신청 상태 변경 (대기 -> 수락/거절 or 수락 -> 참여)
      *
      * @param askUpdate userId, postId, askId, askStatus(업데이트할 상태)
      * @return askResponse - askUserId, askId, postId, askStatus
@@ -98,29 +107,27 @@ public class AskService {
                 .build();
     }
 
-    public AskResponse participate(AskUpdate askUpdate){
-        Post post = postRepository.findById(askUpdate.getPostId())
-                .orElseThrow(() -> new ResourceNotFoundException(askUpdate.getPostId(), "게시글"));
+    public void participate(Long postId, Long userId){
+        Post post = postRepository.findById(postId)
+                .orElseThrow(() -> new ResourceNotFoundException(postId, "게시글"));
 
+        // 인원 찬 경우
         if (askRepository.countParticipantCountByPostId(post) == post.getParticipantTotal()) {
             throw new AskException(AskErrorCode.PARTICIPATION_DENIED);
         }
 
-        Ask ask = askRepository.findById(askUpdate.getAskId())
-                .orElseThrow(() -> new ResourceNotFoundException(askUpdate.getAskId(), "신청 내용"));
+        Ask ask = askRepository.findByPostIdAndUserId(postId, userId)
+                .orElseThrow(() -> new ResourceNotFoundException(userId, "신청 내용"));
+
+        if (ask.getAskStatus() == AskStatus.PARTICIPATION) {
+            throw new AskException(AskErrorCode.ALREADY_PARTICIPATED_USER);
+        }
 
         ask.changeAskStatus(AskStatus.PARTICIPATION);
 
         if (askRepository.countParticipantCountByPostId(post) == post.getParticipantTotal()) {
             post.updatePostStatus(PostStatus.COMPLETION);
         }
-
-        return AskResponse.builder()
-                .askUserId(askUpdate.getUserId())
-                .askId(ask.getId())
-                .postId(post.getId())
-                .askStatus(ask.getAskStatus())
-                .build();
     }
 
     /**

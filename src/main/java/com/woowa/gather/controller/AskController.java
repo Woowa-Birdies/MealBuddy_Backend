@@ -35,13 +35,13 @@ public class AskController extends BaseAskController {
         return ResponseEntity.ok().body(askService.changeAskStatus(askUpdate));
     }
 
-    @PatchMapping("/ask/participate")
-    public ResponseEntity<AskResponse> participate(@RequestBody @Valid AskUpdate askUpdate) {
-        if (askUpdate.getAskStatus() == AskStatus.PARTICIPATION) {
-            throw new AskException(AskErrorCode.ALREADY_PARTICIPATED_USER);
-        }
-        return ResponseEntity.ok().body(askService.participate(askUpdate));
-    }
+//    @PatchMapping("/ask/participate")
+//    public ResponseEntity<Long> participate(@RequestBody @Valid AskUpdate askUpdate) {
+//        if (askUpdate.getAskStatus() == AskStatus.PARTICIPATION) {
+//            throw new AskException(AskErrorCode.ALREADY_PARTICIPATED_USER);
+//        }
+//        return ResponseEntity.ok().body(askService.participate(askUpdate.getPostId(), askUpdate.getUserId()));
+//    }
 
     @GetMapping("/gather/ask/list/{postId}")
     public ListApiResponse<PostAskListResponse> getAskList(@PathVariable Long postId, @RequestParam int type, @RequestParam(required = false) Long askId) {
