@@ -10,5 +10,6 @@ import lombok.NoArgsConstructor;
 public abstract class RoomNoticeEvent {
     protected Long roomId;
     protected Long userId;
+    protected Long postId;
     protected String userName;
 }

@@ -14,4 +14,6 @@ public interface RoomRepositoryCustom {
     //post count 감소 todo: post로 이동
     void decreasePostCount(long userId, long postId);
 
+    long postIdByRoomId(long roomId);
+
 }

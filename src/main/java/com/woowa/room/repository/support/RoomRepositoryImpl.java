@@ -75,4 +75,13 @@ public class RoomRepositoryImpl implements RoomRepositoryCustom{
             )
             .execute();
     }
+
+    @Override
+    public long postIdByRoomId(final long roomId) {
+        return Optional.ofNullable(queryFactory
+                .select(room.post.id)
+                .from(room)
+                .where(room.id.eq(roomId))
+                .fetchOne()).orElseThrow();
+    }
 }
