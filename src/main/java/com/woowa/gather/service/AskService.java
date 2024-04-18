@@ -136,12 +136,9 @@ public class AskService {
      * @param postId 게시글 ID
      * @return List of PostAskListResponse - userId, askStatus, gender, age, introduce
      */
-    public List<PostAskListResponse> getPostAskList(Long postId, int type, Long askId) {
+    public List<PostAskListResponse> getPostAskList(Long postId, int type) {
 
-        return askId == null ?
-                askRepository.findAskedUserByPostId(postId, getAskStatus(type))
-                        .orElseThrow(() -> new ResourceNotFoundException(postId, "신청자 리스트")) :
-                askRepository.findAskedUserByPostId(postId, getAskStatus(type), askId)
+        return askRepository.findAskedUserByPostId(postId, getAskStatus(type))
                         .orElseThrow(() -> new ResourceNotFoundException(postId, "신청자 리스트"));
     }
 
@@ -152,13 +149,10 @@ public class AskService {
      * @param type   게시글 상태
      * @return List of PostListResponse
      */
-    public List<PostListResponse> getUserPostList(Long userId, int type, Long postId) {
+    public List<PostListResponse> getUserPostList(Long userId, int type) {
         PostStatus postStatus = getPostStatus(type);
 
-        return postId == null ?
-                postRepository.findPostListByWriterId(userId, postStatus)
-                        .orElseThrow(() -> new ResourceNotFoundException(userId, postStatus.getValue() + " 리스트")) :
-                postRepository.findPostListByWriterId(userId, postStatus, postId)
+        return postRepository.findPostListByWriterId(userId, postStatus)
                         .orElseThrow(() -> new ResourceNotFoundException(userId, postStatus.getValue() + " 리스트"));
     }
 
@@ -169,31 +163,13 @@ public class AskService {
      * @param type   게시글 상태
      * @return List of AskListResponse
      */
-    public List<AskListResponse> getAskList(Long userId, int type, Long askId) {
+    public List<AskListResponse> getAskList(Long userId, int type) {
         PostStatus postStatus = getPostStatus(type);
-        return askId == null ?
-                getAskListTop3(userId, type, postStatus) :
-                getAskListNext3(userId, type, askId, postStatus);
-    }
-
-    private List<AskListResponse> getAskListTop3(Long userId, int type, PostStatus postStatus) {
-        if (type == 0) {
-            return askRepository.findWaitingOrRejectedAskList(userId)
-                    .orElseThrow(() -> new ResourceNotFoundException(userId, postStatus.getValue() + "리스트"));
-        } else {
-            return askRepository.findUserAskListByWriterId(userId, getAskStatus(type))
-                    .orElseThrow(() -> new ResourceNotFoundException(userId, postStatus.getValue() + "리스트"));
-        }
-    }
-
-    private List<AskListResponse> getAskListNext3(Long userId, int type, Long askId, PostStatus postStatus) {
-        if (type == 0) {
-            return askRepository.findWaitingOrRejectedAskList(userId, askId)
-                    .orElseThrow(() -> new ResourceNotFoundException(userId, postStatus.getValue() + "리스트"));
-        } else {
-            return askRepository.findUserAskListByWriterId(userId, getAskStatus(type), askId)
-                    .orElseThrow(() -> new ResourceNotFoundException(userId, postStatus.getValue() + "리스트"));
-        }
+        return type == 0 ?
+                askRepository.findWaitingOrRejectedAskList(userId)
+                        .orElseThrow(() -> new ResourceNotFoundException(userId, postStatus.getValue() + "리스트")) :
+                askRepository.findUserAskListByWriterId(userId, getAskStatus(type))
+                        .orElseThrow(() -> new ResourceNotFoundException(userId, postStatus.getValue() + "리스트"));
     }
 
     private static AskStatus getAskStatus(int type) {
