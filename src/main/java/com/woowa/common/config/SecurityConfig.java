@@ -1,5 +1,6 @@
 package com.woowa.common.config;
 
+import java.util.Arrays;
 import java.util.List;
 
 import org.springframework.beans.factory.annotation.Value;
@@ -47,6 +48,9 @@ public class SecurityConfig {
 	@Value("${cors.maxAge}")
 	private Long maxAge;
 
+	@Value("${backend.security.uris}")
+	private String[] uris;
+
 	@Bean
 	@ConditionalOnProperty(name = "spring.h2.console.enabled", havingValue = "true")
 	public WebSecurityCustomizer configureH2ConsoleEnable() {
@@ -56,6 +60,7 @@ public class SecurityConfig {
 
 	@Bean
 	public SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
+
 		disableAnotherLogin(http);
 
 		configureCors(http);
@@ -69,17 +74,17 @@ public class SecurityConfig {
 		return http.build();
 	}
 
-	private static void configureSession(HttpSecurity http) throws Exception {
+	private void configureSession(HttpSecurity http) throws Exception {
 		http
 			.sessionManagement(session -> session
 				.sessionCreationPolicy(SessionCreationPolicy.STATELESS));
 	}
 
-	private static void configureMapping(HttpSecurity http) throws Exception {
+	private void configureMapping(HttpSecurity http) throws Exception {
+		System.out.println(Arrays.toString(uris));
 		http
 			.authorizeHttpRequests(auth -> auth
-				.requestMatchers("email/**", "/actuator/health", "/login/**", "/oauth2/**", "/gather/**", "/post/**",
-					"/ask/**", "/api/ask/**", "/api/gather/**", "/review/**", "/profile/**")
+				.requestMatchers(uris)
 				.permitAll()
 				.anyRequest()
 				.authenticated());
