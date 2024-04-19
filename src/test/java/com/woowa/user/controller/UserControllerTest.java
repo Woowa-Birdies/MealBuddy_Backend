@@ -37,7 +37,7 @@ class UserControllerTest extends IntegrationTestSupport {
 		userRepository.save(new User("test"));
 		//when
 		//then
-		mockMvc.perform(get("/api/check/test"))
+		mockMvc.perform(get("/check/test"))
 			.andExpect(status().isBadRequest());
 	}
 
@@ -48,7 +48,7 @@ class UserControllerTest extends IntegrationTestSupport {
 		//given
 		//when
 		//then
-		mockMvc.perform(get("/api/check/test"))
+		mockMvc.perform(get("/check/test"))
 			.andExpect(status().isOk());
 	}
 
@@ -70,7 +70,7 @@ class UserControllerTest extends IntegrationTestSupport {
 		objectMapper.registerModule(new JavaTimeModule());
 		//when
 		//then
-		mockMvc.perform(post("/api/signup")
+		mockMvc.perform(post("/signup")
 				.contentType(MediaType.APPLICATION_JSON)
 				.content(objectMapper.writeValueAsString(request)))
 			.andExpect(status().isOk());
@@ -100,7 +100,7 @@ class UserControllerTest extends IntegrationTestSupport {
 		objectMapper.registerModule(new JavaTimeModule());
 		//when
 		//then
-		mockMvc.perform(post("/api/signup")
+		mockMvc.perform(post("/signup")
 				.contentType(MediaType.APPLICATION_JSON)
 				.content(objectMapper.writeValueAsString(request)))
 			.andExpect(status().isUnauthorized());
@@ -117,7 +117,7 @@ class UserControllerTest extends IntegrationTestSupport {
 			"introduce myself");
 		//when
 		//then
-		mockMvc.perform(patch("/api/profile")
+		mockMvc.perform(patch("/profile")
 				.contentType(MediaType.APPLICATION_JSON)
 				.content(objectMapper.writeValueAsString(updateProfileRequest)))
 			.andExpect(status().isOk());
@@ -135,7 +135,7 @@ class UserControllerTest extends IntegrationTestSupport {
 		User test = userRepository.save(new User("test"));
 		//when
 		//then
-		mockMvc.perform(get("/api/profile/{userId}", test.getId()))
+		mockMvc.perform(get("/profile/{userId}", test.getId()))
 			.andExpect(status().isOk())
 			.andExpect(jsonPath("$.userId").value(test.getId()))
 			.andExpect(jsonPath("$.nickname").value(test.getNickname()));

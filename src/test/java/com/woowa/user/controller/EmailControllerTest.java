@@ -35,7 +35,7 @@ class EmailControllerTest extends IntegrationTestSupport {
 		User testUser = userRepository.save(new User("test"));
 		//when
 		//then
-		mockMvc.perform(get("/api/email/ambosing_@naver.com/verifications/{userId}", testUser.getId()))
+		mockMvc.perform(get("/email/ambosing_@naver.com/verifications/{userId}", testUser.getId()))
 			.andExpect(status().isOk());
 		EmailVerification emailVerification = emailRepository.findByUserId(testUser.getId()).get();
 
@@ -55,7 +55,7 @@ class EmailControllerTest extends IntegrationTestSupport {
 		objectMapper.registerModule(new JavaTimeModule());
 		//when
 		//then
-		MvcResult result = mockMvc.perform(post("/api/email/verifications")
+		MvcResult result = mockMvc.perform(post("/email/verifications")
 				.contentType(MediaType.APPLICATION_JSON)
 				.content(objectMapper.writeValueAsString(emailVerificationDTO)))
 			.andExpect(status().isOk())
