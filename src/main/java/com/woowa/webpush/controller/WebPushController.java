@@ -6,11 +6,9 @@ import org.springframework.messaging.handler.annotation.MessageMapping;
 import org.springframework.messaging.handler.annotation.SendTo;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
 
-@Slf4j
-@RequestMapping("/api")
 @Controller
+@Slf4j
 public class WebPushController {
     // TODO: repository 구현 후 저장
 

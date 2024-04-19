@@ -1,7 +1,11 @@
 package com.woowa.user.controller;
 
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.*;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RestController;
 
 import com.woowa.user.service.EmailService;
 import com.woowa.user.service.dto.EmailVerificationDTO;
@@ -9,7 +13,6 @@ import com.woowa.user.service.dto.EmailVerificationDTO;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 
-@RequestMapping("/api")
 @RequiredArgsConstructor
 @RestController
 public class EmailController {
