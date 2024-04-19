@@ -32,7 +32,8 @@ class AuthControllerTest extends IntegrationTestSupport {
 	void 사용자는_로그아웃을_할_수_있다() throws Exception {
 		//given
 		SocialLogin socialLogin = new SocialLogin(1L, "KAKAO", "asdsadsad");
-		String refreshToken = "asdasdsakjdlksajdklsajdsdsjdksjd";
+		String refreshToken = jwtUtil.createJwt(REFRESH_TOKEN, socialLogin.getUserId(), ROLE_USER,
+			REFRESH_TOKEN_DURATION);
 		socialLogin.update(refreshToken);
 		SocialLogin savedSocialLogin = socialLoginRepository.save(socialLogin);
 		System.out.println("refreshToken test : " + savedSocialLogin.getRefreshToken().equals(refreshToken));
@@ -75,7 +76,7 @@ class AuthControllerTest extends IntegrationTestSupport {
 		cookie.setMaxAge(Math.toIntExact(REFRESH_TOKEN_DURATION));
 		//when
 		//then
-		mockMvc.perform(post("/api/reissue")
+		mockMvc.perform(post("/reissue")
 				.cookie(cookie))
 			.andExpect(status().isOk());
 		SocialLogin updateSocialLogin = socialLoginRepository.findById(savedSocialLogin.getId()).get();

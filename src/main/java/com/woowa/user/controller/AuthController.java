@@ -38,7 +38,7 @@ public class AuthController {
 		return ResponseEntity.ok(tokenGenerator.generateTokens(response, refreshToken.get()));
 	}
 
-	@PostMapping("/logout")
+	@PostMapping("/api/logout")
 	public ResponseEntity<Void> logout(@CookieValue(name = REFRESH_TOKEN) Optional<String> refreshToken) {
 		if (refreshToken.isPresent()) {
 			authService.logout(refreshToken.get());
