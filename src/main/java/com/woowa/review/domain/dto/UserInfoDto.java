@@ -4,7 +4,6 @@ import com.woowa.user.domain.Gender;
 import com.woowa.user.domain.User;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
-import lombok.RequiredArgsConstructor;
 import lombok.Setter;
 
 import java.time.LocalDateTime;
@@ -20,7 +19,7 @@ public class UserInfoDto {
     private Gender gender;
     private String email;
     private String image;
-
+    private String position;
     public static UserInfoDto fromUser(User user) {
         return new UserInfoDto(
                 user.getId(),
@@ -29,7 +28,8 @@ public class UserInfoDto {
                 user.getBirthDate(),
                 user.getGender(),
                 user.getEmail(),
-                user.getImage()
+                user.getImage(),
+                null
         );
     }
 }
