@@ -40,7 +40,7 @@ jobs:
         with:
           host: ${{ secrets.LIGHTSAIL_HOST }}
           username: ${{ secrets.LIGHTSAIL_USERNAME }}
-          key: ${{ secrets.SSH_PRIVATE_KEY }}
+          key: ${{ secrets.SSH_LIGHTSAIL_PRIVATE_KEY }}
           source: "build/libs/*.jar"
           target: "~/app"
           rm: true
@@ -50,7 +50,7 @@ jobs:
         with:
           host: ${{ secrets.LIGHTSAIL_HOST }}
           username: ${{ secrets.LIGHTSAIL_USERNAME }}
-          key: ${{ secrets.SSH_PRIVATE_KEY }}
+          key: ${{ secrets.SSH_LIGHTSAIL_PRIVATE_KEY }}
           script: |
             SOURCE_DIR=~/app/build/libs
             
