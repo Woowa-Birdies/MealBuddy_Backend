@@ -16,7 +16,7 @@ public interface SocialLoginRepository extends JpaRepository<SocialLogin, Long> 
 
 	Optional<SocialLogin> findByRefreshToken(String refreshToken);
 
-	@Modifying
+	@Modifying(clearAutomatically = true)
 	@Query("delete from SocialLogin s "
 		+ "where s.refreshToken = :refreshToken")
 	void deleteByRefreshToken(@Param("refreshToken") String refreshToken);

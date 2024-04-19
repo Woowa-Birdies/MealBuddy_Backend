@@ -31,6 +31,8 @@ class AuthControllerTest extends IntegrationTestSupport {
 		String refreshToken = "asdasdsakjdlksajdklsajdsdsjdksjd";
 		socialLogin.update(refreshToken);
 		SocialLogin savedSocialLogin = socialLoginRepository.save(socialLogin);
+		System.out.println("refreshToken test : " + savedSocialLogin.getRefreshToken().equals(refreshToken));
+		System.out.println("savedSocialLogin.getId() = " + savedSocialLogin.getId());
 
 		Cookie cookie = new Cookie(REFRESH_TOKEN, refreshToken);
 		cookie.setHttpOnly(true);
@@ -44,9 +46,8 @@ class AuthControllerTest extends IntegrationTestSupport {
 				.cookie(cookie))
 			.andExpect(status().isOk());
 
-		Assertions.assertThatThrownBy(() -> {
-			socialLoginRepository.findById(savedSocialLogin.getId());
-		}).isInstanceOf(ResourceNotFoundException.class);
+		Assertions.assertThatThrownBy(() -> socialLoginRepository.findById(savedSocialLogin.getId())
+				.orElseThrow(() -> new ResourceNotFoundException(socialLogin.getId(), "SocialLogin")))
+			.isInstanceOf(ResourceNotFoundException.class);
 	}
-
 }
