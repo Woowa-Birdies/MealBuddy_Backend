@@ -7,19 +7,23 @@ import java.util.Optional;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import com.woowa.common.domain.NotAuthorizedException;
 import com.woowa.common.domain.ResourceNotFoundException;
 import com.woowa.user.domain.SocialLogin;
 import com.woowa.user.jwt.JWTUtil;
 import com.woowa.user.repository.SocialLoginRepository;
+import com.woowa.user.util.CookieUtils;
 
 import io.jsonwebtoken.ExpiredJwtException;
 import lombok.RequiredArgsConstructor;
 
 @Service
 @RequiredArgsConstructor
+@Transactional(readOnly = true)
 public class AuthService {
 
 	private final JWTUtil jwtUtil;
+	private final CookieUtils cookieUtils;
 	private final SocialLoginRepository socialLoginRepository;
 
 	@Transactional
@@ -28,6 +32,15 @@ public class AuthService {
 			.orElseThrow(() -> new ResourceNotFoundException("refreshToken", "SocialLogin"));
 
 		socialLogin.update(refreshToken);
+	}
+
+	@Transactional
+	public void logout(String refreshToken) {
+		socialLoginRepository.findByRefreshToken(refreshToken)
+			.orElseThrow(() -> new NotAuthorizedException("이미 로그아웃되었습니다."));
+		socialLoginRepository.deleteByRefreshToken(refreshToken);
+
+		cookieUtils.createHttpOnlyCookie(refreshToken, null, 0L);
 	}
 
 	public boolean isInvalidRefreshToken(Optional<String> refreshTokenOpt) {
