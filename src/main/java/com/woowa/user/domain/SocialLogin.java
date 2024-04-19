@@ -43,7 +43,7 @@ public class SocialLogin {
 	}
 
 	public void update(String refreshToken) {
-		this.expiryDate = Instant.now().plusMillis(SecurityConstant.REFRESH_TOKEN_DURATION);
+		this.expiryDate = Instant.now().plusMillis(SecurityConstant.REFRESH_TOKEN_DURATION * 1000);
 		this.refreshToken = refreshToken;
 	}
 }

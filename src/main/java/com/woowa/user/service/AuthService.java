@@ -27,11 +27,11 @@ public class AuthService {
 	private final SocialLoginRepository socialLoginRepository;
 
 	@Transactional
-	public void updateRefreshToken(String refreshToken) {
+	public void updateRefreshToken(String newRefreshToken, String refreshToken) {
 		SocialLogin socialLogin = socialLoginRepository.findByRefreshToken(refreshToken)
 			.orElseThrow(() -> new ResourceNotFoundException("refreshToken", "SocialLogin"));
 
-		socialLogin.update(refreshToken);
+		socialLogin.update(newRefreshToken);
 	}
 
 	@Transactional
@@ -44,6 +44,7 @@ public class AuthService {
 	}
 
 	public boolean isInvalidRefreshToken(Optional<String> refreshTokenOpt) {
+		System.out.println("refreshTokenOpt = " + refreshTokenOpt);
 		return refreshTokenOpt.map(
 				refreshToken -> isExpired(refreshToken)
 					|| isNotRefreshToken(refreshToken)
