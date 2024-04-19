@@ -18,6 +18,6 @@ public final class SecurityConstant {
 	public static final String NICKNAME = "nickname";
 	public static final String ACCESS_TOKEN = "__Secure-access";
 	public static final String REFRESH_TOKEN = "__Secure-refresh";
-	public static final Long ACCESS_TOKEN_DURATION = 1800000L; // 30분
-	public static final Long REFRESH_TOKEN_DURATION = 604800000L; // 7일
+	public static final Long ACCESS_TOKEN_DURATION = 1800L; // 30분
+	public static final Long REFRESH_TOKEN_DURATION = 604800L; // 7일
 }

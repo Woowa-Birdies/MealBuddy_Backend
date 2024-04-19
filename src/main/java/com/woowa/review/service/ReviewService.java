@@ -1,11 +1,11 @@
 package com.woowa.review.service;
 
-import com.woowa.chat.domain.UserStatus;
-import com.woowa.chat.repository.UserStatusRepository;
 import com.woowa.review.domain.Review;
 import com.woowa.review.repository.ReviewRepository;
 import com.woowa.room.domain.Room;
+import com.woowa.room.domain.RoomUser;
 import com.woowa.room.repository.RoomRepository;
+import com.woowa.room.repository.RoomUserRepository;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -19,13 +19,13 @@ import java.util.stream.Collectors;
 public class ReviewService {
     private final ReviewRepository reviewRepository;
     private final RoomRepository roomRepository;
-    private final UserStatusRepository userStatusRepository;
+    private final RoomUserRepository roomUserRepository;
 
     @Autowired
-    public ReviewService(ReviewRepository reviewRepository, RoomRepository roomRepository, UserStatusRepository userStatusRepository) {
+    public ReviewService(ReviewRepository reviewRepository, RoomRepository roomRepository, RoomUserRepository roomUserRepository) {
         this.reviewRepository = reviewRepository;
         this.roomRepository = roomRepository;
-        this.userStatusRepository = userStatusRepository;
+        this.roomUserRepository = roomUserRepository;
     }
 
     @Transactional
@@ -40,14 +40,11 @@ public class ReviewService {
         return roomId;
     }
 
-    public List<Long> getUserIds(Long roomId) {
-        log.info("ReviewService roomId = {}",roomId);
-
+    public List<Long> getUserIdList(Long roomId) {
         // roomId를 기준으로 채팅방에 속한 사용자 정보를 가져옴
-        List<UserStatus> userList = userStatusRepository.findByRoomId(roomId);
-
-        return userList.stream()
-                .map(UserStatus::getUserId)
+        List<RoomUser> byId = roomUserRepository.findByRoomId(roomId);
+        return byId.stream()
+                .map(roomUser -> roomUser.getUser().getId())
                 .collect(Collectors.toList());
     }
 

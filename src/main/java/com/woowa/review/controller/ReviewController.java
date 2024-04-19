@@ -40,8 +40,10 @@ public class ReviewController {
     public List<Long> getUserListByPostId(@PathVariable Long postId) {
         Long roomId = reviewService.getRoomId(postId);
         log.info("roomId : {}",roomId);
-        List<Long> userIds = reviewService.getUserIds(roomId);
-        log.info("userIds size = {}",userIds.size());
-        return userIds;
+
+        List<Long> userIdList = reviewService.getUserIdList(roomId);
+        log.info("userIds size = {}",userIdList.size());
+        return userIdList;
     }
+
 }
