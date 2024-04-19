@@ -18,7 +18,6 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
 
-@RequestMapping("/api")
 @RestController
 @RequiredArgsConstructor
 public class PostController {
