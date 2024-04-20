@@ -9,6 +9,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import java.util.List;
+import java.util.Map;
 
 @RestController
 @Slf4j
@@ -39,24 +40,19 @@ public class ReviewController {
      */
     @GetMapping("/api/review/userInfo/{postId}")
     public ResponseEntity<List<UserInfoDto>> getUserListByPostId(@PathVariable Long postId) {
-        Long roomId = reviewService.getRoomId(postId);
-        log.info("roomId : {}",roomId);
+        // postId로 roomInfo(방번호,모집글 생성자ID)가져오기
+        Map<String,Long> roomInfo = reviewService.getRoomInfo(postId);
+        Long roomId = roomInfo.get("roomId");
+        Long creatorId = roomInfo.get("userNo");
+        log.info("roomId = {}",roomId);
+        log.info("creatorId = {}",creatorId);
 
+        // roomId(방번호)로 참여자ID 가져오기
         List<Long> userIdList = reviewService.getUserIdList(roomId);
         log.info("userIdList size = {}",userIdList.size());
 
-        List<UserInfoDto> userInfoList = reviewService.getUserInfoByUserId(userIdList);
-        log.info("userInfoList size = {}",userInfoList.size());
-        return ResponseEntity.ok(userInfoList);
-    }
-
-    @GetMapping("/test/{roomId}")
-    public ResponseEntity<List<UserInfoDto>> myTest(@PathVariable Long roomId) {
-        log.info("roomId : {}",roomId);
-        List<Long> userIdList = reviewService.getUserIdList(roomId);
-        log.info("userIdList size = {}",userIdList.size());
-
-        List<UserInfoDto> userInfoList = reviewService.getUserInfoByUserId(userIdList);
+        // 참여자ID로 참여자 정보 가져오기
+        List<UserInfoDto> userInfoList = reviewService.getUserInfoByUserId(userIdList,creatorId);
         log.info("userInfoList size = {}",userInfoList.size());
         return ResponseEntity.ok(userInfoList);
     }
