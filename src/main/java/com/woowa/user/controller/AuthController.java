@@ -39,9 +39,10 @@ public class AuthController {
 	}
 
 	@PostMapping("/api/logout")
-	public ResponseEntity<Void> logout(@CookieValue(name = REFRESH_TOKEN) Optional<String> refreshToken) {
+	public ResponseEntity<Void> logout(@CookieValue(name = REFRESH_TOKEN) Optional<String> refreshToken,
+		HttpServletResponse response) {
 		if (refreshToken.isPresent()) {
-			authService.logout(refreshToken.get());
+			authService.logout(refreshToken.get(), response);
 		} else {
 			throw new NotAuthorizedException("리프레시 토큰이 존재하지 않습니다.");
 		}
