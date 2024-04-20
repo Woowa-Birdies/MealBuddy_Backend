@@ -15,6 +15,7 @@ import com.woowa.user.repository.SocialLoginRepository;
 import com.woowa.user.util.CookieUtils;
 
 import io.jsonwebtoken.ExpiredJwtException;
+import jakarta.servlet.http.HttpServletResponse;
 import lombok.RequiredArgsConstructor;
 
 @Service
@@ -35,12 +36,13 @@ public class AuthService {
 	}
 
 	@Transactional
-	public void logout(String refreshToken) {
+	public void logout(String refreshToken, HttpServletResponse response) {
 		socialLoginRepository.findByRefreshToken(refreshToken)
 			.orElseThrow(() -> new NotAuthorizedException("이미 로그아웃되었습니다."));
 		socialLoginRepository.deleteByRefreshToken(refreshToken);
 
-		cookieUtils.createHttpOnlyCookie(refreshToken, null, 0L);
+		response.setHeader("Set-Cookie", cookieUtils.createHttpOnlyCookie(REFRESH_TOKEN, null, 0L));
+		response.setHeader("Set-Cookie", cookieUtils.createCookie(ACCESS_TOKEN, null, 0L));
 	}
 
 	public boolean isInvalidRefreshToken(Optional<String> refreshTokenOpt) {
