@@ -41,8 +41,8 @@ public class AuthService {
 			.orElseThrow(() -> new NotAuthorizedException("이미 로그아웃되었습니다."));
 		socialLoginRepository.deleteByRefreshToken(refreshToken);
 
-		response.setHeader("Set-Cookie", cookieUtils.createHttpOnlyCookie(REFRESH_TOKEN, null, 0L));
-		response.setHeader("Set-Cookie", cookieUtils.createCookie(ACCESS_TOKEN, null, 0L));
+		response.addHeader("Set-Cookie", cookieUtils.createHttpOnlyCookie(REFRESH_TOKEN, null, 0L));
+		response.addHeader("Set-Cookie", cookieUtils.createCookie(ACCESS_TOKEN, null, 0L));
 	}
 
 	public boolean isInvalidRefreshToken(Optional<String> refreshTokenOpt) {
