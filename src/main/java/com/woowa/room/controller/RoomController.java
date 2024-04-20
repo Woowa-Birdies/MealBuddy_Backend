@@ -1,9 +1,21 @@
 package com.woowa.room.controller;
 
+import java.util.List;
+
+import org.springframework.security.core.annotation.AuthenticationPrincipal;
+import org.springframework.web.bind.annotation.DeleteMapping;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RestController;
+
 import com.woowa.room.domain.dto.JoinRequestDto;
 import com.woowa.room.domain.dto.RoomResponseDto;
 import com.woowa.room.service.RoomService;
 import com.woowa.user.domain.dto.CustomOAuth2User;
+
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.ResponseEntity;
@@ -16,10 +28,10 @@ import java.util.List;
 @Slf4j
 @RestController
 @RequiredArgsConstructor
-@RequestMapping("/api/room")
+@RequestMapping("/room")
 public class RoomController {
 
-    private final RoomService roomService;
+	private final RoomService roomService;
 
     // 채팅방 불러오기
     @GetMapping

@@ -9,6 +9,7 @@ import org.springframework.security.oauth2.client.userinfo.OAuth2UserRequest;
 import org.springframework.security.oauth2.core.OAuth2AuthenticationException;
 import org.springframework.security.oauth2.core.user.OAuth2User;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import com.woowa.user.domain.SocialLogin;
 import com.woowa.user.domain.User;
@@ -31,8 +32,10 @@ public class CustomOAuth2UserService extends DefaultOAuth2UserService {
 
 	private final SocialLoginRepository socialLoginRepository;
 	private final UserRepository userRepository;
+	private final NickNameGenerator nickNameGenerator;
 
 	@Override
+	@Transactional
 	public OAuth2User loadUser(OAuth2UserRequest userRequest) throws OAuth2AuthenticationException {
 		OAuth2User oAuth2User = super.loadUser(userRequest);
 
@@ -47,17 +50,15 @@ public class CustomOAuth2UserService extends DefaultOAuth2UserService {
 
 		String externalId = oAuth2Response.getProvider() + " " + oAuth2Response.getProviderId();
 		UserDTO userDto;
-		Optional<User> user = userRepository.findByNickname(oAuth2Response.getName());
-		if (user.isPresent()) {
-			user.get().update(oAuth2Response.getName());
-			userDto = new UserDTO(user.get().getId(), ROLE_USER, oAuth2Response.getName(), externalId,
+		Optional<SocialLogin> socialLogin = socialLoginRepository.findByExternalId(externalId);
+		if (socialLogin.isEmpty()) {
+			User savedUser = userRepository.save(new User(nickNameGenerator.generateUnique()));
+			userDto = new UserDTO(savedUser.getId(), ROLE_USER, savedUser.getNickname(), externalId,
 				oAuth2Response.getProvider());
+			socialLoginRepository.save(new SocialLogin(savedUser.getId(), oAuth2Response.getProvider(), externalId));
 		} else {
-			User savedUser = userRepository.save(new User(oAuth2Response.getName()));
-			SocialLogin savedSocialLogin = socialLoginRepository.save(
-				new SocialLogin(savedUser.getId(), oAuth2Response.getProvider(), externalId));
-			userDto = new UserDTO(savedUser.getId(), ROLE_USER, oAuth2Response.getName(),
-				savedSocialLogin.getExternalId(),
+			User user = userRepository.findById(socialLogin.get().getUserId()).get();
+			userDto = new UserDTO(socialLogin.get().getUserId(), ROLE_USER, user.getNickname(), externalId,
 				oAuth2Response.getProvider());
 		}
 
