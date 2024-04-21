@@ -17,6 +17,7 @@ public enum AskErrorCode {
     ALREADY_PARTICIPATED_USER(HttpStatus.BAD_REQUEST, "AskEx008", "이미 참여한 상태 입니다."),
     INVALID_STATUS_VALUE(HttpStatus.BAD_REQUEST, "AskEx009", "수락 또는 거절 상태로만 변경가능 합니다"),
     CLOSED_GATHER(HttpStatus.OK, "AskEx010", "종료된 모임입니다."),
+    ASK_DENIED(HttpStatus.OK, "AskEx011", "모집중인 모임이 아닙니다."),
     ;
 
     private HttpStatus httpStatus;
