@@ -3,6 +3,7 @@ package com.woowa.user.jwt;
 import static com.woowa.common.domain.SecurityConstant.*;
 
 import java.io.IOException;
+import java.util.stream.Stream;
 
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.context.SecurityContextHolder;
@@ -23,6 +24,15 @@ import lombok.RequiredArgsConstructor;
 public class JWTFilter extends OncePerRequestFilter {
 
 	private final JWTUtil jwtUtil;
+	private final String[] SHOULD_NOT_FILTER_URI_LIST = {"/post", "/login", "/oauth", "/ws"};
+
+	@Override
+
+	protected boolean shouldNotFilter(HttpServletRequest request) throws ServletException {
+		return Stream
+			.of(SHOULD_NOT_FILTER_URI_LIST)
+			.anyMatch(request.getRequestURI()::startsWith);
+	}
 
 	@Override
 	protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response,
