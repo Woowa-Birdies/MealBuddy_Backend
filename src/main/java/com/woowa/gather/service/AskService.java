@@ -35,13 +35,15 @@ public class AskService {
      * @return askResponse - askUserId, askId, postId, askStatus
      */
     public AskResponse saveAsk(AskRequest askRequest) {
+        // todo 신청자 - (이메일), 생년월일 null  -> 에러코드
+
         Post foundPost = postRepository.findByIdAndPostStatus(askRequest.getPostId(), PostStatus.ONGOING)
                 .orElseThrow(() -> new AskException(AskErrorCode.CLOSED_GATHER));
 
         log.info("postStatus : {}", foundPost.getPostStatus());
 
         User foundUser = userRepository.findById(askRequest.getUserId())
-                .orElseThrow(() -> new ResourceNotFoundException(askRequest.getUserId(), "유저"));
+                .orElseThrow(() -> new AskException(AskErrorCode.USER_NOT_FOUND));
 
         // todo 이미 신청한 유저 -> 오류
 
@@ -65,7 +67,7 @@ public class AskService {
      */
     public Long deleteAsk(Long askId) {
         Ask ask = askRepository.findById(askId)
-                .orElseThrow(() -> new ResourceNotFoundException(askId, "신청 내용"));
+                .orElseThrow(() -> new AskException(AskErrorCode.ASK_NOT_FOUND));
 
         ask.getPost().removeAsk(ask);
 
@@ -76,7 +78,7 @@ public class AskService {
 
     public void deleteAsk(Long postId, Long userId) {
         Ask ask = askRepository.findByPostIdAndUserId(postId, userId)
-                .orElseThrow(() -> new ResourceNotFoundException(userId, "신청 내용"));
+                .orElseThrow(() -> new AskException(AskErrorCode.ASK_NOT_FOUND));
 
         ask.getPost().removeAsk(ask);
 
@@ -92,10 +94,10 @@ public class AskService {
     public AskResponse changeAskStatus(AskUpdate askUpdate) {
 
         Post post = postRepository.findById(askUpdate.getPostId())
-                .orElseThrow(() -> new ResourceNotFoundException(askUpdate.getPostId(), "게시글"));
+                .orElseThrow(() -> new AskException(AskErrorCode.POST_NOT_FOUND));
 
         Ask ask = askRepository.findById(askUpdate.getAskId())
-                .orElseThrow(() -> new ResourceNotFoundException(askUpdate.getAskId(), "신청 내용"));
+                .orElseThrow(() -> new AskException(AskErrorCode.ASK_NOT_FOUND));
 
         ask.changeAskStatus(askUpdate.getAskStatus());
 
@@ -109,7 +111,7 @@ public class AskService {
 
     public void participate(Long postId, Long userId){
         Post post = postRepository.findById(postId)
-                .orElseThrow(() -> new ResourceNotFoundException(postId, "게시글"));
+                .orElseThrow(() -> new AskException(AskErrorCode.POST_NOT_FOUND));
 
         // 인원 찬 경우
         if (askRepository.countParticipantCountByPostId(post) == post.getParticipantTotal()) {
@@ -117,7 +119,7 @@ public class AskService {
         }
 
         Ask ask = askRepository.findByPostIdAndUserId(postId, userId)
-                .orElseThrow(() -> new ResourceNotFoundException(userId, "신청 내용"));
+                .orElseThrow(() -> new AskException(AskErrorCode.ASK_NOT_FOUND));
 
         if (ask.getAskStatus() == AskStatus.PARTICIPATION) {
             throw new AskException(AskErrorCode.ALREADY_PARTICIPATED_USER);
@@ -138,8 +140,7 @@ public class AskService {
      */
     public List<PostAskListResponse> getPostAskList(Long postId, int type) {
 
-        return askRepository.findAskedUserByPostId(postId, getAskStatus(type))
-                        .orElseThrow(() -> new ResourceNotFoundException(postId, "신청자 리스트"));
+        return askRepository.findAskedUserByPostId(postId, getAskStatus(type));
     }
 
     /**
@@ -152,8 +153,7 @@ public class AskService {
     public List<PostListResponse> getUserPostList(Long userId, int type) {
         PostStatus postStatus = getPostStatus(type);
 
-        return postRepository.findPostListByWriterId(userId, postStatus)
-                        .orElseThrow(() -> new ResourceNotFoundException(userId, postStatus.getValue() + " 리스트"));
+        return postRepository.findPostListByWriterId(userId, postStatus);
     }
 
     /**
@@ -166,10 +166,8 @@ public class AskService {
     public List<AskListResponse> getAskList(Long userId, int type) {
         PostStatus postStatus = getPostStatus(type);
         return type == 0 ?
-                askRepository.findWaitingOrRejectedAskList(userId)
-                        .orElseThrow(() -> new ResourceNotFoundException(userId, postStatus.getValue() + "리스트")) :
-                askRepository.findUserAskListByWriterId(userId, getAskStatus(type))
-                        .orElseThrow(() -> new ResourceNotFoundException(userId, postStatus.getValue() + "리스트"));
+                askRepository.findWaitingOrRejectedAskList(userId) :
+                askRepository.findUserAskListByWriterId(userId, getAskStatus(type));
     }
 
     private static AskStatus getAskStatus(int type) {

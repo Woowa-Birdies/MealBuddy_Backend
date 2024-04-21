@@ -26,7 +26,7 @@ public interface AskRepository extends JpaRepository<Ask, Long> {
             "join User u on a.user = u " +
             "where u.id = :userId and a.askStatus = :askStatus " +
             "order by p.id desc")
-    Optional<List<AskListResponse>> findUserAskListByWriterId(
+    List<AskListResponse> findUserAskListByWriterId(
             @Param("userId") Long userId,
             @Param("askStatus") AskStatus askStatus);
 
@@ -39,7 +39,7 @@ public interface AskRepository extends JpaRepository<Ask, Long> {
             "join User u on a.user = u " +
             "where u.id = :userId and a.askStatus = 'WAITING' or a.askStatus = 'REJECTED' " +
             "order by p.id desc ")
-    Optional<List<AskListResponse>> findWaitingOrRejectedAskList(
+    List<AskListResponse> findWaitingOrRejectedAskList(
             @Param("userId") Long userId);
 
     /** 모집글 신청자 리스트 */
@@ -50,7 +50,7 @@ public interface AskRepository extends JpaRepository<Ask, Long> {
             "join User u on a.user = u " +
             "where p.id = :postId and a.askStatus = :askStatus " +
             "order by a.id desc ")
-    Optional<List<PostAskListResponse>> findAskedUserByPostId(@Param("postId") Long postId, @Param("askStatus") AskStatus askStatus);
+    List<PostAskListResponse> findAskedUserByPostId(@Param("postId") Long postId, @Param("askStatus") AskStatus askStatus);
 
     @Query("select count(a.id) from Ask a where a.askStatus = 'PARTICIPATION' and a.post = :post")
     int countParticipantCountByPostId(@Param("post") Post post);
