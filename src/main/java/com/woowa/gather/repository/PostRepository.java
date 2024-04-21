@@ -25,7 +25,7 @@ public interface PostRepository extends JpaRepository<Post, Long>, JpaSpecificat
             "left join User u on p.user = u " +
             "where u.id = :userId and p.postStatus = :postStatus " +
             "order by p.id desc ")
-    Optional<List<PostListResponse>> findPostListByWriterId(@Param("userId") Long userId, @Param("postStatus") PostStatus postStatus);
+    List<PostListResponse> findPostListByWriterId(@Param("userId") Long userId, @Param("postStatus") PostStatus postStatus);
 
 //    @Query("select new com.woowa.gather.domain.dto.PostDetailsResponseDto(" +
 //            "p.id, u.id, u.nickname, p.meetAt, p.closeAt, p.foodTypeTag, p.ageTag, p.genderTag, " +
