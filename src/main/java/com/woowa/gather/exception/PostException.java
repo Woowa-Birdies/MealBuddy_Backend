@@ -5,7 +5,7 @@ import lombok.Getter;
 
 @Getter
 @AllArgsConstructor
-public class AskException extends RuntimeException {
+public class PostException extends RuntimeException {
 
-    private final AskErrorCode errorCode;
+    private final PostErrorCode errorCode;
 }

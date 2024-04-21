@@ -4,6 +4,8 @@ import static org.springframework.http.HttpStatus.*;
 
 import com.woowa.gather.exception.AskErrorCode;
 import com.woowa.gather.exception.AskException;
+import com.woowa.gather.exception.PostErrorCode;
+import com.woowa.gather.exception.PostException;
 import com.woowa.room.exception.CustomRoomException;
 import com.woowa.room.exception.RoomErrorCode;
 import org.springframework.http.HttpHeaders;
@@ -90,6 +92,13 @@ public class GlobalExceptionControllerAdvice extends ResponseEntityExceptionHand
 	@ExceptionHandler(AskException.class)
 	public ResponseEntity<ExceptionResult> askException(AskException e) {
 		final AskErrorCode errorCode = e.getErrorCode();
+		return ResponseEntity.status(errorCode.getHttpStatus())
+				.body(new ExceptionResult(errorCode.getCode(), errorCode.getMessage()));
+	}
+
+	@ExceptionHandler(PostException.class)
+	public ResponseEntity<ExceptionResult> postException(PostException e) {
+		final PostErrorCode errorCode = e.getErrorCode();
 		return ResponseEntity.status(errorCode.getHttpStatus())
 				.body(new ExceptionResult(errorCode.getCode(), errorCode.getMessage()));
 	}
