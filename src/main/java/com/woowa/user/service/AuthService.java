@@ -37,9 +37,9 @@ public class AuthService {
 
 	@Transactional
 	public void logout(String refreshToken, HttpServletResponse response) {
-		socialLoginRepository.findByRefreshToken(refreshToken)
+		SocialLogin socialLogin = socialLoginRepository.findByRefreshToken(refreshToken)
 			.orElseThrow(() -> new NotAuthorizedException("이미 로그아웃되었습니다."));
-		socialLoginRepository.deleteByRefreshToken(refreshToken);
+		socialLogin.update(null);
 
 		response.addHeader("Set-Cookie", cookieUtils.createHttpOnlyCookie(REFRESH_TOKEN, null, 0L));
 		response.addHeader("Set-Cookie", cookieUtils.createCookie(ACCESS_TOKEN, null, 0L));
