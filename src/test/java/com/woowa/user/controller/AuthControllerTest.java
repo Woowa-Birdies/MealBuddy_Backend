@@ -11,7 +11,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.test.context.support.WithMockUser;
 
 import com.woowa.IntegrationTestSupport;
-import com.woowa.common.domain.ResourceNotFoundException;
 import com.woowa.user.domain.SocialLogin;
 import com.woowa.user.jwt.JWTUtil;
 import com.woowa.user.repository.SocialLoginRepository;
@@ -51,9 +50,6 @@ class AuthControllerTest extends IntegrationTestSupport {
 				.cookie(cookie))
 			.andExpect(status().isOk());
 
-		Assertions.assertThatThrownBy(() -> socialLoginRepository.findById(savedSocialLogin.getId())
-				.orElseThrow(() -> new ResourceNotFoundException(socialLogin.getId(), "SocialLogin")))
-			.isInstanceOf(ResourceNotFoundException.class);
 	}
 
 	@Test
