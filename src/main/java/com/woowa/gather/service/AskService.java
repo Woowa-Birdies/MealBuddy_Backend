@@ -35,21 +35,26 @@ public class AskService {
      * @return askResponse - askUserId, askId, postId, askStatus
      */
     public AskResponse saveAsk(AskRequest askRequest) {
-        // todo 신청자 - (이메일), 생년월일 null  -> 에러코드
-
-        Post foundPost = postRepository.findByIdAndPostStatus(askRequest.getPostId(), PostStatus.ONGOING)
-                .orElseThrow(() -> new AskException(AskErrorCode.CLOSED_GATHER));
-
-        log.info("postStatus : {}", foundPost.getPostStatus());
-
         User foundUser = userRepository.findById(askRequest.getUserId())
                 .orElseThrow(() -> new AskException(AskErrorCode.USER_NOT_FOUND));
 
-        // todo 이미 신청한 유저 -> 오류
+        if (foundUser.getBirthDate() == null) {
+            throw new AskException(AskErrorCode.UNVERIFIED_USER);
+        }
+
+        Post foundPost = postRepository.findById(askRequest.getPostId())
+                .orElseThrow(() -> new AskException(AskErrorCode.POST_NOT_FOUND));
+
+        if (foundPost.getPostStatus() != PostStatus.ONGOING) {
+            throw new AskException(AskErrorCode.ASK_DENIED);
+        }
+
+        log.info("postStatus : {}", foundPost.getPostStatus());
+
+        askRepository.findByPostIdAndUserId(askRequest.getPostId(), askRequest.getUserId())
+                .orElseThrow(() -> new AskException(AskErrorCode.ALREADY_ASKED_USER));
 
         Ask ask = askRepository.save(Ask.createAsk(foundPost, foundUser));
-
-        log.info("count {}", foundPost.getParticipantCount());
 
         return AskResponse.builder()
                 .askId(ask.getId())
