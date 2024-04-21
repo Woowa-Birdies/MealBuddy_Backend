@@ -4,6 +4,7 @@ import java.time.Instant;
 
 import org.hibernate.annotations.DynamicUpdate;
 
+import com.woowa.common.domain.BaseEntity;
 import com.woowa.common.domain.SecurityConstant;
 
 import jakarta.persistence.Entity;
@@ -20,7 +21,7 @@ import lombok.NoArgsConstructor;
 @Getter
 @DynamicUpdate
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
-public class SocialLogin {
+public class SocialLogin extends BaseEntity {
 	@Id
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
 	private Long id;

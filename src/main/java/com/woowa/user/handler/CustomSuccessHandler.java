@@ -53,7 +53,14 @@ public class CustomSuccessHandler extends SimpleUrlAuthenticationSuccessHandler 
 
 		SocialLogin socialLogin = socialLoginRepository.findByExternalId(customUserDetails.getExternalID())
 			.orElseThrow(() -> new ResourceNotFoundException(customUserDetails.getExternalID(), "SocialLogin"));
+		System.out.println("------------------------------------------------------------------------------");
+		System.out.println("socialLogin.getUserId().equals(userId) = " + socialLogin.getUserId().equals(userId));
+		System.out.println("socialLogin.getExternalId() = " + socialLogin.getExternalId());
+		System.out.println("socialLogin.getUserId() = " + socialLogin.getUserId());
+		System.out.println("------------------------------------------------------------------------------");
+
 		String accessToken = jwtUtil.createJwt(ACCESS_TOKEN, userId, role, ACCESS_TOKEN_DURATION);
+		System.out.println("accessToken = " + accessToken);
 		String refreshToken = jwtUtil.createJwt(REFRESH_TOKEN, userId, role, REFRESH_TOKEN_DURATION);
 
 		response.addHeader("Set-Cookie",
