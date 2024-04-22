@@ -38,7 +38,11 @@ public class AskService {
         User foundUser = userRepository.findById(askRequest.getUserId())
                 .orElseThrow(() -> new AskException(AskErrorCode.USER_NOT_FOUND));
 
-        if (foundUser.getBirthDate() == null) {
+//        if (foundUser.getBirthDate() == null) {
+//            throw new AskException(AskErrorCode.UNVERIFIED_USER);
+//        }
+
+        if (foundUser.getEmail() == null) {
             throw new AskException(AskErrorCode.UNVERIFIED_USER);
         }
 
