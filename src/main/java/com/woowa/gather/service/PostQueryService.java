@@ -36,7 +36,11 @@ public class PostQueryService {
                 .findById(postCreateDto.getUserId())
                 .orElseThrow(() -> new PostException(PostErrorCode.USER_NOT_FOUND));
 
-        if (user.getBirthDate() == null) {
+//        if (user.getBirthDate() == null) {
+//            throw new PostException(PostErrorCode.USER_NOT_VERIFICATION);
+//        }
+
+        if (user.getEmail() == null) {
             throw new PostException(PostErrorCode.USER_NOT_VERIFICATION);
         }
 
