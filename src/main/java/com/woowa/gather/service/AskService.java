@@ -42,10 +42,6 @@ public class AskService {
 //            throw new AskException(AskErrorCode.UNVERIFIED_USER);
 //        }
 
-        if (foundUser.getEmail() == null) {
-            throw new AskException(AskErrorCode.UNVERIFIED_USER);
-        }
-
         Post foundPost = postRepository.findById(askRequest.getPostId())
                 .orElseThrow(() -> new AskException(AskErrorCode.POST_NOT_FOUND));
 
