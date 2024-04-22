@@ -40,10 +40,6 @@ public class PostQueryService {
 //            throw new PostException(PostErrorCode.USER_NOT_VERIFICATION);
 //        }
 
-        if (user.getEmail() == null) {
-            throw new PostException(PostErrorCode.USER_NOT_VERIFICATION);
-        }
-
         // Location 엔티티 생성 및 저장
         Location savedLocation = locationRepository.save(
                 Location.builder()
