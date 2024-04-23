@@ -59,9 +59,9 @@ public interface PostRepository extends JpaRepository<Post, Long>, JpaSpecificat
     List<PostListResponse> findDuePosts(@Param("targetDate") LocalDateTime targetDate);
 
     @Modifying(clearAutomatically = true)
-    @Query("update Post p set p.postStatus = 'CLOSED' , p.updatedAt = now()" +
-            "where p.closeAt <= now() " +
+    @Query("update Post p set p.postStatus = 'CLOSED' , p.updatedAt = :now " +
+            "where p.closeAt <= :now " +
             "and p.postStatus " +
             "in (com.woowa.gather.domain.enums.PostStatus.ONGOING, com.woowa.gather.domain.enums.PostStatus.COMPLETION)")
-    int updatePosts();
+    int updatePosts(LocalDateTime now);
 }
