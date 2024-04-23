@@ -72,4 +72,8 @@ public class CustomOAuth2User implements OAuth2User, UserDetails {
 	public String getExternalID() {
 		return userDTO.externalId();
 	}
+
+	public Boolean getIsFirstLogin() {
+		return userDTO.isFirstLogin();
+	}
 }
