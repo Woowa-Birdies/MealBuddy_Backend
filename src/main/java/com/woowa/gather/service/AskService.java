@@ -121,25 +121,26 @@ public class AskService {
     }
 
     public void participate(Long postId, Long userId){
-        Post post = postRepository.findById(postId)
-                .orElseThrow(() -> new AskException(AskErrorCode.POST_NOT_FOUND));
-
-        // 인원 찬 경우
-        if (askRepository.countParticipantCountByPostId(post) == post.getParticipantTotal()) {
-            throw new AskException(AskErrorCode.PARTICIPATION_DENIED);
-        }
 
         Ask ask = askRepository.findByPostIdAndUserId(postId, userId)
                 .orElseThrow(() -> new AskException(AskErrorCode.ASK_NOT_FOUND));
 
-        if (ask.getAskStatus() == AskStatus.PARTICIPATION) {
-            throw new AskException(AskErrorCode.ALREADY_PARTICIPATED_USER);
-        }
+        if (ask.getAskStatus() != AskStatus.PARTICIPATION) {
+//            throw new AskException(AskErrorCode.ALREADY_PARTICIPATED_USER);
+            // post 있는건지 확인
+            Post post = postRepository.findById(postId)
+                    .orElseThrow(() -> new AskException(AskErrorCode.POST_NOT_FOUND));
 
-        ask.changeAskStatus(AskStatus.PARTICIPATION);
+            // 이미 인원 찬 경우
+            if (askRepository.countParticipantCountByPostId(post) == post.getParticipantTotal()) {
+                throw new AskException(AskErrorCode.PARTICIPATION_DENIED);
+            }
 
-        if (askRepository.countParticipantCountByPostId(post) == post.getParticipantTotal()) {
-            post.updatePostStatus(PostStatus.COMPLETION);
+            ask.changeAskStatus(AskStatus.PARTICIPATION);
+
+            if (askRepository.countParticipantCountByPostId(post) == post.getParticipantTotal()) {
+                post.updatePostStatus(PostStatus.COMPLETION);
+            }
         }
     }
 

@@ -27,8 +27,8 @@ public class InitDummyData {
     private final PostRepository postRepository;
     private final AskRepository askRepository;
 
-    @EventListener(ApplicationReadyEvent.class)
-    @Transactional
+//    @EventListener(ApplicationReadyEvent.class)
+//    @Transactional
     public void init() {
         String[] names = {"user1", "user2", "user3"};
         List<User> users = new ArrayList<>();
