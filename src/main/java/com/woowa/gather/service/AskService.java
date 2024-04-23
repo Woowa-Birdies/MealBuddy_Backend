@@ -18,6 +18,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
+import java.util.Optional;
 
 @Slf4j
 @Service
@@ -38,6 +39,8 @@ public class AskService {
         User foundUser = userRepository.findById(askRequest.getUserId())
                 .orElseThrow(() -> new AskException(AskErrorCode.USER_NOT_FOUND));
 
+        log.info("user email {}, birthdate {}", foundUser.getEmail(), foundUser.getBirthDate());
+
 //        if (foundUser.getBirthDate() == null) {
 //            throw new AskException(AskErrorCode.UNVERIFIED_USER);
 //        }
@@ -51,8 +54,11 @@ public class AskService {
 
         log.info("postStatus : {}", foundPost.getPostStatus());
 
-        askRepository.findByPostIdAndUserId(askRequest.getPostId(), askRequest.getUserId())
-                .orElseThrow(() -> new AskException(AskErrorCode.ALREADY_ASKED_USER));
+        Optional<Ask> byPostIdAndUserId = askRepository.findByPostIdAndUserId(askRequest.getPostId(), askRequest.getUserId());
+
+        if (byPostIdAndUserId.isPresent()) {
+            throw new AskException(AskErrorCode.ALREADY_ASKED_USER);
+        }
 
         Ask ask = askRepository.save(Ask.createAsk(foundPost, foundUser));
 
