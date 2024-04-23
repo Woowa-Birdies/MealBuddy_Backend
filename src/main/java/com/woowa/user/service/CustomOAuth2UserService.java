@@ -52,16 +52,14 @@ public class CustomOAuth2UserService extends DefaultOAuth2UserService {
 		UserDTO userDto;
 		Optional<SocialLogin> socialLogin = socialLoginRepository.findByExternalId(externalId);
 		if (socialLogin.isEmpty()) {
-			System.out.println("소셜 로그인 존재하지 않음!");
 			User savedUser = userRepository.save(new User(nickNameGenerator.generateUnique()));
 			userDto = new UserDTO(savedUser.getId(), ROLE_USER, savedUser.getNickname(), externalId,
-				oAuth2Response.getProvider());
+				oAuth2Response.getProvider(), true);
 			socialLoginRepository.save(new SocialLogin(savedUser.getId(), oAuth2Response.getProvider(), externalId));
 		} else {
-			System.out.println("소셜 로그인 존재함!!@@");
 			User user = userRepository.findById(socialLogin.get().getUserId()).get();
 			userDto = new UserDTO(socialLogin.get().getUserId(), ROLE_USER, user.getNickname(), externalId,
-				oAuth2Response.getProvider());
+				oAuth2Response.getProvider(), false);
 		}
 
 		return new CustomOAuth2User(userDto);
