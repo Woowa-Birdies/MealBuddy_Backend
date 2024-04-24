@@ -17,8 +17,7 @@ public class  Room extends BaseEntity {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @OneToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "user_no")
+    @ManyToOne(fetch = FetchType.LAZY)
     private User user;
 
     //추후 모집자 추가

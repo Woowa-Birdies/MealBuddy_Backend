@@ -11,7 +11,6 @@ import java.util.Optional;
 @Repository
 public interface RoomRepository extends JpaRepository<Room, Long>, RoomRepositoryCustom {
 
-    @Query("select r from Room r where r.post.id = :postId")
     Optional<Room> findByPostId(long postId);
 
 }

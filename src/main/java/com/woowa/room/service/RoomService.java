@@ -23,6 +23,7 @@ import org.springframework.transaction.annotation.Transactional;
 
 import javax.print.DocFlavor;
 import java.util.List;
+import java.util.Optional;
 
 import static org.springframework.messaging.simp.SimpMessageHeaderAccessor.getUser;
 
@@ -176,8 +177,16 @@ public class RoomService {
     }
 
     private Room createRoomIfNotExists(final long postId, Post post) {
-        return roomRepository.findByPostId(postId)
-                .orElseGet(() -> getCreatedRoom(post.getUser().getId(), post));
+        Optional<Room> existingRoom = roomRepository.findByPostId(postId);
+        if (existingRoom.isPresent()) {
+            return existingRoom.get();
+        } else {
+            synchronized (this) {
+                // 중복 생성을 방지하기 위해 재확인
+                existingRoom = roomRepository.findByPostId(postId);
+                return existingRoom.orElseGet(() -> getCreatedRoom(post.getUser().getId(), post));
+            }
+        }
     }
 
     private User getUser(long userId) {
