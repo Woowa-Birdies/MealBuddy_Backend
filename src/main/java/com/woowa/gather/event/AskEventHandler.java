@@ -14,7 +14,9 @@ public class AskEventHandler {
 
     @EventListener
     public void participate(RoomJoinEvent roomJoinEvent) {
-        askService.participate(roomJoinEvent.getPostId(), roomJoinEvent.getUserId());
+        if (askService.checkIfPostNotExistsByUser(roomJoinEvent.getPostId(), roomJoinEvent.getUserId())) {
+            askService.participate(roomJoinEvent.getPostId(), roomJoinEvent.getUserId());
+        }
     }
 
     @EventListener
