@@ -24,6 +24,8 @@ import org.springframework.transaction.annotation.Transactional;
 import javax.print.DocFlavor;
 import java.util.List;
 
+import static org.springframework.messaging.simp.SimpMessageHeaderAccessor.getUser;
+
 @Slf4j
 @Service
 @RequiredArgsConstructor
@@ -160,11 +162,17 @@ public class RoomService {
     }
 
     private Room getCreatedRoom(long userId, Post post) {
-       return roomRepository.save(Room.builder()
-                .user(getUser(userId))
-                .post(post)
-                .roomName(post.getLocation().getPlace()+ " " + post.getMeetAt().toLocalDate().toString())
-                .build());
+        //SQLIntegrityConstraintViolationException -> CustomException
+        try {
+            return roomRepository.save(Room.builder()
+                    .user(getUser(userId))
+                    .post(post)
+                    .roomName(post.getLocation().getPlace() + " " + post.getMeetAt().toLocalDate().toString())
+                    .build());
+        } catch (Exception e) {
+            log.error("getCreatedRoom() room save failed userId: {}, postId: {}", userId, post.getId());
+            throw new CustomRoomException(RoomErrorCode.ROOM_SAVE_FAILED);
+        }
     }
 
     private Room createRoomIfNotExists(final long postId, Post post) {
