@@ -46,13 +46,17 @@ public class RoomRepositoryImpl implements RoomRepositoryCustom{
     public Optional<Post> findJoinablePostByPostId(final long  userId, final long postId) {
         return Optional.ofNullable(queryFactory
                 .selectFrom(post)
-                .leftJoin(room.post, post)
-                .leftJoin(post, ask.post)
+                .leftJoin(post.asks, ask)
                 .where(
-                        ask.post.id.eq(postId)
-                        .and(ask.askStatus.eq(AskStatus.ACCEPTED))
-                        .and(user.id.eq(userId))
-                        .and(post.participantCount.lt(post.participantTotal))
+                        post.id.eq(postId)
+                                .and(
+                                        post.user.id.eq(userId)
+                                                .or(
+                                                        ask.askStatus.eq(AskStatus.ACCEPTED)
+                                                                .and(ask.user.id.eq(userId))
+                                                                .and(ask.post.id.eq(postId))
+                                                )
+                                )
                 )
                 .fetchOne());
     }
