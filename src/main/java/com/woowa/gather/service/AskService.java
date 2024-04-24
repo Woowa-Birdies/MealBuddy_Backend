@@ -144,6 +144,10 @@ public class AskService {
         }
     }
 
+    public boolean checkIfPostNotExistsByUser(Long postId, Long userId) {
+        return postRepository.findByPostIdAndUserId(postId, userId) == 0;
+    }
+
     /**
      * 모집글 신청자 리스트 조회
      *
