@@ -22,7 +22,8 @@ public class  Room extends BaseEntity {
 
     //추후 모집자 추가
 
-    @OneToOne(fetch = FetchType.LAZY)
+    @OneToOne(fetch = FetchType.EAGER)
+    @JoinColumn(name = "post_id")
     private Post post;
 
     private String roomName;
