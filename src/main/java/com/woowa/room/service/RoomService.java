@@ -23,6 +23,8 @@ import org.springframework.transaction.annotation.Transactional;
 
 import javax.print.DocFlavor;
 import java.util.List;
+import java.util.Objects;
+import java.util.Optional;
 
 import static org.springframework.messaging.simp.SimpMessageHeaderAccessor.getUser;
 
@@ -175,9 +177,12 @@ public class RoomService {
         }
     }
 
-    private Room createRoomIfNotExists(final long postId, Post post) {
-        return roomRepository.findByPostId(postId)
-                .orElseGet(() -> getCreatedRoom(post.getUser().getId(), post));
+    @Transactional
+    public Room createRoomIfNotExists(final long postId, Post post) {
+        synchronized (this) {
+            Room existingRoom = roomRepository.findByPostId(postId).orElse(null);
+            return Objects.requireNonNullElseGet(existingRoom, () -> getCreatedRoom(post.getUser().getId(), post));
+        }
     }
 
     private User getUser(long userId) {
