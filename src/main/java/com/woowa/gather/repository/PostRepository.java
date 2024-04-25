@@ -6,6 +6,7 @@ import com.woowa.gather.domain.dto.PostListResponse;
 import com.woowa.gather.domain.enums.PostStatus;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.JpaSpecificationExecutor;
 import org.springframework.data.jpa.repository.Modifying;
@@ -71,4 +72,8 @@ public interface PostRepository extends JpaRepository<Post, Long>, JpaSpecificat
             "and p.postStatus " +
             "in (com.woowa.gather.domain.enums.PostStatus.ONGOING, com.woowa.gather.domain.enums.PostStatus.COMPLETION)")
     int updatePosts(LocalDateTime now);
+
+    @Query("SELECT p FROM Post p WHERE p.user.id = :userId ORDER BY p.createdAt DESC")
+    List<Post> findMyRecruitmentInfoByUserId(@Param("userId") Long userId, Pageable pageable);
+
 }
