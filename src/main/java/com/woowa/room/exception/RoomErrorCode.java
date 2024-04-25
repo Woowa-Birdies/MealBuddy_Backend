@@ -15,7 +15,8 @@ public enum RoomErrorCode {
     ALREADY_JOINED_ROOM("RoomEx005", "이미 채팅방에 참여하고 있습니다.", HttpStatus.BAD_REQUEST),
     NOT_JOINED_ROOM("RoomEx006", "채팅방에 참여하지 않았습니다.", HttpStatus.BAD_REQUEST),
     UNABLE_TO_KICK("RoomEx007", "강퇴할 수 없습니다.", HttpStatus.FORBIDDEN),
-    ROOM_SAVE_FAILED("RoomEx008", "이미 생성된 채팅방이 있습니다.", HttpStatus.BAD_REQUEST);
+    ROOM_SAVE_FAILED("RoomEx008", "이미 생성된 채팅방이 있습니다.", HttpStatus.BAD_REQUEST),
+    ALREADY_JOINED("RoomEx009", "이미 참여한 방입니다.", HttpStatus.BAD_REQUEST);
 
     private final String code;
     private final String message;

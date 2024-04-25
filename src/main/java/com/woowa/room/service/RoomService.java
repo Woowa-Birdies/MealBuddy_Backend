@@ -69,6 +69,7 @@ public class RoomService {
         return RoomResponseDto.builder()
                 .roomId(createdRoom.getId())
                 .roomName(createdRoom.getRoomName())
+                .postId(postId)
                 .build();
     }
 
@@ -90,10 +91,17 @@ public class RoomService {
         //참가자 수 증가 방장인 경우는 증가하지않음
         increaseParticipation(userId, post);
 
+        User user = getUser(userId);
+        Room room = createRoomIfNotExists(postId, post);
+        //roomUser에 같은 room, user가 있는지 확인
+        if(roomUserRepository.existsByRoomIdAndUserId(room.getId(), userId)){
+            log.error("joinRoom() roomUser already exists userId: {}, roomId: {}", userId, room.getId());
+            throw new CustomRoomException(RoomErrorCode.ALREADY_JOINED);
+        }
         //roomUser 저장 room이 없으면 생성
         RoomUser savedRoomUser = roomUserRepository.save(RoomUser.builder()
-                .user(getUser(userId))
-                .room(createRoomIfNotExists(userId, post))
+                .user(user)
+                .room(room)
                 .build());
 
         applicationEventPublisher.publishEvent(new RoomJoinEvent(savedRoomUser.getRoom().getId(), userId, post.getId(), savedRoomUser.getUser().getNickname()));
@@ -101,6 +109,7 @@ public class RoomService {
         return RoomResponseDto.builder()
                 .roomId(savedRoomUser.getRoom().getId())
                 .roomName(savedRoomUser.getRoom().getRoomName())
+                .postId(postId)
                 .build();
     }
 
