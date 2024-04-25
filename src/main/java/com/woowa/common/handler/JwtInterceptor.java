@@ -1,6 +1,5 @@
 package com.woowa.common.handler;
 
-import com.woowa.chat.exception.ChatErrorCode;
 import com.woowa.chat.exception.CustomChatException;
 import com.woowa.user.domain.dto.CustomOAuth2User;
 import com.woowa.user.domain.dto.UserDTO;
@@ -12,6 +11,7 @@ import org.springframework.messaging.MessageChannel;
 import org.springframework.messaging.simp.stomp.StompCommand;
 import org.springframework.messaging.simp.stomp.StompHeaderAccessor;
 import org.springframework.messaging.support.ChannelInterceptor;
+import org.springframework.messaging.support.MessageBuilder;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Component;
@@ -28,10 +28,17 @@ public class JwtInterceptor implements ChannelInterceptor {
     public Message<?> preSend(Message<?> message, MessageChannel channel) {
         StompHeaderAccessor accessor = StompHeaderAccessor.wrap(message);
 
-        if (StompCommand.CONNECT == accessor.getCommand()) {
-            String authorizationHeader = accessor.getFirstNativeHeader("Authorization");
-            validateToken(authorizationHeader);
-            SecurityContextHolder.getContext().setAuthentication(getAuthentication(authorizationHeader));
+        try {
+            if (StompCommand.CONNECT == accessor.getCommand()) {
+                String authorizationHeader = accessor.getFirstNativeHeader("Authorization");
+                validateToken(authorizationHeader);
+                SecurityContextHolder.getContext().setAuthentication(getAuthentication(authorizationHeader));
+            }
+        } catch (RuntimeException e) {
+            log.error("Error occurred while validating JWT token: {}", e.getMessage());
+            accessor.setLeaveMutable(true);
+            return MessageBuilder.createMessage("invalid token", accessor.getMessageHeaders());
+
         }
         return message;
     }
@@ -40,7 +47,7 @@ public class JwtInterceptor implements ChannelInterceptor {
         if (authorizationHeader == null || !authorizationHeader.startsWith("Bearer ")) {
             log.error("No JWT token found in request headers");
             //todo: error handling
-            throw new CustomChatException(ChatErrorCode.UNVALID_HEADER);
+            throw new RuntimeException("No JWT token found in request headers");
         }
         String token = authorizationHeader.substring("Bearer ".length());
         try {
@@ -48,7 +55,7 @@ public class JwtInterceptor implements ChannelInterceptor {
         } catch (Exception e) {
             log.error("Error validating JWT token: {}", e.getMessage());
             //todo : error handling
-            throw new CustomChatException(ChatErrorCode.UNVALID_USER);
+            throw new RuntimeException("Error validating JWT token: " + e.getMessage());
         }
     }
 
