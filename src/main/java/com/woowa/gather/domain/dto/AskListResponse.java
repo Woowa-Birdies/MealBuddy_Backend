@@ -28,4 +28,5 @@ public class AskListResponse {
     private LocalDateTime closeAt;
     private LocalDateTime createdAt;
 
+
 }

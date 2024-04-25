@@ -4,6 +4,8 @@ import com.woowa.gather.domain.Post;
 import com.woowa.gather.domain.dto.PostDetailsResponseDto;
 import com.woowa.gather.domain.dto.PostListResponse;
 import com.woowa.gather.domain.enums.PostStatus;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.JpaSpecificationExecutor;
 import org.springframework.data.jpa.repository.Modifying;
@@ -15,7 +17,7 @@ import java.util.List;
 import java.util.Optional;
 
 public interface PostRepository extends JpaRepository<Post, Long>, JpaSpecificationExecutor<Post> {
-    Optional<Post> findByIdAndPostStatus(Long postId, PostStatus postStatus);
+    int countPostsByUserIdAndPostStatus(Long id, PostStatus postStatus);
 
     @Query("select count(p.id) from Post p where p.id = :postId and p.user.id = :userId")
     int findByPostIdAndUserId(@Param("postId") Long postId, @Param("userId") Long userId);
@@ -26,9 +28,11 @@ public interface PostRepository extends JpaRepository<Post, Long>, JpaSpecificat
             "from Post p " +
             "join Location l on p.location = l " +
             "left join User u on p.user = u " +
-            "where u.id = :userId and p.postStatus = :postStatus " +
-            "order by p.id desc ")
-    List<PostListResponse> findPostListByWriterId(@Param("userId") Long userId, @Param("postStatus") PostStatus postStatus);
+            "where u.id = :userId and p.postStatus = :postStatus ")
+    Page<PostListResponse> findPostListByWriterId(
+            @Param("userId") Long userId,
+            @Param("postStatus") PostStatus postStatus,
+            PageRequest pageRequest);
 
 //    @Query("select new com.woowa.gather.domain.dto.PostDetailsResponseDto(" +
 //            "p.id, u.id, u.nickname, p.meetAt, p.closeAt, p.foodTypeTag, p.ageTag, p.genderTag, " +
