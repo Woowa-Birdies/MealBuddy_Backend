@@ -1,5 +1,7 @@
 package com.woowa.common.handler;
 
+import com.woowa.chat.exception.ChatErrorCode;
+import com.woowa.chat.exception.CustomChatException;
 import com.woowa.user.domain.dto.CustomOAuth2User;
 import com.woowa.user.domain.dto.UserDTO;
 import com.woowa.user.jwt.JWTUtil;
@@ -38,7 +40,7 @@ public class JwtInterceptor implements ChannelInterceptor {
         if (authorizationHeader == null || !authorizationHeader.startsWith("Bearer ")) {
             log.error("No JWT token found in request headers");
             //todo: error handling
-            throw new RuntimeException("No JWT token found in request headers");
+            throw new CustomChatException(ChatErrorCode.UNVALID_HEADER);
         }
         String token = authorizationHeader.substring("Bearer ".length());
         try {
@@ -46,7 +48,7 @@ public class JwtInterceptor implements ChannelInterceptor {
         } catch (Exception e) {
             log.error("Error validating JWT token: {}", e.getMessage());
             //todo : error handling
-            throw new RuntimeException("Error validating JWT token: " + e.getMessage());
+            throw new CustomChatException(ChatErrorCode.UNVALID_USER);
         }
     }
 
