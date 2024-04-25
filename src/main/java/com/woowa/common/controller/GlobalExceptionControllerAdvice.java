@@ -2,6 +2,8 @@ package com.woowa.common.controller;
 
 import static org.springframework.http.HttpStatus.*;
 
+import com.woowa.chat.exception.ChatErrorCode;
+import com.woowa.chat.exception.CustomChatException;
 import com.woowa.gather.exception.AskErrorCode;
 import com.woowa.gather.exception.AskException;
 import com.woowa.gather.exception.PostErrorCode;
@@ -101,5 +103,12 @@ public class GlobalExceptionControllerAdvice extends ResponseEntityExceptionHand
 		final PostErrorCode errorCode = e.getErrorCode();
 		return ResponseEntity.status(errorCode.getHttpStatus())
 				.body(new ExceptionResult(errorCode.getCode(), errorCode.getMessage()));
+	}
+
+	@ExceptionHandler(CustomChatException.class)
+	public ResponseEntity<ExceptionResult> chatException(CustomChatException exception) {
+		final ChatErrorCode errorCode = exception.getErrorCode();
+		return ResponseEntity.status(errorCode.getHttpStatus())
+			.body(new ExceptionResult(errorCode.getCode(), errorCode.getMessage()));
 	}
 }
