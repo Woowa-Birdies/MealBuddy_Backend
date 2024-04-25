@@ -14,11 +14,15 @@ import com.woowa.user.domain.User;
 import com.woowa.user.repository.UserRepository;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
 import java.util.Optional;
+import java.util.stream.Collectors;
 
 @Slf4j
 @Service
@@ -154,9 +158,24 @@ public class AskService {
      * @param postId 게시글 ID
      * @return List of PostAskListResponse - userId, askStatus, gender, age, introduce
      */
-    public List<PostAskListResponse> getPostAskList(Long postId, int type) {
+    public ListResponse<PostAskListResponse> getPostAskList(Long postId, int type, int page, int pageSize, int totalPages) {
+        AskStatus askStatus = getAskStatus(type);
 
-        return askRepository.findAskedUserByPostId(postId, getAskStatus(type));
+        int pages = askRepository.countAsksByPostIdAndAskStatus(postId, askStatus);
+        if (pages % pageSize != 0) {
+            pages = pages / pageSize + 1;
+        } else {
+            pages /= pageSize;
+        }
+
+        if (page == pages) {
+            page = 0;
+        }
+
+        Page<PostAskListResponse> result = askRepository.findAskedUserByPostId(postId, askStatus,
+                PageRequest.of(page, pageSize, Sort.by(Sort.Direction.DESC, "id")));
+
+        return new ListResponse<>(result.toList(), result.getPageable().getPageNumber(), pageSize, result.getTotalElements(), result.getTotalPages());
     }
 
     /**
@@ -166,10 +185,22 @@ public class AskService {
      * @param type   게시글 상태
      * @return List of PostListResponse
      */
-    public List<PostListResponse> getUserPostList(Long userId, int type) {
+    public Page<PostListResponse> getUserPostList(Long userId, int type, int page, int pageSize, int totalPages) {
         PostStatus postStatus = getPostStatus(type);
 
-        return postRepository.findPostListByWriterId(userId, postStatus);
+        int pages = postRepository.countPostsByUserIdAndPostStatus(userId, postStatus);
+        if (pages % pageSize != 0) {
+            pages = pages / pageSize + 1;
+        } else {
+            pages /= pageSize;
+        }
+
+        if (page == pages) {
+            page = 0;
+        }
+
+        return postRepository.findPostListByWriterId(userId, postStatus,
+                PageRequest.of(page, pageSize, Sort.by(Sort.Direction.DESC, "id")));
     }
 
     /**
@@ -179,11 +210,41 @@ public class AskService {
      * @param type   게시글 상태
      * @return List of AskListResponse
      */
-    public List<AskListResponse> getAskList(Long userId, int type) {
-        PostStatus postStatus = getPostStatus(type);
-        return type == 0 ?
-                askRepository.findWaitingOrRejectedAskList(userId) :
-                askRepository.findUserAskListByWriterId(userId, getAskStatus(type));
+    public Page<AskListResponse> getAskList(Long userId, int type, int page, int pageSize, int totalPages) {
+
+        if (type == 0) {
+            int pages = askRepository.countAsksByUserIdAndAndAskStatus(userId);
+            if (pages % pageSize != 0) {
+                pages = pages / pageSize + 1;
+            } else {
+                pages /= pageSize;
+            }
+
+            log.info("ask list pages = {}", pages);
+            if (page == pages) {
+                page = 0;
+            }
+
+            return askRepository.findWaitingOrRejectedAskList(
+                    userId,
+                    PageRequest.of(page, pageSize, Sort.by(Sort.Direction.DESC, "id")));
+        } else {
+            AskStatus askStatus = getAskStatus(type);
+            int pages = askRepository.countAsksByUserIdAndAndAskStatus(userId, askStatus);
+            if (pages % pageSize != 0) {
+                pages = pages / pageSize + 1;
+            } else {
+                pages /= pageSize;
+            }
+            if (page == pages) {
+                page = 0;
+            }
+
+            return askRepository.findUserAskListByWriterId(
+                    userId,
+                    askStatus,
+                    PageRequest.of(page, pageSize, Sort.by(Sort.Direction.DESC, "id")));
+        }
     }
 
     private static AskStatus getAskStatus(int type) {

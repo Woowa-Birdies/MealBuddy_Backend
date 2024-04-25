@@ -7,10 +7,13 @@ import com.woowa.gather.exception.AskException;
 import com.woowa.gather.service.AskService;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
+import org.springframework.data.domain.Page;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+@Slf4j
 @RestController
 @RequiredArgsConstructor
 public class AskController extends BaseAskController {
@@ -35,23 +38,44 @@ public class AskController extends BaseAskController {
     }
 
     @GetMapping("/gather/ask/list/{postId}")
-    public ListApiResponse<PostAskListResponse> getAskList(@PathVariable Long postId, @RequestParam int type) {
+    public ResponseEntity<ListResponse> getAskList(
+            @PathVariable Long postId,
+            @RequestParam int type,
+            @RequestParam int page,
+            @RequestParam(required = false, defaultValue = "3") int pageSize,
+            @RequestParam(required = false, defaultValue = "0") int totalPages) {
         checkType(type);
 
-        return makeResponse(askService.getPostAskList(postId, type));
+        return ResponseEntity.ok()
+                .body(askService.getPostAskList(postId, type, page, pageSize, totalPages));
     }
 
     @GetMapping("/gather/list/{userId}")
-    public ListApiResponse<PostListResponse> getUserPostList(@RequestParam int type, @PathVariable Long userId) {
+    public ListApiResponse<PostListResponse> getUserPostList(
+            @RequestParam int type,
+            @RequestParam int page,
+            @RequestParam(required = false, defaultValue = "3") int pageSize,
+            @RequestParam(required = false, defaultValue = "0") int totalPages,
+            @PathVariable Long userId) {
         checkType(type);
 
-        return makeUserPostResponse(type, askService.getUserPostList(userId, type));
+        Page<PostListResponse> list = askService.getUserPostList(userId, type, page, pageSize, totalPages);
+
+        return makeListResponse(0, type, list.toList(), list.getPageable().getPageNumber(), pageSize, list.getTotalElements(), list.getTotalPages());
     }
 
     @GetMapping("/ask/list/{userId}")
-    public ListApiResponse<AskListResponse> getUserAskList(@RequestParam int type, @PathVariable Long userId) {
+    public ListApiResponse<AskListResponse> getUserAskList(
+            @RequestParam int type,
+            @RequestParam int page,
+            @RequestParam(required = false, defaultValue = "3") int pageSize,
+            @RequestParam(required = false, defaultValue = "0") int totalPages,
+            @PathVariable Long userId) {
         checkType(type);
-        return makeUserAskResponse(type, askService.getAskList(userId, type));
+
+        Page<AskListResponse> list = askService.getAskList(userId, type, page, pageSize, totalPages);
+
+        return makeListResponse(1, type, list.toList(), list.getPageable().getPageNumber(), pageSize, list.getTotalElements(), list.getTotalPages());
     }
 
     private static void checkType(int type) {
