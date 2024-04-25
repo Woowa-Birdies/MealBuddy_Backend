@@ -54,12 +54,12 @@ public class CustomOAuth2UserService extends DefaultOAuth2UserService {
 		if (socialLogin.isEmpty()) {
 			User savedUser = userRepository.save(new User(nickNameGenerator.generateUnique()));
 			userDto = new UserDTO(savedUser.getId(), ROLE_USER, savedUser.getNickname(), externalId,
-				oAuth2Response.getProvider());
+				oAuth2Response.getProvider(), true);
 			socialLoginRepository.save(new SocialLogin(savedUser.getId(), oAuth2Response.getProvider(), externalId));
 		} else {
 			User user = userRepository.findById(socialLogin.get().getUserId()).get();
 			userDto = new UserDTO(socialLogin.get().getUserId(), ROLE_USER, user.getNickname(), externalId,
-				oAuth2Response.getProvider());
+				oAuth2Response.getProvider(), false);
 		}
 
 		return new CustomOAuth2User(userDto);

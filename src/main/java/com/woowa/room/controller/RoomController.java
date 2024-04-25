@@ -43,7 +43,7 @@ public class RoomController {
 
     @PostMapping("/join")
     public ResponseEntity<RoomResponseDto> joinRoom(final @AuthenticationPrincipal CustomOAuth2User customOAuth2User, @RequestBody JoinRequestDto joinRequestDto) {
-        log.info("joinRoom() userId: {}, roomId: {}", customOAuth2User.getUserId(), joinRequestDto.postId());
+        log.info("joinRoom() userId: {}, postId: {}", customOAuth2User.getUserId(), joinRequestDto.postId());
 
         //return roomService.joinRoom(customOAuth2User.getUserId(), joinRequestDto.postId());
         return ResponseEntity.ok(roomService.joinRoom(customOAuth2User.getUserId(), joinRequestDto.postId()));

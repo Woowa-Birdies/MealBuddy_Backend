@@ -1,12 +1,13 @@
 package com.woowa.gather.service;
 
-import com.woowa.common.domain.ResourceNotFoundException;
 import com.woowa.gather.domain.Ask;
 import com.woowa.gather.domain.Location;
 import com.woowa.gather.domain.Post;
 import com.woowa.gather.domain.dto.PostCreateDto;
 import com.woowa.gather.domain.dto.PostUpdateDto;
 import com.woowa.gather.domain.enums.PostStatus;
+import com.woowa.gather.exception.PostErrorCode;
+import com.woowa.gather.exception.PostException;
 import com.woowa.gather.repository.AskRepository;
 import com.woowa.gather.repository.LocationRepository;
 import com.woowa.gather.repository.PostRepository;
@@ -33,7 +34,11 @@ public class PostQueryService {
     public Long create(PostCreateDto postCreateDto) {
         User user = userRepository
                 .findById(postCreateDto.getUserId())
-                .orElseThrow(() -> new ResourceNotFoundException(postCreateDto.getUserId(), "User"));
+                .orElseThrow(() -> new PostException(PostErrorCode.USER_NOT_FOUND));
+
+//        if (user.getBirthDate() == null) {
+//            throw new PostException(PostErrorCode.USER_NOT_VERIFICATION);
+//        }
 
         // Location 엔티티 생성 및 저장
         Location savedLocation = locationRepository.save(

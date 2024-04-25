@@ -18,6 +18,9 @@ import java.util.Optional;
 public interface PostRepository extends JpaRepository<Post, Long>, JpaSpecificationExecutor<Post> {
     Optional<Post> findByIdAndPostStatus(Long postId, PostStatus postStatus);
 
+    @Query("select count(p.id) from Post p where p.id = :postId and p.user.id = :userId")
+    int findByPostIdAndUserId(@Param("postId") Long postId, @Param("userId") Long userId);
+
     @Query("select new com.woowa.gather.domain.dto.PostListResponse(" +
             "p.id, u.id, p.foodTypeTag, p.genderTag, p.ageTag, l.address, l.place, p.participantTotal, " +
             "p.participantCount, p.postStatus, p.meetAt, p.closeAt, p.createdAt) " +
@@ -26,7 +29,7 @@ public interface PostRepository extends JpaRepository<Post, Long>, JpaSpecificat
             "left join User u on p.user = u " +
             "where u.id = :userId and p.postStatus = :postStatus " +
             "order by p.id desc ")
-    Optional<List<PostListResponse>> findPostListByWriterId(@Param("userId") Long userId, @Param("postStatus") PostStatus postStatus);
+    List<PostListResponse> findPostListByWriterId(@Param("userId") Long userId, @Param("postStatus") PostStatus postStatus);
 
 //    @Query("select new com.woowa.gather.domain.dto.PostDetailsResponseDto(" +
 //            "p.id, u.id, u.nickname, p.meetAt, p.closeAt, p.foodTypeTag, p.ageTag, p.genderTag, " +
@@ -60,11 +63,11 @@ public interface PostRepository extends JpaRepository<Post, Long>, JpaSpecificat
     List<PostListResponse> findDuePosts(@Param("targetDate") LocalDateTime targetDate);
 
     @Modifying(clearAutomatically = true)
-    @Query("update Post p set p.postStatus = 'CLOSED' " +
-            "where p.closeAt <= now() " +
+    @Query("update Post p set p.postStatus = 'CLOSED' , p.updatedAt = :now " +
+            "where p.closeAt <= :now " +
             "and p.postStatus " +
             "in (com.woowa.gather.domain.enums.PostStatus.ONGOING, com.woowa.gather.domain.enums.PostStatus.COMPLETION)")
-    int updatePosts();
+    int updatePosts(LocalDateTime now);
 
     @Query("SELECT p FROM Post p WHERE p.user.id = :userId ORDER BY p.createdAt DESC")
     List<Post> findMyRecruitmentInfoByUserId(@Param("userId") Long userId, Pageable pageable);

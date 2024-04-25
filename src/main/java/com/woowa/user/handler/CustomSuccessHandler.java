@@ -53,7 +53,9 @@ public class CustomSuccessHandler extends SimpleUrlAuthenticationSuccessHandler 
 
 		SocialLogin socialLogin = socialLoginRepository.findByExternalId(customUserDetails.getExternalID())
 			.orElseThrow(() -> new ResourceNotFoundException(customUserDetails.getExternalID(), "SocialLogin"));
+
 		String accessToken = jwtUtil.createJwt(ACCESS_TOKEN, userId, role, ACCESS_TOKEN_DURATION);
+		System.out.println("accessToken = " + accessToken);
 		String refreshToken = jwtUtil.createJwt(REFRESH_TOKEN, userId, role, REFRESH_TOKEN_DURATION);
 
 		response.addHeader("Set-Cookie",
@@ -62,8 +64,11 @@ public class CustomSuccessHandler extends SimpleUrlAuthenticationSuccessHandler 
 			cookieUtils.createCookie(ACCESS_TOKEN, accessToken, ACCESS_TOKEN_DURATION));
 		socialLogin.update(refreshToken);
 
-		response.sendRedirect(frontendUrl);
-
+		if (customUserDetails.getIsFirstLogin()) {
+			response.sendRedirect(frontendUrl + "/verification");
+		} else {
+			response.sendRedirect(frontendUrl);
+		}
 	}
 
 }
