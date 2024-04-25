@@ -1,6 +1,8 @@
 package com.woowa.profile.controller;
 
+import com.woowa.profile.domain.dto.ProfileDto;
 import com.woowa.profile.service.ProfileService;
+import jakarta.persistence.EntityNotFoundException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -17,13 +19,15 @@ public class ProfileController {
         this.profileService = profileService;
     }
 
-    @GetMapping("/profile/search/{userId}")
-    public ResponseEntity<?> getProfileByUserId(@PathVariable Long userId) {
+    @GetMapping("/api/profile/search/{userId}")
+    public ResponseEntity<ProfileDto> getProfileByUserId(@PathVariable Long userId) {
         try {
-            return new ResponseEntity<>("불러오기 성공 : " + profileService.findProfileByUserId(userId), HttpStatus.OK);
-        }
-        catch (Exception e) {
-            return new ResponseEntity<>("불러오기 실패 : " + userId, HttpStatus.INTERNAL_SERVER_ERROR);
+            ProfileDto userProfile = profileService.findProfileByUserId(userId);
+            return ResponseEntity.ok(userProfile);
+        } catch (EntityNotFoundException e) {
+            return ResponseEntity.notFound().build();
+        } catch (Exception e) {
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).build();
         }
     }
 }
