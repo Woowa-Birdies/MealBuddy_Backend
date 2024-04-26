@@ -24,7 +24,7 @@ public class RoomUserRepositoryImpl implements RoomUserRepositoryCustom{
     @Override
     public List<RoomResponseDto> getRoomInfo(long userId) {
         return queryFactory
-                .select(Projections.constructor(RoomResponseDto.class, room.id, room.roomName, roomUser.id.count()))
+                .select(Projections.constructor(RoomResponseDto.class, room.id, room.roomName, room.post.id, roomUser.id.count()))
                 .from(roomUser)
                 .join(roomUser.room, room)
                 .where(roomUser.user.id.eq(userId))

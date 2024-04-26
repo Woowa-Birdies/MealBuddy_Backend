@@ -9,12 +9,14 @@ import lombok.NoArgsConstructor;
 public class RoomResponseDto {
     private Long roomId;
     private String roomName;
+    private Long postId;
     private Long userCount;
 
     @Builder
-    public RoomResponseDto(Long roomId, String roomName, Long userCount) {
+    public RoomResponseDto(Long roomId, String roomName, Long postId, Long userCount) {
         this.roomId = roomId;
         this.roomName = roomName;
+        this.postId = postId;
         this.userCount = userCount;
     }
 }
