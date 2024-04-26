@@ -19,7 +19,6 @@ public class SchedulerConfig {
     @Scheduled(cron = "0 0/1 * 1/1 * *", zone = "Asia/Seoul")
     @Transactional
     public void updatePostStatus() {
-//        int i = postRepository.updatePosts(LocalDateTime.now(ZoneId.of("Asia/Seoul")));
-//        log.info("updated query = {}", i);
+        postRepository.updatePosts(LocalDateTime.now(ZoneId.of("Asia/Seoul")));
     }
 }
