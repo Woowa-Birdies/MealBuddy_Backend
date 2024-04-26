@@ -37,6 +37,7 @@ public class ReviewService {
         reviewRepository.save(review);
     }
 
+    @Transactional
     public Map<String, Long> getRoomInfo(Long postId) {
         log.info("postId : {}",postId);
         Optional<Room> result = roomRepository.findByPostId(postId);
@@ -48,6 +49,7 @@ public class ReviewService {
         return roomInfo;
     }
 
+    @Transactional
     public List<Long> getUserIdList(Long roomId) {
         // roomID를 기준으로 채팅방에 속한 사용자ID를 가져옴
         List<RoomUser> byId = roomUserRepository.findByRoomId(roomId);
@@ -56,6 +58,7 @@ public class ReviewService {
                 .collect(Collectors.toList());
     }
 
+    @Transactional
     public List<UserInfoDto> getUserInfoByUserId(List<Long> userIdList,Long creatorId) {
         List<User> userInfoList = userRepository.findAllById(userIdList);
         List<UserInfoDto> userDtoList = new ArrayList<>();
