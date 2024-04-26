@@ -45,6 +45,7 @@ public class ChatController {
     public ResponseEntity<StatusResponseDto> userStatus(@AuthenticationPrincipal CustomOAuth2User customOAuth2User,
                                                         @RequestBody StatusMessageDto statusMessageDto){
         log.info("userStatus() roomId: {}", statusMessageDto.getRoomId());
+        chatService.setUserStatus(customOAuth2User.getUserId(), statusMessageDto.getRoomId(), statusMessageDto.getLastReadAt());
         return ResponseEntity.ok(chatService.getUserStatus(customOAuth2User.getUserId(), statusMessageDto.getRoomId()));
     }
 
