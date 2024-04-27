@@ -60,7 +60,7 @@ public class ProfileService {
             List<Long> participationIds = profileRepository.findMyParticipationInfoByUserId(userId,pageable);
             List<ParticipationDto> participationInfos = new ArrayList<>();
             for(Long postId : participationIds) {
-                System.out.println("postID! = " + postId);
+                log.info("postID! = {}",postId,ProfileService.class);
                 Post post = postRepository.findById(postId).orElse(null);
                 if(post != null) {
                     ParticipationDto participationDto = new ParticipationDto();
@@ -88,14 +88,14 @@ public class ProfileService {
             int goodManner = 0, badManner = 0, goodReply = 0, badReply = 0;
 
             for(Object[] attribute : reviewAttributesByUserId) {
-                goodPunctuality = attribute[1] != null ? ((Long) attribute[1]).intValue() : 0;
-                badPunctuality = attribute[2] != null ? ((Long) attribute[2]).intValue() : 0;
-                goodSociability = attribute[3] != null ? ((Long) attribute[3]).intValue() : 0;
-                badSociability = attribute[4] != null ? ((Long) attribute[4]).intValue() : 0;
-                goodManner = attribute[5] != null ? ((Long) attribute[5]).intValue() : 0;
-                badManner = attribute[6] != null ? ((Long) attribute[6]).intValue() : 0;
-                goodReply = attribute[7] != null ? ((Long) attribute[7]).intValue() : 0;
-                badReply = attribute[8] != null ? ((Long) attribute[8]).intValue() : 0;
+                goodPunctuality = attribute[1] != null ? Integer.parseInt(String.valueOf(attribute[1])) : 0;
+                badPunctuality = attribute[2] != null ? Integer.parseInt(String.valueOf(attribute[2])) : 0;
+                goodSociability = attribute[3] != null ? Integer.parseInt(String.valueOf(attribute[3])) : 0;
+                badSociability = attribute[4] != null ? Integer.parseInt(String.valueOf(attribute[4])) : 0;
+                goodManner = attribute[5] != null ? Integer.parseInt(String.valueOf(attribute[5])) : 0;
+                badManner = attribute[6] != null ? Integer.parseInt(String.valueOf(attribute[6])) : 0;
+                goodReply = attribute[7] != null ? Integer.parseInt(String.valueOf(attribute[7])) : 0;
+                badReply = attribute[8] != null ? Integer.parseInt(String.valueOf(attribute[8])) : 0;
             }
             ProfileDto dto = ProfileDto.fromUser(
                     user,
