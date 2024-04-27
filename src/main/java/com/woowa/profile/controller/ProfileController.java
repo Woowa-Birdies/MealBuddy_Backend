@@ -20,14 +20,15 @@ public class ProfileController {
     }
 
     @GetMapping("/api/profile/search/{userId}")
-    public ResponseEntity<ProfileDto> getProfileByUserId(@PathVariable Long userId) {
+    public ResponseEntity<?> getProfileByUserId(@PathVariable Long userId) {
         try {
             ProfileDto userProfile = profileService.findProfileByUserId(userId);
             return ResponseEntity.ok(userProfile);
         } catch (EntityNotFoundException e) {
             return ResponseEntity.notFound().build();
         } catch (Exception e) {
-            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).build();
+            // 서버에서 발생한 예외 메세지를 클라이언트에게 전달
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(e.getMessage());
         }
     }
 }

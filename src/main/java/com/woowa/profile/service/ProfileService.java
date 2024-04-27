@@ -53,6 +53,7 @@ public class ProfileService {
         Optional<User> optionalUser = userRepository.findById(userId);
         if (optionalUser.isPresent()) {
             User user = optionalUser.get();
+            log.info("userId = {}",userId,ProfileService.class);
             Pageable pageable = PageRequest.of(0, 5);
 
             // 다른 사용자의 모집글에 참여한 리스트
