@@ -88,14 +88,14 @@ public class ProfileService {
             int goodManner = 0, badManner = 0, goodReply = 0, badReply = 0;
 
             for(Object[] attribute : reviewAttributesByUserId) {
-                goodPunctuality = (int)attribute[1];
-                badPunctuality = (int)attribute[2];
-                goodSociability = (int)attribute[3];
-                badSociability = (int)attribute[4];
-                goodManner = (int)attribute[5];
-                badManner = (int)attribute[6];
-                goodReply = (int)attribute[7];
-                badReply = (int)attribute[8];
+                goodPunctuality = attribute[1] != null ? ((Long) attribute[1]).intValue() : 0;
+                badPunctuality = attribute[2] != null ? ((Long) attribute[2]).intValue() : 0;
+                goodSociability = attribute[3] != null ? ((Long) attribute[3]).intValue() : 0;
+                badSociability = attribute[4] != null ? ((Long) attribute[4]).intValue() : 0;
+                goodManner = attribute[5] != null ? ((Long) attribute[5]).intValue() : 0;
+                badManner = attribute[6] != null ? ((Long) attribute[6]).intValue() : 0;
+                goodReply = attribute[7] != null ? ((Long) attribute[7]).intValue() : 0;
+                badReply = attribute[8] != null ? ((Long) attribute[8]).intValue() : 0;
             }
             ProfileDto dto = ProfileDto.fromUser(
                     user,
